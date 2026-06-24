@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Workspace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<div id="error-banner" class="error-banner hidden"></div>
+
+<div id="app">
+
+  <aside id="sidebar">
+    <div class="brand">
+      <span class="brand-mark">▣</span>
+      <div class="brand-text">
+        <div class="brand-name">AI WORKSPACE</div>
+        <div class="brand-sub" id="ollama-status">checking engine…</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">
+        <span>Projects</span>
+        <button id="new-project-btn" class="icon-btn" title="New project">+</button>
+      </div>
+      <div id="project-list" class="project-list"></div>
+    </div>
+
+    <div class="sidebar-section roster-section">
+      <div class="sidebar-heading" id="roster-toggle" style="cursor:pointer;">
+        <span>The Team <span id="roster-count" class="muted"></span></span>
+        <span id="roster-caret">▸</span>
+      </div>
+      <div id="roster" class="roster hidden"></div>
+    </div>
+
+    <button id="settings-btn" class="ghost-btn">Settings</button>
+  </aside>
+
+  <main id="main">
+    <header id="main-header">
+      <div>
+        <div class="eyebrow" id="active-project-label">No project selected</div>
+        <h1 id="active-project-name">Select or create a project</h1>
+      </div>
+      <div id="main-tabs">
+        <button id="tab-tasks" class="tab-btn active">💬 Team Tasks</button>
+        <button id="tab-media" class="tab-btn">🎨 Media Tools</button>
+      </div>
+    </header>
+
+    <div id="tasks-view">
+    <section id="composer" class="panel">
+      <textarea id="task-input" placeholder="Describe a task for the team — e.g. &quot;Build a Python CLI that converts CSV to JSON, with tests and a README&quot;" rows="3"></textarea>
+      <div id="selected-files" class="selected-files"></div>
+      <input type="file" id="task-files" multiple style="display:none" />
+      <div class="composer-row">
+        <div class="composer-left">
+          <button id="attach-files-btn" class="ghost-btn small" type="button">📎 Attach files</button>
+          <button id="mic-btn" class="ghost-btn small" type="button" title="Speak your task">🎤 Voice</button>
+          <button id="conversation-btn" class="ghost-btn small" type="button" title="When on: voice tasks auto-send, and finished replies are read aloud automatically">🔁 Conversation mode: Off</button>
+          <span class="hint">The Coordinator will plan it, hand it to Coder/Reviewer/Documenter/Proofreader, and run it in the background.</span>
+        </div>
+        <button id="submit-task-btn" class="primary-btn">Assign to team →</button>
+      </div>
+    </section>
+
+    <section id="board">
+      <div id="task-list" class="task-list"></div>
+      <div id="task-detail" class="task-detail">
+        <div class="empty-state">Select a task to see live agent activity, files, and status.</div>
+      </div>
+    </section>
+    </div>
+
+    <div id="media-view" class="hidden">
+      <div class="media-grid">
+
+        <section class="panel media-card">
+          <h3>✂️ Split a collage into separate images</h3>
+          <p class="hint">Upload a grid-style collage (equal rows/columns) and get each tile back as its own downloadable file.</p>
+          <input type="file" id="split-image-input" accept="image/*" />
+          <div class="media-row">
+            <label>Rows <input type="number" id="split-rows" value="2" min="1" max="20" /></label>
+            <label>Columns <input type="number" id="split-cols" value="2" min="1" max="20" /></label>
+            <button class="primary-btn" id="split-btn">Split & download (.zip)</button>
+          </div>
+          <div id="split-status" class="hint"></div>
+        </section>
+
+        <section class="panel media-card">
+          <h3>🖌️ Edit an image</h3>
+          <input type="file" id="edit-image-input" accept="image/*" />
+          <div class="media-row">
+            <label>Operation
+              <select id="edit-operation">
+                <option value="resize">Resize</option>
+                <option value="crop">Crop</option>
+                <option value="rotate">Rotate</option>
+                <option value="flip_h">Flip horizontal</option>
+                <option value="flip_v">Flip vertical</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="blur">Blur</option>
+                <option value="sharpen">Sharpen</option>
+                <option value="brightness">Brightness</option>
+                <option value="contrast">Contrast</option>
+              </select>
+            </label>
+          </div>
+          <div id="edit-params" class="media-row"></div>
+          <div class="media-row">
+            <label>Output format
+              <select id="edit-format">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WEBP</option>
+                <option value="bmp">BMP</option>
+              </select>
+            </label>
+            <button class="primary-btn" id="edit-btn">Apply & download</button>
+          </div>
+          <div id="edit-status" class="hint"></div>
+        </section>
+
+        <section class="panel media-card">
+          <h3>🏷️ Generate a logo</h3>
+          <input type="text" id="logo-text" placeholder="Main text (e.g. company name)" />
+          <input type="text" id="logo-subtext" placeholder="Subtext / tagline (optional)" style="margin-top:8px;" />
+          <div class="media-row">
+            <label>Style
+              <select id="logo-palette">
+                <option value="midnight">Midnight</option>
+                <option value="fresh">Fresh</option>
+                <option value="bold">Bold</option>
+                <option value="ocean">Ocean</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </label>
+            <button class="primary-btn" id="logo-btn">Generate & download</button>
+          </div>
+          <div id="logo-status" class="hint"></div>
+          <img id="logo-preview" style="display:none; max-width:160px; margin-top:10px; border-radius:8px;" />
+        </section>
+
+        <section class="panel media-card">
+          <h3>🎬 Make a slideshow / reel</h3>
+          <p class="hint">Combine several images into a video. GIF always works; MP4 needs an optional extra (see README).</p>
+          <input type="file" id="slideshow-images-input" accept="image/*" multiple />
+          <div class="media-row">
+            <label>Seconds per image <input type="number" id="slideshow-seconds" value="2" min="0.5" max="10" step="0.5" /></label>
+            <label>Format
+              <select id="slideshow-format">
+                <option value="gif">GIF</option>
+                <option value="mp4">MP4</option>
+              </select>
+            </label>
+            <button class="primary-btn" id="slideshow-btn">Create & download</button>
+          </div>
+          <div id="slideshow-status" class="hint"></div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<div id="settings-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button class="icon-btn" id="close-settings-btn">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Background concurrency (tasks running at once)</label>
+        <input type="number" id="setting-concurrency" min="1" max="6" />
+      </div>
+      <div class="field checkbox-field">
+        <input type="checkbox" id="setting-encryption" />
+        <label for="setting-encryption">Encrypt stored task data at rest (local key, never leaves this machine)</label>
+      </div>
+      <div class="field-divider"></div>
+      <div class="field-group-label">Mobile access <span class="muted">(use from your phone on the same WiFi)</span></div>
+      <div class="field checkbox-field">
+        <input type="checkbox" id="setting-lan" />
+        <label for="setting-lan">Allow access from other devices on this network</label>
+      </div>
+      <div id="lan-info" class="lan-info"></div>
+      <div class="field-divider"></div>
+      <div class="field-group-label">Live web research <span class="muted">(optional, off by default)</span></div>
+      <div class="field checkbox-field">
+        <input type="checkbox" id="setting-web-research" />
+        <label for="setting-web-research">Allow Researcher/Analyst/Economist/Scientist to search the web for current info</label>
+      </div>
+      <div class="field-note">When on, the specific search text for a step is sent to a search engine over the internet — nothing else about your task, files, or conversation is sent anywhere. Everything else in the app stays fully local regardless of this setting.</div>
+      <div class="field-divider"></div>
+      <div class="field-group-label">Model per role <span class="muted">(local Ollama models only)</span></div>
+      <div id="role-models"></div>
+      <div class="role-model-row" id="specialist-model-row" style="margin-top:4px;">
+        <label>Specialist (ad hoc roles) <span class="muted" style="font-weight:400;">e.g. "Audio Engineer"</span></label>
+        <select id="model-select-specialist"></select>
+      </div>
+      <div class="field-note" id="models-note"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="primary-btn" id="save-settings-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="new-project-modal" class="modal hidden">
+  <div class="modal-card small">
+    <div class="modal-header">
+      <h2>New project</h2>
+      <button class="icon-btn" id="close-new-project-btn">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Project name</label>
+        <input type="text" id="new-project-name" placeholder="e.g. Inventory App" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="primary-btn" id="create-project-btn">Create</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
