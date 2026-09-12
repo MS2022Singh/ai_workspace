@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai_workspace_core"
+version = "0.1.0"
+description = "Core AI Workspace Backend, Memory Manager, and Autonomous Execution Engine"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "chromadb"
+]
+
+[tool.setuptools.packages.find]
+include = ["backend*"]
