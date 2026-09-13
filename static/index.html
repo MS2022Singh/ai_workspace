@@ -16,7 +16,11 @@
         select:focus, input:focus { outline: none; border-color: #0d47a1; }
         button { background-color: #0d47a1; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.3s; width: 100%;}
         button:hover { background-color: #1565c0; }
-        .terminal { background-color: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; padding: 15px; border-radius: 4px; height: 350px; overflow-y: auto; white-space: pre-wrap; font-size: 0.9em; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);}
+        .terminal { background-color: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; padding: 15px; border-radius: 4px; height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 0.9em; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);}
+        .module-item { display: flex; justify-content: space-between; align-items: center; background: #252525; padding: 10px 15px; border-radius: 4px; margin-bottom: 8px; border-left: 4px solid #4caf50; }
+        .module-item.disabled { border-left-color: #f44336; opacity: 0.6; }
+        .toggle-btn { background: #333; border: 1px solid #555; color: #fff; padding: 5px 12px; border-radius: 4px; cursor: pointer; width: auto; font-size: 0.8em; }
+        .toggle-btn.active { background: #1b5e20; border-color: #4caf50; }
     </style>
 </head>
 <body>
@@ -24,6 +28,12 @@
         <div class=""header"">
             <h1>AI Workspace OS</h1>
             <div id=""status"" class=""status-badge"">Connecting...</div>
+        </div>
+
+        <div class=""panel"">
+            <h3 style=""margin-top: 0;"">Settings: Active UI Repositories</h3>
+            <p style=""font-size: 0.85em; color: #aaa; margin-top: -5px;"">UI design repos are active by default on boot and can be toggled via user settings below.</p>
+            <div id=""modulesList"">Loading modules...</div>
         </div>
 
         <div class=""panel"">
@@ -55,6 +65,7 @@
         const payloadGroup = document.getElementById('payloadGroup');
         const payloadData = document.getElementById('payloadData');
         const statusBadge = document.getElementById('status');
+        const modulesList = document.getElementById('modulesList');
 
         function logToTerminal(message) {
             const timestamp = new Date().toLocaleTimeString();
@@ -75,7 +86,24 @@
                 const response = await fetch('/api/status');
                 const data = await response.json();
                 statusBadge.innerText = OS STATE: ;
-                logToTerminal(> SYSTEM STATUS:  | Message: );
+                
+                // Render modules list
+                let html = '';
+                for (const [name, info] of Object.entries(data.active_modules)) {
+                    const isActive = info.status === 'active';
+                    html += 
+                        <div class=""module-item "">
+                            <div>
+                                <strong></strong> <span style=""font-size: 0.8em; color: #888;"">()</span><br>
+                                <small style=""color: #aaa;"">Capabilities: </small>
+                            </div>
+                            <button class=""toggle-btn "" onclick=""toggleModule('', )"">
+                                
+                            </button>
+                        </div>
+                    ;
+                }
+                modulesList.innerHTML = html || '<p>No modules loaded.</p>';
             } catch (err) {
                 statusBadge.innerText = 'OFFLINE';
                 statusBadge.style.background = '#4a1414';
@@ -84,10 +112,24 @@
             }
         }
 
+        async function toggleModule(toolName, newState) {
+            try {
+                const response = await fetch('/api/modules/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool_name: toolName, active: newState })
+                });
+                const data = await response.json();
+                logToTerminal(> MODULE SETTING UPDATED:  is now );
+                checkStatus();
+            } catch (err) {
+                logToTerminal(> TOGGLE FAILED: );
+            }
+        }
+
         async function executeTask() {
             const taskType = taskTypeSelect.value;
             let payload = {};
-            
             if (taskType === 'learn_skill') {
                 payload = { skill: payloadData.value || 'General Architecture' };
             } else if (taskType === 'eliminate_block') {
@@ -95,8 +137,6 @@
             }
 
             logToTerminal(\n> EXECUTING: ...);
-            logToTerminal(> ROUTING THROUGH PERMISSION ENGINE...);
-            
             try {
                 const response = await fetch('/api/execute', {
                     method: 'POST',
