@@ -1,4 +1,4 @@
-from permissions import PermissionEngine
+﻿from permissions import PermissionEngine
 from computer_control import ComputerControlLayer
 from cognitive_engine import CognitiveEngine
 from self_upgradation import SelfUpgradationEngine
@@ -21,27 +21,33 @@ class EventBus:
 
 class WorkspaceOSEngine:
     def __init__(self):
-        # Initialize Core Subsystems
         self.event_bus = EventBus()
         self.permissions = PermissionEngine()
         self.computer_control = ComputerControlLayer()
         self.cognitive_engine = CognitiveEngine()
         self.upgrader = SelfUpgradationEngine()
         
-        # Internal State Machine
         self.state = 'INITIALIZING'
         
-        # Register Core OS Events
         self.event_bus.subscribe('SYSTEM_BOOT', self._handle_boot)
         self.event_bus.subscribe('TASK_CREATED', self._handle_task_creation)
 
     def _handle_boot(self, device_data: dict):
+        self.state = 'LOADING_UI_REPOSITORIES'
+        
+        # Auto-incorporate UI interactive designing repos so they are active immediately
+        self.upgrader.register_tool('interactive_ui_engine', ['render_dynamic_components', 'apply_fluid_animations'])
+        self.upgrader.register_tool('data_visualization', ['render_live_graphs'])
+        
         self.state = 'IDLE'
-        return {'status': 'Boot Complete', 'device_registry': device_data}
+        return {
+            'status': 'Boot Complete', 
+            'device_registry': device_data,
+            'active_background_modules': list(self.upgrader.installed_tools.keys())
+        }
 
     def _handle_task_creation(self, payload: dict):
         self.state = 'PLANNING'
-        # Log task to semantic memory (to be implemented)
         return {'status': 'Task Logged'}
 
     def execute_central_task(self, task_type: str, payload: dict, user_level: int = 1):
