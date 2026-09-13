@@ -1,0 +1,29 @@
+{
+  "name": "ai_workspace_core",
+  "version": "1.0.0",
+  "description": "Modular backend orchestration, vector memory, and autonomous tool engine.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MS2022Singh/ai_workspace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MS2022Singh/ai_workspace/issues"
+  },
+  "homepage": "https://github.com/MS2022Singh/ai_workspace#readme",
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
+  }
+}
