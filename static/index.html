@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>AI Workspace Command Center</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 40px; }
+        .container { max-width: 800px; margin: auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; margin-top: 0; }
+        .card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        input, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 15px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; }
+        button { background: #0284c7; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #0ea5e9; }
+        pre { background: #0f172a; padding: 15px; border-radius: 6px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>AI Workspace Command Center</h1>
+        <div class='card'>
+            <h3>Run Agent Workflow</h3>
+            <label>Task ID:</label>
+            <input type='text' id='taskId' value='task_ui_1'>
+            <label>Task Title:</label>
+            <input type='text' id='taskTitle' value='Build User Authentication API'>
+            <label>Expert Domain:</label>
+            <select id='domain'>
+                <option value='backend'>Backend Systems Expert</option>
+                <option value='frontend'>Frontend Developer Expert</option>
+                <option value='qa'>QA & Testing Specialist</option>
+                <option value='pm'>Project Manager Expert</option>
+            </select>
+            <label>Action Permission Tier:</label>
+            <select id='actionType'>
+                <option value='READ'>READ (Level 0)</option>
+                <option value='WRITE'>WRITE (Level 1)</option>
+                <option value='EXECUTE'>EXECUTE (Level 2 - Requires Approval)</option>
+                <option value='DELETE'>DELETE (Level 3 - Restricted)</option>
+            </select>
+            <button onclick='executeWorkflow()'>Dispatch Task</button>
+        </div>
+        <div class='card'>
+            <h3>Execution Output</h3>
+            <pre id='output'>Ready for command...</pre>
+        </div>
+    </div>
+    <script>
+        async function executeWorkflow() {
+            const payload = {
+                task_id: document.getElementById('taskId').value,
+                title: document.getElementById('taskTitle').value,
+                domain: document.getElementById('domain').value,
+                action_type: document.getElementById('actionType').value
+            };
+            const res = await fetch('/api/workflow', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
