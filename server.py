@@ -1,34 +1,42 @@
 from flask import Flask, jsonify, request, send_from_directory
-from app import CoreApplication
-from permissions import PermissionEngine
+from os_registry import WorkspaceOSEngine
+import os
 
 app = Flask(__name__, static_folder='static')
-core_app = CoreApplication(db_path='workspace_memory.db')
-permission_engine = PermissionEngine()
+
+# Initialize the Master OS Engine
+os_engine = WorkspaceOSEngine()
+
+# Simulate a System Boot Event when the server starts
+os_engine.event_bus.publish('SYSTEM_BOOT', {'os': 'Web/Desktop', 'arch': 'Command Center'})
 
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    if os.path.exists(os.path.join(app.static_folder, 'index.html')):
+        return send_from_directory(app.static_folder, 'index.html')
+    return '<h1>AI Workspace OS Command Center</h1><p>System is online and running securely.</p>'
 
 @app.route('/api/status', methods=['GET'])
-def status():
-    return jsonify({'status': 'operational', 'engine': 'AI Workspace Core OS'})
+def get_status():
+    return jsonify({
+        'status': 'online', 
+        'os_state': os_engine.state,
+        'message': 'All systems operational.'
+    })
 
-@app.route('/api/workflow', methods=['POST'])
-def run_workflow():
-    data = request.json or {}
-    task_id = data.get('task_id', 'task_default')
-    title = data.get('title', 'Automated Task')
-    domain = data.get('domain', 'frontend')
-    action = data.get('action_type', 'READ')
+@app.route('/api/execute', methods=['POST'])
+def execute_task():
+    data = request.json
+    if not data or 'task_type' not in data:
+        return jsonify({'error': 'Missing task_type payload'}), 400
     
-    perm = permission_engine.check_permission(action, user_authorized_level=1)
-    if not perm['allowed'] and perm.get('requires_approval'):
-        return jsonify({'status': 'blocked', 'permission': perm}), 403
-
-    result = core_app.run_workflow(task_id, title, domain)
-    return jsonify({'status': 'success', 'result': result})
+    task_type = data['task_type']
+    payload = data.get('payload', {})
+    user_level = data.get('user_level', 1)
+    
+    # Route all requests strictly through the central OS Engine
+    result = os_engine.execute_central_task(task_type, payload, user_level)
+    return jsonify(result)
 
 if __name__ == '__main__':
-    print('Starting AI Workspace Command Center UI on http://127.0.0.1:5000')
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
