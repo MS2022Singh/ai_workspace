@@ -15,7 +15,7 @@ def index():
 @app.route('/api/status', methods=['GET'])
 def get_status():
     return jsonify({
-        "status": "operational",
+        "status": "online",
         "os_state": os_engine.state,
         "active_modules": os_engine.upgrader.installed_tools,
         "message": "AI Workspace OS Kernel is running with active UI repositories."

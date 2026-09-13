@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AIWorkspace</string>
+    <string name="title_activity_main">AIWorkspace</string>
+    <string name="package_name">com.aiworkspace.app</string>
+    <string name="custom_url_scheme">com.aiworkspace.app</string>
+</resources>

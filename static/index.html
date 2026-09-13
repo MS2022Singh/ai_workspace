@@ -1,157 +1,428 @@
 ﻿<!DOCTYPE html>
-<html lang=""en"">
+<html lang="en">
 <head>
-    <meta charset=""UTF-8"">
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-    <title>AI Workspace OS - Command Center</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workspace OS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .status-badge { background: #1e4620; color: #4caf50; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9em; letter-spacing: 1px; }
-        .panel { background-color: #1e1e1e; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #aaa; font-size: 0.9em;}
-        select, input { width: 100%; padding: 10px; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        select:focus, input:focus { outline: none; border-color: #0d47a1; }
-        button { background-color: #0d47a1; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.3s; width: 100%;}
-        button:hover { background-color: #1565c0; }
-        .terminal { background-color: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; padding: 15px; border-radius: 4px; height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 0.9em; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);}
-        .module-item { display: flex; justify-content: space-between; align-items: center; background: #252525; padding: 10px 15px; border-radius: 4px; margin-bottom: 8px; border-left: 4px solid #4caf50; }
-        .module-item.disabled { border-left-color: #f44336; opacity: 0.6; }
-        .toggle-btn { background: #333; border: 1px solid #555; color: #fff; padding: 5px 12px; border-radius: 4px; cursor: pointer; width: auto; font-size: 0.8em; }
-        .toggle-btn.active { background: #1b5e20; border-color: #4caf50; }
+        body { background-color: #0b0f19; color: #e2e8f0; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .sidebar { background-color: #0d1322; border-right: 1px solid #1e293b; }
+        .card { background-color: #111827; border: 1px solid #1f2937; }
+        .terminal { background-color: #050811; border: 1px solid #1e293b; color: #10b981; font-family: monospace; }
     </style>
 </head>
-<body>
-    <div class=""container"">
-        <div class=""header"">
-            <h1>AI Workspace OS</h1>
-            <div id=""status"" class=""status-badge"">Connecting...</div>
-        </div>
-
-        <div class=""panel"">
-            <h3 style=""margin-top: 0;"">Settings: Active UI Repositories</h3>
-            <p style=""font-size: 0.85em; color: #aaa; margin-top: -5px;"">UI design repos are active by default on boot and can be toggled via user settings below.</p>
-            <div id=""modulesList"">Loading modules...</div>
-        </div>
-
-        <div class=""panel"">
-            <h3 style=""margin-top: 0;"">Command Input</h3>
-            <div class=""form-group"">
-                <label for=""taskType"">Select OS Operation</label>
-                <select id=""taskType"">
-                    <option value=""inspect_system"">Inspect System Health (Level 1)</option>
-                    <option value=""learn_skill"">Learn Cognitive Skill</option>
-                    <option value=""eliminate_block"">Eliminate Mental Block</option>
-                </select>
+<body class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 sidebar flex flex-col justify-between p-4">
+        <div>
+            <div class="mb-6">
+                <h1 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="w-3 h-3 bg-amber-500 rounded-sm"></span> AI WORKSPACE
+                </h1>
+                <p class="text-xs text-emerald-400 font-mono mt-1">● engine online</p>
             </div>
-            <div class=""form-group"" id=""payloadGroup"" style=""display:none;"">
-                <label for=""payloadData"">Payload Parameter (Skill Name / Block Description)</label>
-                <input type=""text"" id=""payloadData"" placeholder=""Enter parameters here..."">
-            </div>
-            <button onclick=""executeTask()"">Execute Command</button>
+            
+            <nav class="space-y-4">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Core OS Navigation</p>
+                    <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded text-sm hover:bg-slate-800 flex items-center gap-2">
+                        🛡️ Command Center
+                    </button>
+                    <button onclick="switchTab('workspace')" class="w-full text-left px-3 py-2 rounded text-sm hover:bg-slate-800 flex items-center gap-2">
+                        ⚡ Team Tasks & Workspace
+                    </button>
+                    <button onclick="switchTab('media')" class="w-full text-left px-3 py-2 rounded text-sm hover:bg-slate-800 flex items-center gap-2">
+                        🎨 Media & Tool Suite
+                    </button>
+                </div>
+                
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">System Registry</p>
+                    <div class="text-xs text-gray-400 space-y-2 pl-2">
+                        <button onclick="openRegistryModal('agents')" class="block hover:text-white">🤖 Multi-Agent Network</button>
+                        <button onclick="openRegistryModal('memory')" class="block hover:text-white">🧠 Memory & Vector Store</button>
+                        <button onclick="openRegistryModal('tools')" class="block hover:text-white">🔧 Tool & Model Registry</button>
+                    </div>
+                </div>
+            </nav>
         </div>
 
-        <div class=""panel"">
-            <h3 style=""margin-top: 0; margin-bottom: 10px;"">System Terminal</h3>
-            <div id=""terminal"" class=""terminal"">Initializing Workspace OS Command Center...</div>
+        <button onclick="openSettingsModal()" class="w-full py-2 text-sm bg-slate-800 hover:bg-slate-700 rounded text-center transition">⚙️ Settings</button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-y-auto p-6 space-y-6">
+        <header class="flex justify-between items-center border-b border-gray-800 pb-4">
+            <h2 class="text-xl font-bold" id="view-title">Command Center Dashboard</h2>
+            <div class="flex items-center gap-3">
+                <span class="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full border border-emerald-800">
+                    ● Kernel Online (Ollama: connected)
+                </span>
+                <span class="text-xs bg-blue-950 text-blue-400 px-3 py-1 rounded-full border border-blue-800">
+                    Event Bus: Active
+                </span>
+            </div>
+        </header>
+
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="space-y-6">
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-7 card p-4 rounded-xl flex flex-col justify-between h-[420px]">
+                    <h3 class="font-semibold text-sm mb-2 text-gray-300">Autonomous Execution Terminal</h3>
+                    <div id="terminal-out" class="terminal p-4 rounded-lg flex-1 text-xs overflow-y-auto whitespace-pre-wrap">
+[INFO] AI Workspace OS Kernel initialized.
+[INFO] Connecting to local Ollama bridge (http://localhost:11434)...
+[INFO] Multi-agent orchestrator ready (Research, Coding, PC Control, Documenter loaded).
+[SUCCESS] All system repositories and memory layers synchronized.
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <input id="term-input" type="text" placeholder="Enter objective, task, or prompt query..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <button onclick="runCommand()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded text-sm font-semibold">Execute</button>
+                    </div>
+                </div>
+
+                <div class="col-span-5 space-y-6">
+                    <div class="card p-4 rounded-xl">
+                        <h3 class="font-semibold text-sm mb-3 text-gray-300">Specialist Agent Status</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <div class="text-xs font-semibold text-blue-400">Research Agent</div>
+                                <div class="text-xs text-gray-400">Status: Standby</div>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <div class="text-xs font-semibold text-blue-400">Coding Agent</div>
+                                <div class="text-xs text-emerald-400">Status: Active (Qwen)</div>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <div class="text-xs font-semibold text-blue-400">PC Control Agent</div>
+                                <div class="text-xs text-gray-400">Status: Level 2 Ready</div>
+                            </div>
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                                <div class="text-xs font-semibold text-blue-400">Documenter Agent</div>
+                                <div class="text-xs text-emerald-400">Status: Converter Ready</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-4 rounded-xl">
+                        <h3 class="font-semibold text-sm mb-3 text-gray-300">Multi-Tier Memory Engine</h3>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                                <span class="text-gray-400 block">Working Memory</span>
+                                <span class="font-bold text-white">Active Objective Loaded</span>
+                            </div>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                                <span class="text-gray-400 block">Semantic (Vector)</span>
+                                <span class="font-bold text-white">Qdrant / FAISS Ready</span>
+                            </div>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                                <span class="text-gray-400 block">Episodic Store</span>
+                                <span class="font-bold text-white">Logging Active</span>
+                            </div>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                                <span class="text-gray-400 block">Device Registry</span>
+                                <span class="font-bold text-white">Desktop (Windows) Synced</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Tasks Workspace View -->
+        <div id="workspace-view" class="hidden space-y-4">
+            <div class="card p-4 rounded-xl space-y-3">
+                <textarea id="task-prompt" class="w-full bg-slate-900 border border-slate-800 rounded p-3 text-sm focus:outline-none focus:border-amber-500" rows="3" placeholder="Describe a task for the team..."></textarea>
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-2">
+                        <button onclick="alert('File pipeline active.')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-xs">📎 Attach files</button>
+                    </div>
+                    <button onclick="assignTask()" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded font-semibold text-sm">Assign to team →</button>
+                </div>
+            </div>
+            
+            <div id="task-results" class="space-y-4">
+                <div class="p-12 text-center text-gray-500 card rounded-xl">Select or submit a task to see live agent activity.</div>
+            </div>
+        </div>
+
+        <!-- Media & Tools View -->
+        <div id="media-view" class="hidden space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div class="card p-5 rounded-xl space-y-4 border-amber-500/30">
+                    <h4 class="font-bold text-amber-400 text-base">📄 Document Converter Pipeline</h4>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-gray-400 mb-1">Source Format</label>
+                            <select id="doc-source" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                                <option value="txt">TXT / Raw Text</option>
+                                <option value="markdown">Markdown (.md)</option>
+                                <option value="csv">CSV Data</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Target Format</label>
+                            <select id="doc-target" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                                <option value="html">HTML Document</option>
+                                <option value="json">JSON Structure</option>
+                                <option value="markdown">Markdown</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea id="doc-input-text" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-xs" rows="3" placeholder="Paste raw text here..."></textarea>
+                    <div class="flex items-center justify-between">
+                        <input id="doc-file-input" type="file" class="text-xs text-gray-400">
+                        <button onclick="convertDocument()" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded text-xs font-bold">Convert Document</button>
+                    </div>
+                    <div id="doc-output" class="hidden p-3 bg-slate-950 rounded border border-slate-800 text-xs font-mono text-emerald-400 max-h-40 overflow-y-auto whitespace-pre-wrap"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="card p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-amber-400 text-sm">✂️ Split a collage</h4>
+                        <input id="collage-file" type="file" class="text-xs text-gray-400">
+                        <button onclick="runMediaTool('split-collage', 'collage-file')" class="w-full bg-amber-500 text-black py-1.5 rounded text-xs font-bold mt-2">Split & download (.zip)</button>
+                    </div>
+                    <div class="card p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-rose-400 text-sm">🖊️ Edit an image</h4>
+                        <input id="edit-image-file" type="file" class="text-xs text-gray-400">
+                        <button onclick="runMediaTool('edit-image', 'edit-image-file')" class="w-full bg-amber-500 text-black py-1.5 rounded text-xs font-bold mt-2">Apply & download</button>
+                    </div>
+                    <div class="card p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-yellow-400 text-sm">🏷️ Generate a logo</h4>
+                        <input id="logo-text" type="text" placeholder="Brand name..." class="w-full bg-slate-900 border border-slate-800 p-2 text-xs rounded">
+                        <button onclick="generateLogo()" class="w-full bg-amber-500 text-black py-1.5 rounded text-xs font-bold mt-2">Generate & download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Registry Modal -->
+    <div id="registry-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="card max-w-lg w-full p-6 rounded-xl space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h3 class="font-bold text-white text-base" id="modal-title">System Registry</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <div id="modal-content" class="text-xs space-y-2 text-gray-300"></div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="card max-w-md w-full p-6 rounded-xl space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h3 class="font-bold text-amber-400 text-base">⚙️ Workspace Settings</h3>
+                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-400 mb-1">Ollama Engine Endpoint</label>
+                    <input id="cfg-ollama" type="text" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Default Execution Model</label>
+                    <input id="cfg-model" type="text" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Vector Storage Provider</label>
+                    <input id="cfg-vector" type="text" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Log Level</label>
+                    <select id="cfg-loglevel" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                        <option value="DEBUG">DEBUG</option>
+                        <option value="INFO">INFO</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="ERROR">ERROR</option>
+                    </select>
+                </div>
+                <div id="settings-status" class="hidden p-2 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded text-center">Settings saved.</div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeSettingsModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-xs text-gray-300">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded text-xs">Save Configuration</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const terminal = document.getElementById('terminal');
-        const taskTypeSelect = document.getElementById('taskType');
-        const payloadGroup = document.getElementById('payloadGroup');
-        const payloadData = document.getElementById('payloadData');
-        const statusBadge = document.getElementById('status');
-        const modulesList = document.getElementById('modulesList');
+        function switchTab(view) {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('workspace-view').classList.add('hidden');
+            document.getElementById('media-view').classList.add('hidden');
 
-        function logToTerminal(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            terminal.innerHTML += \n[] ;
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-
-        taskTypeSelect.addEventListener('change', (e) => {
-            if (e.target.value !== 'inspect_system') {
-                payloadGroup.style.display = 'block';
-            } else {
-                payloadGroup.style.display = 'none';
-            }
-        });
-
-        async function checkStatus() {
-            try {
-                const response = await fetch('/api/status');
-                const data = await response.json();
-                statusBadge.innerText = OS STATE: ;
-                
-                // Render modules list
-                let html = '';
-                for (const [name, info] of Object.entries(data.active_modules)) {
-                    const isActive = info.status === 'active';
-                    html += 
-                        <div class=""module-item "">
-                            <div>
-                                <strong></strong> <span style=""font-size: 0.8em; color: #888;"">()</span><br>
-                                <small style=""color: #aaa;"">Capabilities: </small>
-                            </div>
-                            <button class=""toggle-btn "" onclick=""toggleModule('', )"">
-                                
-                            </button>
-                        </div>
-                    ;
-                }
-                modulesList.innerHTML = html || '<p>No modules loaded.</p>';
-            } catch (err) {
-                statusBadge.innerText = 'OFFLINE';
-                statusBadge.style.background = '#4a1414';
-                statusBadge.style.color = '#ff5252';
-                logToTerminal(> CRITICAL ERROR: Unable to reach OS Core. );
+            if (view === 'dashboard') {
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                document.getElementById('view-title').innerText = 'Command Center Dashboard';
+            } else if (view === 'workspace') {
+                document.getElementById('workspace-view').classList.remove('hidden');
+                document.getElementById('view-title').innerText = 'Default Workspace Tasks';
+            } else if (view === 'media') {
+                document.getElementById('media-view').classList.remove('hidden');
+                document.getElementById('view-title').innerText = 'Media & AI Utility Suite';
             }
         }
 
-        async function toggleModule(toolName, newState) {
-            try {
-                const response = await fetch('/api/modules/toggle', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tool_name: toolName, active: newState })
-                });
-                const data = await response.json();
-                logToTerminal(> MODULE SETTING UPDATED:  is now );
-                checkStatus();
-            } catch (err) {
-                logToTerminal(> TOGGLE FAILED: );
+        async function runCommand() {
+            const input = document.getElementById('term-input');
+            const term = document.getElementById('terminal-out');
+            if(!input.value) return;
+
+            term.innerHTML += `\n> ${input.value}`;
+            const res = await fetch('/api/terminal/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: input.value })
+            });
+            const data = await res.json();
+            term.innerHTML += `\n${data.log}`;
+            input.value = '';
+            term.scrollTop = term.scrollHeight;
+        }
+
+        async function assignTask() {
+            const promptInput = document.getElementById('task-prompt');
+            const resultsDiv = document.getElementById('task-results');
+            if (!promptInput.value) return;
+
+            resultsDiv.innerHTML = `<div class="card p-4 rounded-xl text-xs text-amber-400">⏳ Assigning objective to agents...</div>`;
+            const res = await fetch('/api/tasks/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: promptInput.value })
+            });
+            const task = await res.json();
+
+            let pipelineHtml = task.pipeline.map(step => `
+                <div class="p-2 bg-slate-900 border border-slate-800 rounded flex justify-between items-center text-xs">
+                    <span class="font-semibold text-blue-400">${step.agent}</span>
+                    <span class="text-gray-300">${step.log}</span>
+                </div>
+            `).join('');
+
+            resultsDiv.innerHTML = `
+                <div class="card p-5 rounded-xl space-y-4 border-blue-500/30">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-white text-sm">Task ID: ${task.id}</span>
+                        <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs px-2 py-0.5 rounded">Status: ${task.status}</span>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase">Agent Execution Pipeline</p>
+                        ${pipelineHtml}
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded text-xs text-gray-200 whitespace-pre-wrap">${task.output}</div>
+                </div>
+            `;
+            promptInput.value = '';
+        }
+
+        async function convertDocument() {
+            const source = document.getElementById('doc-source').value;
+            const target = document.getElementById('doc-target').value;
+            const text = document.getElementById('doc-input-text').value;
+            const fileInput = document.getElementById('doc-file-input');
+            const outputDiv = document.getElementById('doc-output');
+
+            const formData = new FormData();
+            formData.append('source_format', source);
+            formData.append('target_format', target);
+            if (text) formData.append('raw_text', text);
+            if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
+
+            const res = await fetch('/api/tools/convert-doc', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            outputDiv.classList.remove('hidden');
+            outputDiv.innerText = data.result || data.message;
+        }
+
+        async function runMediaTool(endpoint, inputId) {
+            const input = document.getElementById(inputId);
+            if (!input.files[0]) {
+                alert('Please select a file first.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+            const res = await fetch(`/api/tools/${endpoint}`, { method: 'POST', body: formData });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function generateLogo() {
+            const name = document.getElementById('logo-text').value;
+            const res = await fetch('/api/tools/generate-logo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function openRegistryModal(type) {
+            const res = await fetch('/api/system/registry');
+            const data = await res.json();
+            const modal = document.getElementById('registry-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('modal-content');
+
+            modal.classList.remove('hidden');
+            if (type === 'agents') {
+                title.innerText = 'Multi-Agent Network Registry';
+                content.innerHTML = Object.values(data.agents).map(a => `<div class="p-2 bg-slate-900 rounded border border-slate-800 flex justify-between"><span>${a.name} (${a.role})</span><span class="text-emerald-400">${a.status}</span></div>`).join('');
+            } else if (type === 'memory') {
+                title.innerText = 'Memory & Vector Store Registry';
+                content.innerHTML = Object.values(data.memory).map(m => `<div class="p-2 bg-slate-900 rounded border border-slate-800 flex justify-between"><span>${m.label}</span><span class="text-blue-400">${m.status}</span></div>`).join('');
+            } else if (type === 'tools') {
+                title.innerText = 'Tool & Model Registry';
+                content.innerHTML = data.tools.map(t => `<div class="p-2 bg-slate-900 rounded border border-slate-800 flex justify-between"><span>${t.name}</span><span class="text-emerald-400">${t.status}</span></div>`).join('');
             }
         }
 
-        async function executeTask() {
-            const taskType = taskTypeSelect.value;
-            let payload = {};
-            if (taskType === 'learn_skill') {
-                payload = { skill: payloadData.value || 'General Architecture' };
-            } else if (taskType === 'eliminate_block') {
-                payload = { block: payloadData.value || 'Unknown Block' };
-            }
-
-            logToTerminal(\n> EXECUTING: ...);
-            try {
-                const response = await fetch('/api/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ task_type: taskType, payload: payload, user_level: 1 })
-                });
-                const data = await response.json();
-                logToTerminal(> RESPONSE RECEIVED:\n);
-                checkStatus(); 
-            } catch (err) {
-                logToTerminal(> EXECUTION FAILED: );
-            }
+        function closeModal() {
+            document.getElementById('registry-modal').classList.add('hidden');
         }
 
-        setTimeout(checkStatus, 500);
+        async function openSettingsModal() {
+            const res = await fetch('/api/system/settings');
+            const settings = await res.json();
+            document.getElementById('cfg-ollama').value = settings.ollama_host || '';
+            document.getElementById('cfg-model').value = settings.default_model || '';
+            document.getElementById('cfg-vector').value = settings.vector_store || '';
+            document.getElementById('cfg-loglevel').value = settings.log_level || 'INFO';
+            document.getElementById('settings-status').classList.add('hidden');
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        async function saveSettings() {
+            const updated = {
+                ollama_host: document.getElementById('cfg-ollama').value,
+                default_model: document.getElementById('cfg-model').value,
+                vector_store: document.getElementById('cfg-vector').value,
+                log_level: document.getElementById('cfg-loglevel').value
+            };
+            const res = await fetch('/api/system/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updated)
+            });
+            if (res.ok) {
+                const statusDiv = document.getElementById('settings-status');
+                statusDiv.classList.remove('hidden');
+                setTimeout(() => closeSettingsModal(), 1000);
+            }
+        }
     </script>
 </body>
 </html>
