@@ -1,15 +1,9 @@
 import unittest
-import os
 from memory_engine import MemoryEngine
 
 class TestMemoryEngine(unittest.TestCase):
     def setUp(self):
-        self.db_file = 'test_memory.db'
-        self.memory = MemoryEngine(db_path=self.db_file)
-
-    def tearDown(self):
-        if os.path.exists(self.db_file):
-            os.remove(self.db_file)
+        self.memory = MemoryEngine(db_path=':memory:')
 
     def test_set_and_get(self):
         self.memory.set_memory('user_intent', 'Finalize desktop AI OS', 'project')
