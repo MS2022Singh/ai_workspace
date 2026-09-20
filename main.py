@@ -1,27 +1,45 @@
+import os
+import subprocess
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
-from core.toggle_handler import ToolController
-from core.executor import CommandExecutor
+from fastapi.responses import JSONResponse
 
 app = FastAPI(title="AI Workspace OS")
-controller = ToolController()
-executor = CommandExecutor()
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-@app.get("/", response_class=HTMLResponse)
-async def serve_ui():
-    with open("static/index.html", "r", encoding="utf-8") as f:
-        return f.read()
-
-@app.post("/api/toggle")
-async def toggle_tool(request: Request):
-    data = await request.json()
-    result = controller.set_tool_state(data.get("tool"), data.get("enabled"))
-    return result
 
 @app.post("/api/execute")
 async def execute_command(request: Request):
     data = await request.json()
-    return executor.run(data.get("command", ""))
+    cmd = data.get("command", "").strip()
+    if not cmd:
+        return JSONResponse({"output": "No command provided."})
+    
+    if cmd.startswith("/ai "):
+        query = cmd[4:]
+        return JSONResponse({"output": f"[AI ORCHESTRATOR]: Processing request -> '{query}'"})
+    elif cmd.startswith("/agent "):
+        agent_req = cmd[7:]
+        return JSONResponse({"output": f"[AGENT ROUTER]: Task dispatched to agent -> '{agent_req}'"})
+    else:
+        try:
+            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=10)
+            out = res.stdout if res.stdout else res.stderr
+            return JSONResponse({"output": out if out else "Command executed."})
+        except Exception as e:
+            return JSONResponse({"output": f"Execution error: {str(e)}"})
+
+@app.post("/api/toggle")
+async def toggle_tool(request: Request):
+    data = await request.json()
+    tool = data.get("tool")
+    enabled = data.get("enabled")
+    return JSONResponse({"status": "success", "tool": tool, "enabled": enabled})
+
+# Mount static directory for frontend Command Center UI
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+if __name__ == "__main__":
+    print("\n[+] Server active at http://127.0.0.1:8000")
+    print("[+] Press Ctrl+C in this terminal to stop the server.\n")
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
