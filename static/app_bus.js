@@ -1,71 +1,41 @@
-const categorizedTools = {
-    "No-Code & Workflows": ["ToolJet", "n8n", "AppFlowy"],
-    "Agents & Browsing": ["browser-use", "OpenHands", "AutoGPT", "CrewAI"],
-    "Local LLMs & Inference": ["Ollama", "vLLM", "SGLang", "LiteLLM", "DeepSeek", "Qwen 2.5"],
-    "Voice & Multimodal": ["Whisper", "Piper TTS", "Stirling PDF"],
-    "RAG & Vectors": ["LangChain", "LlamaIndex", "ChromaDB", "Qdrant", "FAISS", "Unstructured"],
-    "Core Infrastructure": ["FastAPI", "Docker Engine", "Kubernetes", "Git Automation", "SQLite Store", "PyPubSub Engine"],
-    "App Packaging": ["Tauri Shell", "Electron Builder", "Capacitor", "PyInstaller"]
-};
 
-document.addEventListener("DOMContentLoaded", function() {
-    const sidebar = document.getElementById("tool-toggles");
-    const matrix = document.getElementById("matrix-grid");
-    let totalTools = 0;
-
-    Object.entries(categorizedTools).forEach(([category, tools]) => {
-        // Build Tool Matrix Cards
-        const card = document.createElement("div");
-        card.className = "bg-slate-900 border border-slate-800 p-4 rounded";
-        card.innerHTML = `<h3 class="text-sky-400 font-bold border-b border-slate-700 pb-2 mb-3">${category}</h3>`;
-        
-        const list = document.createElement("ul");
-        list.className = "text-sm text-slate-300 space-y-1";
-        
-        tools.forEach((tool) => {
-            totalTools++;
-            // Matrix Listing
-            list.innerHTML += `<li><span class="text-emerald-500 mr-2">?</span>${tool}</li>`;
-            
-            // Sidebar Toggle
-            if (sidebar && totalTools <= 15) { // Show first 15 in sidebar for brevity
-                const div = document.createElement("div");
-                div.className = "flex justify-between items-center text-xs p-2 bg-slate-800/50 rounded border border-slate-700/50";
-                div.innerHTML = `<span class="text-slate-300 font-medium">${tool}</span>
-                                 <input type="checkbox" checked onchange="toggleTool('${tool}', this.checked)" class="accent-sky-500 cursor-pointer">`;
-                sidebar.appendChild(div);
-            }
-        });
-        card.appendChild(list);
-        if (matrix) matrix.appendChild(card);
-    });
-
-    document.getElementById("dash-tool-count").innerText = `${totalTools} Loaded`;
-    
-    // Keyboard shortcuts
-    document.addEventListener("keydown", function(e) {
-        if (e.altKey && e.key === "1") { switchTab("dashboard"); e.preventDefault(); }
-        if (e.altKey && e.key === "2") { switchTab("matrix"); e.preventDefault(); }
-        if (e.altKey && e.key === "3") { switchTab("terminal"); e.preventDefault(); }
-        if (e.key === "Enter" && document.activeElement.id === "cmd-input") {
-            document.getElementById("btn-execute").click();
-            e.preventDefault();
-        }
-    });
-});
-
-function switchTab(tabName) {
-    document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
-    document.getElementById("view-" + tabName).classList.add("active");
-    
-    document.querySelectorAll("button[id^='tab-']").forEach(btn => btn.classList.remove("active-tab"));
-    document.getElementById("tab-" + tabName).classList.add("active-tab");
+// Central Event Bus Logic
+function firePrompt(promptName) {
+    const termIn = document.getElementById('term-in');
+    termIn.value = `/ai Execute macro: ${promptName}`;
+    termIn.focus();
 }
 
-function toggleTool(toolName, isEnabled) {
-    fetch("/api/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tool: toolName, enabled: isEnabled })
-    }).catch(err => console.log("Backend offline."));
+function insertPrompt(text) {
+    const termIn = document.getElementById('term-in');
+    termIn.value = text;
+    termIn.focus();
+}
+
+async function ingestRepo() {
+    const url = document.getElementById('repo-url').value;
+    if(!url) return;
+    
+    document.getElementById('term-out').innerHTML += `<div><span style="color:var(--warning)">[EVENT]</span> Ingestion started for: ${url}</div>`;
+    document.getElementById('term-out').innerHTML += `<div><span style="color:var(--accent)">[SYS]</span> Validating repo, generating Python wrapper, and mapping to Event Bus...</div>`;
+    
+    // Simulate backend ingestion call
+    setTimeout(() => {
+        document.getElementById('term-out').innerHTML += `<div><span style="color:var(--success)">[SUCCESS]</span> Repo incorporated securely into Workspace OS.</div>`;
+        document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
+        document.getElementById('repo-url').value = '';
+    }, 2000);
+}
+
+async function toggleTool(tool, isEnabled) {
+    const status = isEnabled ? "GRANTED" : "REVOKED";
+    const color = isEnabled ? "var(--success)" : "var(--danger)";
+    document.getElementById('term-out').innerHTML += `<div><span style="color:${color}">[PERMISSION ENGINE]</span> Access ${status} for ${tool}.</div>`;
+    document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
+    
+    await fetch('/api/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tool: tool, enabled: isEnabled })
+    });
 }

@@ -1,43 +1,39 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const btn = document.getElementById("btn-execute");
-    const input = document.getElementById("cmd-input");
-    const outputView = document.getElementById("terminal-output");
 
-    btn.addEventListener("click", async () => {
-        const cmd = input.value.trim();
-        if (!cmd) return;
-        
-        // Auto-switch to terminal tab on execution
-        switchTab('terminal');
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('term-in');
+    const output = document.getElementById('term-out');
 
-        const cmdLine = document.createElement("div");
-        cmdLine.className = "text-sky-400 font-mono text-sm mt-3 font-bold";
-        cmdLine.innerText = "C:\\AI_Workspace> " + cmd;
-        outputView.appendChild(cmdLine);
-        
-        input.value = ""; 
-        outputView.scrollTop = outputView.scrollHeight;
-        
-        try {
-            const res = await fetch("/api/execute", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ command: cmd })
-            });
-            const data = await res.json();
+    // Global Keyboard Shortcut: Focus Terminal on Enter if not focused
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && document.activeElement !== input && document.activeElement.tagName !== 'BUTTON') {
+            input.focus();
+        }
+    });
+
+    input.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+            const cmd = input.value.trim();
+            if (!cmd) return;
             
-            const outLine = document.createElement("div");
-            outLine.className = data.status === "success" 
-                ? "text-slate-300 font-mono text-sm whitespace-pre-wrap mt-1" 
-                : "text-red-400 font-mono text-sm whitespace-pre-wrap mt-1";
-            outLine.innerText = data.output || "[Process completed]";
-            outputView.appendChild(outLine);
-            outputView.scrollTop = outputView.scrollHeight;
-        } catch (err) {
-            const errLine = document.createElement("div");
-            errLine.className = "text-red-500 font-mono text-sm mt-1";
-            errLine.innerText = "Error: Could not reach execution server.";
-            outputView.appendChild(errLine);
+            output.innerHTML += `<div><span style="color:#fff">> ${cmd}</span></div>`;
+            input.value = '';
+            
+            try {
+                const res = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: cmd })
+                });
+                const data = await res.json();
+                
+                let outText = data.output || "No output generated.";
+                // Format line breaks for HTML
+                outText = outText.replace(/\n/g, '<br>');
+                output.innerHTML += `<div style="color:var(--text); padding-left:15px; border-left:2px solid var(--border); margin:5px 0;">${outText}</div>`;
+            } catch (err) {
+                output.innerHTML += `<div style="color:var(--danger)">System Error: ${err.message}</div>`;
+            }
+            output.scrollTop = output.scrollHeight;
         }
     });
 });
