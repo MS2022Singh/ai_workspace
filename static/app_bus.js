@@ -1,41 +1,35 @@
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("[EVENT BUS] Initialized UI event bindings.");
 
-// Central Event Bus Logic
-function firePrompt(promptName) {
-    const termIn = document.getElementById('term-in');
-    termIn.value = `/ai Execute macro: ${promptName}`;
-    termIn.focus();
-}
+    // Ingest Button Binding
+    const ingestBtn = document.querySelector('.Ingest\\ &\\ Merge, button:contains("Ingest"), #ingest-btn') || document.querySelectorAll('button')[0];
+    const ingestInput = document.querySelector('input[placeholder*="Paste GitHub URL"]');
 
-function insertPrompt(text) {
-    const termIn = document.getElementById('term-in');
-    termIn.value = text;
-    termIn.focus();
-}
+    // Cognitive Framework Quick Prompt Buttons
+    const cognitiveBtns = document.querySelectorAll('.COGNITIVE\\ FRAMEWORKS button, button');
 
-async function ingestRepo() {
-    const url = document.getElementById('repo-url').value;
-    if(!url) return;
-    
-    document.getElementById('term-out').innerHTML += `<div><span style="color:var(--warning)">[EVENT]</span> Ingestion started for: ${url}</div>`;
-    document.getElementById('term-out').innerHTML += `<div><span style="color:var(--accent)">[SYS]</span> Validating repo, generating Python wrapper, and mapping to Event Bus...</div>`;
-    
-    // Simulate backend ingestion call
-    setTimeout(() => {
-        document.getElementById('term-out').innerHTML += `<div><span style="color:var(--success)">[SUCCESS]</span> Repo incorporated securely into Workspace OS.</div>`;
-        document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
-        document.getElementById('repo-url').value = '';
-    }, 2000);
-}
+    cognitiveBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const text = btn.innerText.toLowerCase();
+            let key = 'genius';
+            if (text.includes('master')) key = 'master';
+            if (text.includes('mental blocks')) key = 'blocks';
+            if (text.includes('clarity')) key = 'clarity';
+            if (text.includes('phd')) key = 'phd';
+            if (text.includes('framework')) key = 'framework';
 
-async function toggleTool(tool, isEnabled) {
-    const status = isEnabled ? "GRANTED" : "REVOKED";
-    const color = isEnabled ? "var(--success)" : "var(--danger)";
-    document.getElementById('term-out').innerHTML += `<div><span style="color:${color}">[PERMISSION ENGINE]</span> Access ${status} for ${tool}.</div>`;
-    document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
-    
-    await fetch('/api/toggle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tool: tool, enabled: isEnabled })
+            const termInput = document.querySelector('input[placeholder*="Enter cmd"]');
+            const topic = termInput ? termInput.value : '';
+
+            const res = await fetch('/api/cognitive', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ framework: key, topic: topic })
+            });
+            const data = await res.json();
+            
+            const termOutput = document.querySelector('.EVENT\\ BUS\\ \\/\\ I-O\\ TERMINAL, pre, code, .terminal-body') || document.body;
+            console.log(data);
+        });
     });
-}
+});
