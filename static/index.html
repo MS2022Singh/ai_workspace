@@ -2,95 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Workspace OS - Command Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workspace OS</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <div class="top-bar">
-        <div><strong>AI WORKSPACE OS</strong> | Internal Event Bus: <span style="color:var(--success)">ONLINE</span> | Bug-Detector: <span style="color:var(--success)">ACTIVE</span></div>
-        <div class="floating-mic">
-            <div class="mic-pulse"></div>
-            Listening (Voice Mode)
+    <header class="top-nav">
+        <div class="brand">
+            <span class="title">AI WORKSPACE OS</span>
+            <span class="badge online">Event Bus: ONLINE</span>
+            <span class="badge active">Bug-Detector: ACTIVE</span>
         </div>
-    </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('chat-tab')">Command Center</button>
+            <button class="tab-btn" onclick="switchTab('converter-tab')">Converter & Compressor</button>
+            <button class="tab-btn" onclick="switchTab('editor-tab')">Media/Doc Editor</button>
+            <button class="tab-btn" onclick="switchTab('tools-tab')">Tool Matrix (100+)</button>
+            <button class="tab-btn" onclick="switchTab('devices-tab')">Devices & Permissions</button>
+            <button class="tab-btn" onclick="switchTab('memory-tab')">Project Memory</button>
+        </div>
+        <button class="voice-btn">Listening (Voice Mode)</button>
+    </header>
 
-    <div class="core-layout">
-        <!-- LEFT: Orchestrator & Memory -->
-        <aside class="sidebar">
-            <div class="section-title">Orchestrator Layers</div>
-            <div class="node-item active">[Level 0] Read / Observe</div>
-            <div class="node-item">[Level 1] Low-Risk Actions</div>
-            <div class="node-item">[Level 2] Controlled Mods</div>
-            <div class="node-item" style="border-color:var(--danger)">[Level 3] High-Risk (Locked)</div>
-            
-            <div class="section-title" style="margin-top:20px;">Specialist Agents</div>
-            <div class="node-item" onclick="insertPrompt('/agent research ')">Research Agent</div>
-            <div class="node-item" onclick="insertPrompt('/agent coding ')">Coding Agent</div>
-            <div class="node-item" onclick="insertPrompt('/agent pc ')">PC / OS Agent</div>
-            <div class="node-item" onclick="insertPrompt('/agent business ')">Business Agent</div>
-            <div class="node-item" onclick="insertPrompt('/agent audio ')">Audio Agent</div>
+    <main class="content-container">
+        <!-- TAB 1: COMMAND CENTER -->
+        <section id="chat-tab" class="workspace-tab active">
+            <div class="layout-grid">
+                <div class="sidebar">
+                    <h3>Orchestrator Layers</h3>
+                    <div class="layer-item active">[Level 0] Read / Observe</div>
+                    <div class="layer-item">[Level 1] Low-Risk Actions</div>
+                    <div class="layer-item">[Level 2] Controlled Mods</div>
+                    <div class="layer-item locked">[Level 3] High-Risk (Locked)</div>
 
-            <div class="section-title" style="margin-top:20px;">Memory Engine</div>
-            <div class="node-item">Structured (SQLite)</div>
-            <div class="node-item">Vector (Qdrant)</div>
-            <div class="node-item">Event / Timeline</div>
-        </aside>
+                    <h3>Specialist Agents</h3>
+                    <select id="agent-selector" class="select-input">
+                        <option value="Orchestrator">Orchestrator Agent</option>
+                        <option value="Research">Research Agent</option>
+                        <option value="Coding">Coding Agent</option>
+                        <option value="PC/OS">PC / OS Agent</option>
+                        <option value="Business">Business Agent</option>
+                        <option value="Audio">Audio Agent</option>
+                    </select>
 
-        <!-- CENTER: Workspace & Terminal -->
-        <main class="center-workspace">
-            <div class="ingest-box">
-                <span style="color:var(--warning); line-height:35px;"><strong>Auto-Incorporate Repo/URL:</strong></span>
-                <input type="text" id="repo-url" placeholder="Paste GitHub URL or Tool Link here...">
-                <button class="btn" onclick="ingestRepo()">Ingest & Merge</button>
-            </div>
+                    <div class="ingest-box">
+                        <h3>Auto-Incorporate Repo</h3>
+                        <input type="text" id="repo-url-input" placeholder="Paste GitHub URL...">
+                        <button onclick="ingestRepo()" class="action-btn">Ingest & Merge</button>
+                    </div>
+                </div>
 
-            <div class="section-title">Cognitive Frameworks (Quick Prompts)</div>
-            <div class="prompts-grid">
-                <button class="prompt-btn" onclick="firePrompt('Understand anything like a genius')">Understand as Genius</button>
-                <button class="prompt-btn" onclick="firePrompt('Master any skill for free')">Master Skill (20+ yrs)</button>
-                <button class="prompt-btn" onclick="firePrompt('Fix mental blocks')">Fix Mental Blocks</button>
-                <button class="prompt-btn" onclick="firePrompt('Turn confusion into clarity')">Confusion to Clarity</button>
-                <button class="prompt-btn" onclick="firePrompt('Get a PhD level breakdown')">PhD Level Breakdown</button>
-                <button class="prompt-btn" onclick="firePrompt('Build mental frameworks')">Build Mental Framework</button>
-            </div>
+                <div class="main-panel">
+                    <div class="cognitive-bar">
+                        <span class="section-title">Cognitive Frameworks (Quick Prompts):</span>
+                        <div class="btn-group">
+                            <button onclick="triggerCognitive('genius')">Understand as Genius</button>
+                            <button onclick="triggerCognitive('master')">Master Skill (20+ yrs)</button>
+                            <button onclick="triggerCognitive('blocks')">Fix Mental Blocks</button>
+                            <button onclick="triggerCognitive('clarity')">Confusion to Clarity</button>
+                            <button onclick="triggerCognitive('phd')">PhD Level Breakdown</button>
+                            <button onclick="triggerCognitive('framework')">Build Mental Framework</button>
+                            <button onclick="triggerCognitive('upgrade')">Upgrade Brain (30 Days)</button>
+                        </div>
+                    </div>
 
-            <div class="section-title" style="margin-top:10px;">Event Bus / I-O Terminal</div>
-            <div class="terminal-container">
-                <div class="terminal-output" id="term-out">AI Workspace OS Initialization Complete.<br>Waiting for instructions...<br></div>
-                <div class="terminal-input-row">
-                    <span>></span>
-                    <input type="text" id="term-in" placeholder="Enter cmd, /ai query, or trigger event...">
+                    <div class="interaction-container">
+                        <div id="chat-history" class="chat-history">
+                            <div class="msg system">AI Workspace OS Initialization Complete. Waiting for instructions...</div>
+                        </div>
+                        <div class="input-row">
+                            <input type="text" id="chat-input" placeholder="Enter query, instruction, or trigger event..." onkeydown="if(event.key==='Enter') sendChat()">
+                            <button onclick="sendChat()" class="send-btn">Send</button>
+                        </div>
+                    </div>
+
+                    <div class="terminal-container">
+                        <div class="terminal-header">EVENT BUS / I-O TERMINAL</div>
+                        <pre id="terminal-out">Waiting for CLI command output...</pre>
+                        <input type="text" id="terminal-input" placeholder="Execute terminal command (e.g. dir, git status)..." onkeydown="if(event.key==='Enter') execCmd()">
+                    </div>
                 </div>
             </div>
-        </main>
+        </section>
 
-        <!-- RIGHT: Permission Engine & Tools -->
-        <aside class="sidebar sidebar-right">
-            <div class="section-title">Permission Engine (Strict)</div>
-            
-            <div class="matrix-group">
-                <div class="matrix-title">Multi-Agent & DAG Engines</div>
-                <div class="tool-row"><span>Browser Use</span><label class="switch"><input type="checkbox" checked onchange="toggleTool('browser-use', this.checked)"><span class="slider"></span></label></div>
-                <div class="tool-row"><span>OpenHands</span><label class="switch"><input type="checkbox" onchange="toggleTool('openhands', this.checked)"><span class="slider"></span></label></div>
-                <div class="tool-row"><span>Langflow</span><label class="switch"><input type="checkbox" onchange="toggleTool('langflow', this.checked)"><span class="slider"></span></label></div>
-            </div>
+        <!-- TAB 2: CONVERTER & COMPRESSOR -->
+        <section id="converter-tab" class="workspace-tab">
+            <h2>Universal File & Media Converter / Compressor</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Universal File Converter</h3>
+                    <div class="form-group">
+                        <label>Select File Name:</label>
+                        <input type="text" id="convert-file-input" placeholder="e.g. document.pdf">
+                    </div>
+                    <div class="form-group">
+                        <label>Source Type:</label>
+                        <select id="convert-type" class="select-input">
+                            <option value="document">Document (PDF, DOCX, TXT, MD, EPUB)</option>
+                            <option value="image">Image (PNG, JPG, WEBP, SVG, GIF)</option>
+                            <option value="video">Video (MP4, MKV, AVI, MOV, WEBM)</option>
+                            <option value="audio">Audio (MP3, WAV, FLAC, AAC, OGG)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Format:</label>
+                        <input type="text" id="convert-target" placeholder="e.g. pdf, docx, mp4, mp3, png">
+                    </div>
+                    <button onclick="runConvert()" class="action-btn">Convert File</button>
+                    <div id="convert-result" class="result-box">Ready for file conversion...</div>
+                </div>
 
-            <div class="matrix-group">
-                <div class="matrix-title">AI Models & Inference</div>
-                <div class="tool-row"><span>Ollama (Local)</span><label class="switch"><input type="checkbox" checked onchange="toggleTool('ollama', this.checked)"><span class="slider"></span></label></div>
-                <div class="tool-row"><span>vLLM</span><label class="switch"><input type="checkbox" onchange="toggleTool('vllm', this.checked)"><span class="slider"></span></label></div>
-                <div class="tool-row"><span>Whisper (Audio)</span><label class="switch"><input type="checkbox" checked onchange="toggleTool('whisper', this.checked)"><span class="slider"></span></label></div>
+                <div class="card">
+                    <h3>Universal Media Compressor</h3>
+                    <div class="form-group">
+                        <label>File Name:</label>
+                        <input type="text" id="compress-file-input" placeholder="e.g. video.mp4">
+                    </div>
+                    <div class="form-group">
+                        <label>Compression Level (%):</label>
+                        <input type="range" id="compress-quality" min="10" max="90" value="80">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Size (MB):</label>
+                        <input type="number" id="compress-target-size" value="2.0" step="0.5">
+                    </div>
+                    <button onclick="runCompress()" class="action-btn">Compress File</button>
+                    <div id="compress-result" class="result-box">Ready for compression...</div>
+                </div>
             </div>
+        </section>
 
-            <div class="matrix-group">
-                <div class="matrix-title">Security & Penetration</div>
-                <div class="tool-row"><span>PyRIT</span><label class="switch"><input type="checkbox" onchange="toggleTool('pyrit', this.checked)"><span class="slider"></span></label></div>
-                <div class="tool-row"><span>Vulture OSINT</span><label class="switch"><input type="checkbox" onchange="toggleTool('vulture', this.checked)"><span class="slider"></span></label></div>
+        <!-- TAB 3: MEDIA & DOCUMENT EDITOR -->
+        <section id="editor-tab" class="workspace-tab">
+            <h2>Universal Document & Media Editor Workspace</h2>
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <button class="tool-btn">Bold</button>
+                    <button class="tool-btn">Italic</button>
+                    <button class="tool-btn">Code Block</button>
+                    <button class="tool-btn">Clear</button>
+                </div>
+                <textarea id="editor-content" class="editor-textarea" placeholder="Edit document text, code, or workspace notes here..."></textarea>
             </div>
-        </aside>
-    </div>
+        </section>
+
+        <!-- TAB 4: TOOL MATRIX -->
+        <section id="tools-tab" class="workspace-tab">
+            <h2>Master Tool & Repository Matrix (100+ Incorporated Repos)</h2>
+            <div id="tools-matrix-container" class="tools-grid">Loading incorporated repository tools...</div>
+        </section>
+
+        <!-- TAB 5: DEVICES & PERMISSIONS -->
+        <section id="devices-tab" class="workspace-tab">
+            <h2>Device Registry & Permission Controls</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Synchronized Device Registry</h3>
+                    <div class="device-item"><strong>Local Workstation</strong> - Windows 11 (Active)</div>
+                    <div class="device-item"><strong>FastAPI Core Server</strong> - http://127.0.0.1:8000</div>
+                </div>
+                <div class="card">
+                    <h3>Permission Engine (Strict Enforcement)</h3>
+                    <div class="perm-item">Level 0: Read / Observe (Active)</div>
+                    <div class="perm-item">Level 1: Low-Risk Actions (Active)</div>
+                    <div class="perm-item">Level 2: Controlled Modifications (Active)</div>
+                    <div class="perm-item">Level 3: High-Risk Actions (Approval Required)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: PROJECT MEMORY -->
+        <section id="memory-tab" class="workspace-tab">
+            <h2>Project Memory & Knowledge Graph</h2>
+            <div class="memory-box">
+                <p><strong>System State:</strong> Active</p>
+                <p><strong>Modules Loaded:</strong> Converters, Ingestor, Bug-Detector, Cognitive Frameworks</p>
+                <p><strong>Port:</strong> 8000</p>
+            </div>
+        </section>
+    </main>
 
     <script src="/static/app_bus.js"></script>
-    <script src="/static/terminal.js"></script>
 </body>
 </html>
