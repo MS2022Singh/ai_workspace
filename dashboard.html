@@ -3,192 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace - Command Center</title>
+    <title>AI Workspace - Command Center OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0d1117; --panel: #161b22; --text: #c9d1d9; --accent: #58a6ff; --border: #30363d; --danger: #f85149; --success: #2ea043; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-        .grid-container { display: grid; grid-template-columns: 300px 1fr 300px; gap: 20px; flex-grow: 1; margin-top: 20px; overflow: hidden; }
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; overflow-y: auto; }
-        h2 { font-size: 1.1rem; margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        :root {
+            --bg-dark: #0a0c10;
+            --panel-bg: #11161d;
+            --border-color: #21262d;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-purple: #bc8cff;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Tool Matrix & Toggles */
-        .group-title { color: var(--accent); font-size: 0.9rem; margin: 15px 0 5px 0; text-transform: uppercase; letter-spacing: 1px; }
-        .tool-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(20px); }
-        input:disabled + .slider { background-color: var(--danger); cursor: not-allowed; }
+        /* Top Navigation Header */
+        header { background: var(--panel-bg); border-bottom: 1px solid var(--border-color); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.1rem; color: #fff; }
+        .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 12px; background: rgba(63, 185, 80, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .perm-indicator { display: flex; align-items: center; gap: 15px; font-size: 0.85rem; }
+        
+        /* Main Layout Grid */
+        .workspace-grid { display: grid; grid-template-columns: 320px 1fr 340px; gap: 12px; padding: 12px; flex-grow: 1; height: calc(100vh - 60px); overflow: hidden; }
+        .panel { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; }
+        .panel-header { padding: 12px 15px; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
+        .panel-body { padding: 15px; overflow-y: auto; flex-grow: 1; }
 
         /* Ingestion Panel */
-        .ingest-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] { flex-grow: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; }
-        button { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button:hover { opacity: 0.8; }
+        .ingest-container { display: flex; gap: 8px; margin-bottom: 15px; }
+        input[type="text"], select { background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; outline: none; }
+        input[type="text"]:focus { border-color: var(--accent-blue); }
+        .btn { background: var(--accent-blue); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
 
-        /* Terminal I/O */
-        .io-container { display: flex; flex-direction: column; flex-grow: 1; gap: 10px; }
-        #terminal-output { flex-grow: 1; background: #000; font-family: monospace; padding: 15px; border-radius: 4px; overflow-y: auto; color: #0f0; }
-        textarea { height: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 4px; resize: none; font-family: monospace;}
+        /* Tool Matrix & Groupings */
+        .tool-group { margin-bottom: 18px; }
+        .group-name { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+        .tool-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.85rem; }
+        
+        /* Interactive Toggle Switches */
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .3s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-green); }
+        input:checked + .slider:before { transform: translateX(16px); }
 
-        /* Bug Detector Panel */
-        #bug-detector { font-family: monospace; font-size: 0.85rem; color: var(--danger); }
-        .bug-log { background: rgba(248, 81, 73, 0.1); padding: 8px; margin-bottom: 5px; border-left: 3px solid var(--danger); }
+        /* Console Output & Command Line */
+        .console-output { background: #000; border: 1px solid var(--border-color); border-radius: 6px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.82rem; padding: 12px; flex-grow: 1; overflow-y: auto; color: #a5d6ff; line-height: 1.5; margin-bottom: 10px; }
+        .cmd-box { display: flex; gap: 8px; }
+        textarea { width: 100%; height: 70px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); padding: 10px; font-family: inherit; font-size: 0.85rem; resize: none; outline: none; }
 
-        /* Shortcut Overlay */
-        #shortcut-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel); padding: 20px; border: 1px solid var(--accent); border-radius: 8px; z-index: 1000; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        /* Diagnostic & Memory Layer Displays */
+        .diag-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+        .diag-title { font-weight: 600; color: var(--accent-purple); margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .bug-alert { border-left: 3px solid var(--accent-red); background: rgba(248,81,73,0.08); padding: 8px; font-family: monospace; font-size: 0.78rem; color: var(--accent-red); }
+
+        /* Keyboard Shortcut Overlay */
+        #shortcut-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-bg); border: 1px solid var(--accent-blue); padding: 20px; border-radius: 8px; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 350px; }
+        kbd { background: var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
     </style>
 </head>
 <body>
     <header>
-        <div>
-            <i class="fa-solid fa-brain" style="color: var(--accent); font-size: 1.5rem; margin-right: 10px;"></i>
-            <strong style="font-size: 1.2rem;">AI Workspace Command Center</strong>
+        <div class="brand">
+            <i class="fa-solid fa-microchip" style="color: var(--accent-blue);"></i>
+            <span>AI WORKSPACE COMMAND CENTER</span>
+            <span class="status-badge">Phase 1-4 Active</span>
         </div>
-        <div style="font-size: 0.9rem; color: var(--danger);"><i class="fa-solid fa-shield-halved"></i> Permission Engine: Strict (Level 0-3 Active)</div>
+        <div class="perm-indicator">
+            <span><i class="fa-solid fa-shield-halved" style="color: var(--accent-green);"></i> Security Policy: <strong>Level 0-3 Guardrails</strong></span>
+            <span><i class="fa-solid fa-network-wired" style="color: var(--accent-purple);"></i> Event Bus: <strong>ONLINE</strong></span>
+        </div>
     </header>
 
-    <div class="grid-container">
-        <!-- LEFT: Tool Matrix & Toggles -->
-        <div class="panel" id="tool-matrix">
-            <h2><i class="fa-solid fa-layer-group"></i> Capability Matrix</h2>
-            <div id="dynamic-tools"></div>
+    <div class="workspace-grid">
+        <!-- LEFT PANEL: Capability Matrix & Active Toggles -->
+        <div class="panel">
+            <div class="panel-header">
+                <span><i class="fa-solid fa-list-check"></i> CAPABILITY MATRIX</span>
+                <span id="active-count" style="color: var(--accent-green); font-size: 0.8rem;">0 Active</span>
+            </div>
+            <div class="panel-body" id="tool-matrix-container"></div>
         </div>
 
-        <!-- CENTER: Core I/O & Ingestion -->
+        <!-- CENTER PANEL: Dynamic Ingestion & Core Workspace I/O -->
         <div class="panel">
-            <h2><i class="fa-solid fa-bolt"></i> Dynamic Repo Ingestion</h2>
-            <div class="ingest-box">
-                <input type="text" id="repo-input" placeholder="Paste GitHub URL, Tool URL, or Raw Config...">
-                <button id="ingest-btn"><i class="fa-solid fa-download"></i> Ingest</button>
+            <div class="panel-header">
+                <span><i class="fa-solid fa-terminal"></i> WORKSPACE INTERACTION & INGESTION</span>
+                <span>Provider: <strong>Ollama / vLLM Router</strong></span>
             </div>
-            
-            <h2><i class="fa-solid fa-terminal"></i> Agent Execution Console</h2>
-            <div class="io-container">
-                <div id="terminal-output">System Boot: Phase 1 UI Initialized.<br>Referencing architectural logic from "gem os_4.txt"...<br>System ready. Press '?' for shortcuts.<br></div>
-                <textarea id="cmd-input" placeholder="Enter instructions here (Press Enter to execute, Shift+Enter for new line)..."></textarea>
+            <div class="panel-body" style="display: flex; flex-direction: column;">
+                <div class="ingest-container">
+                    <input type="text" id="repo-url-input" style="flex-grow: 1;" placeholder="Paste Repository URL, Tool Package, or Raw Config Link...">
+                    <button class="btn" id="ingest-btn"><i class="fa-solid fa-plus"></i> Ingest & Merge</button>
+                </div>
+                
+                <div class="console-output" id="main-console">
+                    [SYSTEM INITIALIZATION COMPLETE]<br>
+                    [+] Permission Engine: READ, WRITE, EXECUTE, NETWORK, DELETE, SYSTEM, FINANCIAL bound.<br>
+                    [+] Structured Memory Architecture: SQLite store active at core/memory_store.db.<br>
+                    [+] Unified Inference Router: Ollama / vLLM / SGLang / LiteLLM online.<br>
+                    [+] System Tools: PowerShell execution, Process Inspector registered.<br>
+                    --------------------------------------------------------------------------------<br>
+                    Ready for commands. Press '?' to view keyboard shortcuts overlay.<br>
+                </div>
+
+                <div class="cmd-box">
+                    <textarea id="command-input" placeholder="Type instructions or PowerShell commands here... (Press Enter to execute)"></textarea>
+                </div>
             </div>
         </div>
 
-        <!-- RIGHT: Real-time Bug & System Diagnostics -->
+        <!-- RIGHT PANEL: Memory Store & Real-time Bug Detector -->
         <div class="panel">
-            <h2><i class="fa-solid fa-bug"></i> Real-Time Bug Detector</h2>
-            <div id="bug-detector">
-                <div style="color: var(--success); padding: 10px;">No critical exceptions detected. Event bus monitoring active.</div>
+            <div class="panel-header">
+                <span><i class="fa-solid fa-database"></i> MEMORY & DIAGNOSTICS</span>
+                <i class="fa-solid fa-bug" style="color: var(--accent-red);"></i>
+            </div>
+            <div class="panel-body">
+                <div class="diag-card">
+                    <div class="diag-title"><span>WORKING MEMORY</span> <i class="fa-solid fa-brain"></i></div>
+                    <div id="wm-state">State: IDLE | Objective: Ready</div>
+                </div>
+
+                <div class="diag-card">
+                    <div class="diag-title"><span>EPISODIC TIMELINE</span> <i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <div id="episodic-log" style="font-size: 0.75rem; color: var(--text-muted);">No events logged in current session.</div>
+                </div>
+
+                <div class="diag-card">
+                    <div class="diag-title"><span>REAL-TIME BUG DETECTOR</span> <i class="fa-solid fa-shield-virus"></i></div>
+                    <div id="bug-detector-output">
+                        <div style="color: var(--accent-green); font-size: 0.78rem;"><i class="fa-solid fa-check"></i> Zero active DOM or runtime exceptions detected.</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Shortcut Overlay -->
-    <div id="shortcut-overlay">
-        <h3><i class="fa-regular fa-keyboard"></i> Global Shortcuts</h3>
-        <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 8px;"><kbd>Enter</kbd> Execute command in console</li>
-            <li style="margin-bottom: 8px;"><kbd>Shift</kbd> + <kbd>Enter</kbd> New line in console</li>
-            <li style="margin-bottom: 8px;"><kbd>Tab</kbd> Navigate UI elements</li>
-            <li style="margin-bottom: 8px;"><kbd>?</kbd> Toggle this overlay</li>
-            <li style="margin-bottom: 8px;"><kbd>Esc</kbd> Close overlays / Clear focus</li>
-        </ul>
+    <!-- Keyboard Shortcut Overlay -->
+    <div id="shortcut-modal">
+        <h3 style="margin-bottom: 12px; font-size: 1rem;"><i class="fa-regular fa-keyboard"></i> Command Shortcuts</h3>
+        <p style="font-size: 0.85rem; margin-bottom: 8px;"><kbd>Enter</kbd> Execute Command / Click Active</p>
+        <p style="font-size: 0.85rem; margin-bottom: 8px;"><kbd>Shift</kbd> + <kbd>Enter</kbd> New line in command box</p>
+        <p style="font-size: 0.85rem; margin-bottom: 8px;"><kbd>?</kbd> Toggle Shortcuts Overlay</p>
+        <p style="font-size: 0.85rem; margin-bottom: 8px;"><kbd>Esc</kbd> Close Overlay / Clear Focus</p>
     </div>
 
     <script>
-        const tools = {"Orchestration & Workflows": ["ToolJet", "n8n-io/n8n", "AppFlowy", "Frappe Cloud", "ERPNext", "Maxun", "Coolify", "Dokploy", "Open WebUI", "Dify", "flowise", "langflow-ai/langflow", "theagency", "god-mode"], "Multi-Agent & DAG Execution": ["garraytan/gstack", "nous-genai", "browser-use", "Agno", "OpenHands", "Muse Code", "SWE-agent", "GPT-Pilot", "obra/superpowers", "Composio", "santifer/career-ops", "akitaonrails/ai-memory", "agent-memory", "humanlayer/skills", "pentagi"], "Local AI Models & Inference": ["Qwen 3.8", "JustVugg/colibri", "jochi2018/Soup", "Unsloth", "Axolotl", "Whisper", "Kokoro TTS", "zero-to-sglang", "MiniMind", "WhichLLM", "Ollama", "vLLM", "litellm", "deepseek-reasonix", "moe-slm", "sam"], "Security, Threat Intel & PenTest": ["microsoft/pyrit", "FreeBuf", "vulture", "thewhite4t/finalrecon", "WebExtractor", "Social Analyzer", "Sherlock", "Maigret", "PhoneIntel", "cb-userhunter", "Hunter.io", "TheHarvester", "SpiderFoot", "Maltego", "Malware-Research-Hub", "AhMyth", "AndroRat", "SpyNote", "DroidJack", "anthropic-cybersecurity-skills"], "RAG, Knowledge & Memory": ["Semantica", "brain.aivm.io", "Crawl4AI", "Supabase", "David-Crty/databasement", "Invidious", "yt-dlp", "gptcache", "llmlingua", "tiktoken"], "Code Repositories & Utilities": ["Continue", "Tabby", "Repomix", "The Algorithms (Python)", "30-Seconds-of-Code", "JavaScript-Algorithms", "callstack/liquid-glass", "pascalorg/editor", "openmaic", "open-claude", "github-search", "diagram-design", "codeburn", "cursor/plugins"], "Creative, Media & Generation": ["Grok Image", "Fooocus", "armory3d/armorpaint", "Penpot", "Excalidraw", "Mooziac", "SpotiFLAC Mobile", "OpenVid", "harry0703/moneyprinterturbo", "amagine-ai/Amagine-3d", "vidtyy/nopus", "echo music"], "Document Process & Productivity": ["Stirling PDF", "Plausible", "PostHog", "calcom/cal.diy", "AutoSocial Studio", "osp.fyi/cheat-on-content", "httpsms", "PinchTab", "DBX", "every-app/open-seo", "obsidian", "academic-research-skills"]};
-        const toolContainer = document.getElementById('dynamic-tools');
-        const terminal = document.getElementById('terminal-output');
-        const bugDetector = document.getElementById('bug-detector');
+        const toolGroups = {
+            "Orchestration & Workflows": ["ToolJet", "n8n-io/n8n", "AppFlowy", "Frappe Cloud", "Open WebUI", "Dify", "Flowise"],
+            "Multi-Agent & Execution": ["gstack", "browser-use", "OpenHands", "SWE-agent", "GPT-Pilot", "Composio", "humanlayer/skills"],
+            "Local Inference & Models": ["Qwen 3.8", "Ollama", "vLLM", "LiteLLM", "Whisper", "Kokoro TTS", "colibri"],
+            "Security & PenTest": ["PyRIT", "vulture", "finalrecon", "Social Analyzer", "Sherlock", "Maigret", "Malware-Hub"],
+            "RAG & Memory": ["Semantica", "AIVM Brain", "Crawl4AI", "Supabase", "databasement", "Invidious"],
+            "System Tools": ["PowerShell Control", "Process Inspector", "File Read Guard", "System Diagnostics"]
+        };
+
+        const consoleEl = document.getElementById('main-console');
+        const bugEl = document.getElementById('bug-detector-output');
+        const episodicEl = document.getElementById('episodic-log');
+
+        function appendConsole(msg, type="INFO") {
+            const time = new Date().toLocaleTimeString();
+            let color = "#a5d6ff";
+            if(type === "SUCCESS") color = "var(--accent-green)";
+            if(type === "WARN") color = "#d29922";
+            if(type === "ERROR") color = "var(--accent-red)";
+            consoleEl.innerHTML += `<span style="color: ${color}">[${time}] [${type}] ${msg}</span><br>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
 
         // Render Tool Matrix
-        function renderTools(groupDict) {
-            toolContainer.innerHTML = '';
-            for (const [group, items] of Object.entries(groupDict)) {
-                let html = `<div class="group-title">${group}</div>`;
-                items.forEach(item => {
-                    const id = item.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-                    const state = localStorage.getItem(id) === 'true' ? 'checked' : '';
+        function renderMatrix() {
+            const container = document.getElementById('tool-matrix-container');
+            container.innerHTML = '';
+            let totalActive = 0;
+
+            for(const [group, tools] of Object.entries(toolGroups)) {
+                let html = `<div class="tool-group"><div class="group-name">${group}</div>`;
+                tools.forEach(tool => {
+                    const key = 'tool_' + tool.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                    const isActive = localStorage.getItem(key) === 'true';
+                    if(isActive) totalActive++;
+
                     html += `
-                        <div class="tool-item">
-                            <span>${item}</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="${id}" class="tool-toggle" ${state}>
+                        <div class="tool-row">
+                            <span>${tool}</span>
+                            <label class="switch">
+                                <input type="checkbox" data-key="${key}" data-name="${tool}" ${isActive ? 'checked' : ''} onchange="toggleTool(this)">
                                 <span class="slider"></span>
                             </label>
                         </div>
                     `;
                 });
-                toolContainer.innerHTML += html;
+                html += `</div>`;
+                container.innerHTML += html;
             }
-            bindToggles();
+            document.getElementById('active-count').innerText = `${totalActive} Active`;
         }
 
-        // Bind Permission State to localStorage
-        function bindToggles() {
-            document.querySelectorAll('.tool-toggle').forEach(toggle => {
-                toggle.addEventListener('change', (e) => {
-                    localStorage.setItem(e.target.id, e.target.checked);
-                    logToTerminal(`Permission Engine: Tool [${e.target.id}] state changed to ${e.target.checked ? 'ACTIVE' : 'INACTIVE'}`);
-                });
-            });
+        function toggleTool(el) {
+            const key = el.getAttribute('data-key');
+            const name = el.getAttribute('data-name');
+            localStorage.setItem(key, el.checked);
+            renderMatrix();
+            appendConsole(`Permission Engine: Tool '${name}' toggled to ${el.checked ? 'ACTIVE' : 'INACTIVE'}`, el.checked ? "SUCCESS" : "WARN");
+            episodicEl.innerHTML = `[${new Date().toLocaleTimeString()}] Toggled ${name} (${el.checked ? 'ON' : 'OFF'})`;
         }
 
-        function logToTerminal(msg) {
-            const time = new Date().toLocaleTimeString();
-            terminal.innerHTML += `[${time}] ${msg}<br>`;
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-
-        // Global Error Catcher (Bug Detector)
-        window.onerror = function(message, source, lineno, colno, error) {
-            bugDetector.innerHTML = `<div class="bug-log">[ERROR] Line ${lineno}: ${message}</div>` + bugDetector.innerHTML;
-            logToTerminal(`<span style="color:red;">Exception Caught! See Bug Detector.</span>`);
-            return true; 
+        // Real-Time Bug Detector Event Catching
+        window.onerror = function(msg, url, line) {
+            bugEl.innerHTML = `<div class="bug-alert"><i class="fa-solid fa-triangle-exclamation"></i> Exception caught at Line ${line}: ${msg}</div>`;
+            appendConsole(`Runtime Exception: ${msg}`, "ERROR");
+            return true;
         };
 
-        // Dynamic Ingestion Logic
+        // Ingestion Panel Execution
         document.getElementById('ingest-btn').addEventListener('click', () => {
-            const url = document.getElementById('repo-input').value.trim();
-            if(!url) return;
-            logToTerminal(`[INGEST ENGINE] Fetching repository logic from: ${url}...`);
+            const input = document.getElementById('repo-url-input');
+            const val = input.value.trim();
+            if(!val) return;
+
+            appendConsole(`Ingest Engine: Fetching external repository metadata from ${val}...`);
             setTimeout(() => {
-                const newToolName = url.split('/').pop() || "Custom_Ingested_Tool";
-                if(!tools["Custom Ingested Repos"]) tools["Custom Ingested Repos"] = [];
-                tools["Custom Ingested Repos"].push(newToolName);
-                renderTools(tools);
-                logToTerminal(`<span style="color:var(--success);">[SUCCESS] ${newToolName} parsed, isolated, and added to matrix. Awaiting toggle permission.</span>`);
-                document.getElementById('repo-input').value = '';
-            }, 800);
+                const toolName = val.split('/').pop() || "Custom_Tool";
+                if(!toolGroups["Ingested Repositories"]) toolGroups["Ingested Repositories"] = [];
+                toolGroups["Ingested Repositories"].push(toolName);
+                renderMatrix();
+                appendConsole(`[SUCCESS] Automatically incorporated '${toolName}' into Capability Matrix.`, "SUCCESS");
+                input.value = '';
+            }, 600);
         });
 
-        // Keyboard Shortcuts
+        // Console Keyboard Shortcuts & Submission
+        document.getElementById('command-input').addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const cmd = e.target.value.trim();
+                if(!cmd) return;
+
+                appendConsole(`User > ${cmd}`);
+                e.target.value = '';
+
+                // Simulate Permission Engine & Execution Loop
+                setTimeout(() => {
+                    if(cmd.toLowerCase().startsWith('powershell') || cmd.toLowerCase().startsWith('dir')) {
+                        appendConsole(`PermissionEngine: Executing PowerShell tool wrapper (Level 2 Controlled)...`, "WARN");
+                        setTimeout(() => appendConsole(`Result: Command processed successfully via SystemTools interface.`, "SUCCESS"), 400);
+                    } else {
+                        appendConsole(`InferenceRouter: Routing request to Qwen / Ollama local provider...`);
+                        setTimeout(() => appendConsole(`Response: Task analyzed, decision logged into Episodic Memory.`, "SUCCESS"), 500);
+                    }
+                }, 200);
+            }
+        });
+
+        // Global Keyboard Shortcut Bindings
         document.addEventListener('keydown', (e) => {
-            if(e.key === '?' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-                const overlay = document.getElementById('shortcut-overlay');
-                overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+            if(e.key === '?' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'INPUT') {
+                const modal = document.getElementById('shortcut-modal');
+                modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
             }
             if(e.key === 'Escape') {
-                document.getElementById('shortcut-overlay').style.display = 'none';
+                document.getElementById('shortcut-modal').style.display = 'none';
                 document.activeElement.blur();
             }
         });
 
-        document.getElementById('cmd-input').addEventListener('keydown', (e) => {
-            if(e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                const val = e.target.value.trim();
-                if(val) {
-                    logToTerminal(`<span style="color:var(--text);">User > ${val}</span>`);
-                    e.target.value = '';
-                    // Trigger execution pipeline mock
-                    setTimeout(() => logToTerminal(`Processing objective via Event Bus...`), 300);
-                }
-            }
-        });
-
-        // Initialize
-        renderTools(tools);
+        // Initialize UI
+        renderMatrix();
     </script>
 </body>
 </html>
