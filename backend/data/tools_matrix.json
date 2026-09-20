@@ -1,0 +1,345 @@
+[
+  {
+    "id": "tooljet",
+    "name": "ToolJet",
+    "category": "1. Orchestration & Command UI",
+    "description": "Low-code internal app builder and visual control interface.",
+    "active": true
+  },
+  {
+    "id": "n8n",
+    "name": "n8n-io/n8n",
+    "category": "1. Orchestration & Command UI",
+    "description": "Workflow automation platform for local triggers and APIs.",
+    "active": true
+  },
+  {
+    "id": "appflowy",
+    "name": "AppFlowy",
+    "category": "1. Orchestration & Command UI",
+    "description": "Local-first open-source productivity workspace.",
+    "active": true
+  },
+  {
+    "id": "erpnext",
+    "name": "Frappe Cloud / ERPNext",
+    "category": "1. Orchestration & Command UI",
+    "description": "Enterprise business process and resource execution engine.",
+    "active": true
+  },
+  {
+    "id": "maxun",
+    "name": "Maxun",
+    "category": "1. Orchestration & Command UI",
+    "description": "Local web data extraction and scraping automation tool.",
+    "active": true
+  },
+  {
+    "id": "coolify",
+    "name": "Coolify / Dokploy",
+    "category": "1. Orchestration & Command UI",
+    "description": "Self-hosted PaaS platform managers for containerized deployments.",
+    "active": true
+  },
+  {
+    "id": "openwebui",
+    "name": "Open WebUI",
+    "category": "1. Orchestration & Command UI",
+    "description": "Universal browser workspace for multi-agent interaction.",
+    "active": true
+  },
+  {
+    "id": "dify",
+    "name": "Dify",
+    "category": "1. Orchestration & Command UI",
+    "description": "Visual LLM application canvas for multi-agent workflows.",
+    "active": true
+  },
+  {
+    "id": "gstack",
+    "name": "garraytan/gstack",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Directed Acyclic Graph (DAG) task orchestrator.",
+    "active": true
+  },
+  {
+    "id": "nousgenai",
+    "name": "nous-genai (Nous Skills)",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Standardized library for structured outputs and function calling.",
+    "active": true
+  },
+  {
+    "id": "browseruse",
+    "name": "Browser Use",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Autonomous browser automation framework for web tasks.",
+    "active": true
+  },
+  {
+    "id": "langflow",
+    "name": "Langflow & Agno",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Visual flow builders for agentic data streams.",
+    "active": true
+  },
+  {
+    "id": "openhands",
+    "name": "OpenHands",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Autonomous software development agent in isolated sandbox.",
+    "active": true
+  },
+  {
+    "id": "musespark",
+    "name": "Muse Code / Muse Spark 1.2",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "CLI coding agent operating in isolated Git worktrees.",
+    "active": true
+  },
+  {
+    "id": "sweagent",
+    "name": "SWE-agent & GPT-Pilot",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Automated codebase repair and software construction tools.",
+    "active": true
+  },
+  {
+    "id": "composio",
+    "name": "Composio / Superpowers / Cursor Plugins",
+    "category": "2. Multi-Agent & DAG Engines",
+    "description": "Agent extensions and multi-app integration bridges.",
+    "active": true
+  },
+  {
+    "id": "qwen38",
+    "name": "Qwen 2.5 / 3.8 (27B & Max)",
+    "category": "3. AI Models & Inference",
+    "description": "Primary local reasoning, planning, and task decomposition engine.",
+    "active": true
+  },
+  {
+    "id": "colibri",
+    "name": "JustVugg/colibri",
+    "category": "3. AI Models & Inference",
+    "description": "Pure-C MoE inference engine streaming parameters from storage.",
+    "active": true
+  },
+  {
+    "id": "soup",
+    "name": "jochi2018/Soup",
+    "category": "3. AI Models & Inference",
+    "description": "Lightweight QLoRA/DPO fine-tuning engine via YAML.",
+    "active": true
+  },
+  {
+    "id": "unsloth",
+    "name": "Unsloth & Axolotl",
+    "category": "3. AI Models & Inference",
+    "description": "High-speed LLM fine-tuning frameworks for local parameter adaptation.",
+    "active": true
+  },
+  {
+    "id": "whisper_tts",
+    "name": "Whisper & Kokoro TTS",
+    "category": "3. AI Models & Inference",
+    "description": "Local, offline STT and TTS engines for voice interaction.",
+    "active": true
+  },
+  {
+    "id": "sglang",
+    "name": "zero-to-sglang & Inference Gateway",
+    "category": "3. AI Models & Inference",
+    "description": "High-throughput inference server and unified LLM routing layer.",
+    "active": true
+  },
+  {
+    "id": "minimind",
+    "name": "MiniMind & WhichLLM",
+    "category": "3. AI Models & Inference",
+    "description": "Compact model testing and intelligent model routing utilities.",
+    "active": true
+  },
+  {
+    "id": "vllm_ollama",
+    "name": "vLLM & Ollama",
+    "category": "3. AI Models & Inference",
+    "description": "High-speed LLM serving and local model runtime engine.",
+    "active": true
+  },
+  {
+    "id": "pyrit",
+    "name": "microsoft/pyrit (PyRIT)",
+    "category": "4. Security & OSINT",
+    "description": "Python Risk Identification Tool for AI security red-teaming.",
+    "active": true
+  },
+  {
+    "id": "freebuf",
+    "name": "FreeBuf Parser",
+    "category": "4. Security & OSINT",
+    "description": "Automated threat feed parser and exploit tracker.",
+    "active": true
+  },
+  {
+    "id": "vulture",
+    "name": "vulture-osint-automation-tool",
+    "category": "4. Security & OSINT",
+    "description": "Automated open-source intelligence collection tool.",
+    "active": true
+  },
+  {
+    "id": "finalrecon",
+    "name": "thewhite4t/finalrecon & WebExtractor",
+    "category": "4. Security & OSINT",
+    "description": "Fast web reconnaissance and network mapping utilities.",
+    "active": true
+  },
+  {
+    "id": "osint_profiling",
+    "name": "Social Analyzer / Sherlock / Maigret",
+    "category": "4. Security & OSINT",
+    "description": "OSINT social profiling, username, and identity tracing utilities.",
+    "active": true
+  },
+  {
+    "id": "threat_mapping",
+    "name": "Hunter.io / TheHarvester / SpiderFoot / Maltego",
+    "category": "4. Security & OSINT",
+    "description": "Domain mapping, email discovery, and threat infrastructure visualization.",
+    "active": true
+  },
+  {
+    "id": "malware_research",
+    "name": "Malware Research Hub / SpyNote / AhMyth",
+    "category": "4. Security & OSINT",
+    "description": "Malware research, threat detection, and mobile security tools.",
+    "active": true
+  },
+  {
+    "id": "semantica",
+    "name": "Semantica (GraphRAG)",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "GraphRAG knowledge system tracking decision provenance (PROV-O).",
+    "active": true
+  },
+  {
+    "id": "aivm_brain",
+    "name": "brain.aivm.io (AIVM Brain)",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "Permission-aware project governance and isolated memory layer.",
+    "active": true
+  },
+  {
+    "id": "crawl4ai",
+    "name": "Crawl4AI",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "High-speed web crawler formatted for LLM knowledge ingestion.",
+    "active": true
+  },
+  {
+    "id": "supabase",
+    "name": "Supabase Local Stack",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "Local PostgreSQL, vector database, and authentication engine.",
+    "active": true
+  },
+  {
+    "id": "databasement",
+    "name": "David-Crty/databasement",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "Database inspection, management GUI, and automated backup engine.",
+    "active": true
+  },
+  {
+    "id": "ytdlp_invidious",
+    "name": "Invidious & yt-dlp",
+    "category": "5. RAG & Knowledge Graphs",
+    "description": "Private media processing and video data extraction engines.",
+    "active": true
+  },
+  {
+    "id": "continue_tabby",
+    "name": "Continue & Tabby",
+    "category": "6. Code & Dev Libraries",
+    "description": "Local AI programming assistant interfaces for real-time code completion.",
+    "active": true
+  },
+  {
+    "id": "repomix",
+    "name": "Repomix",
+    "category": "6. Code & Dev Libraries",
+    "description": "Code-to-text converter optimized for LLM context parsing.",
+    "active": true
+  },
+  {
+    "id": "algorithms",
+    "name": "The Algorithms (Python) / 30s-of-Code",
+    "category": "6. Code & Dev Libraries",
+    "description": "Algorithm, data structure, and utility snippet reference engines.",
+    "active": true
+  },
+  {
+    "id": "codeburn",
+    "name": "CodeBurn & OpenCode",
+    "category": "6. Code & Dev Libraries",
+    "description": "Code analysis, prompt-to-code synthesis, and debugging suites.",
+    "active": true
+  },
+  {
+    "id": "fooocus",
+    "name": "Fooocus & Grok Image Pipelines",
+    "category": "7. Creative & Media Engines",
+    "description": "Visual diagnostics, flowcharts, and local image generation pipelines.",
+    "active": true
+  },
+  {
+    "id": "armorpaint",
+    "name": "armory3d/armorpaint",
+    "category": "7. Creative & Media Engines",
+    "description": "Open-source 3D PBR texture painting tool.",
+    "active": true
+  },
+  {
+    "id": "penpot_excalidraw",
+    "name": "Penpot & Excalidraw",
+    "category": "7. Creative & Media Engines",
+    "description": "Design canvas, flowcharts, and technical architecture drawing tools.",
+    "active": true
+  },
+  {
+    "id": "media_gen",
+    "name": "Mooziac / SpotiFLAC / OpenVid / MoneyPrinterTurbo",
+    "category": "7. Creative & Media Engines",
+    "description": "Audio processing and short-form video generation pipelines.",
+    "active": true
+  },
+  {
+    "id": "stirling_pdf",
+    "name": "Stirling PDF",
+    "category": "8. Document & Productivity",
+    "description": "Self-hosted PDF manipulation, OCR, and document extraction engine.",
+    "active": true
+  },
+  {
+    "id": "plausible_posthog",
+    "name": "Plausible / PostHog",
+    "category": "8. Document & Productivity",
+    "description": "Privacy-focused telemetry tracking for local system events.",
+    "active": true
+  },
+  {
+    "id": "calcom",
+    "name": "calcom/cal.diy",
+    "category": "8. Document & Productivity",
+    "description": "Automated scheduling engine.",
+    "active": true
+  },
+  {
+    "id": "content_ops",
+    "name": "AutoSocial Studio / Cheat-on-Content",
+    "category": "8. Document & Productivity",
+    "description": "Content creation and social media automation platforms.",
+    "active": true
+  }
+]
