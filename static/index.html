@@ -8,6 +8,8 @@
     <style>
         body { background-color: #0f172a; color: #f8fafc; font-family: monospace; }
         .active-tab { border-bottom: 2px solid #38bdf8; color: #38bdf8; }
+        .view-section { display: none; height: 100%; flex-direction: column; }
+        .view-section.active { display: flex; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
@@ -15,40 +17,69 @@
     <header class="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <h1 class="text-xl font-bold text-sky-400">AI WORKSPACE OS</h1>
-            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20">Phase 1 Active</span>
+            <span class="text-xs bg-sky-500/10 text-sky-400 px-2 py-1 rounded border border-sky-500/20">v1.0 Interactive</span>
         </div>
         <div class="flex gap-4 text-sm text-slate-400">
             <button id="tab-dashboard" class="active-tab px-3 py-1 font-semibold hover:text-white" onclick="switchTab('dashboard')">[Alt+1] Dashboard</button>
             <button id="tab-matrix" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('matrix')">[Alt+2] Tool Matrix</button>
-            <button id="tab-ingest" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('ingest')">[Alt+3] Ingest & Upgrade</button>
-            <button id="tab-studio" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('studio')">[Alt+4] Prompt Studio</button>
-            <button id="tab-bug" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('bug')">[Alt+5] Bug Engine</button>
-            <button id="tab-terminal" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('terminal')">[Alt+6] Terminal</button>
+            <button id="tab-terminal" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('terminal')">[Alt+3] Terminal</button>
         </div>
     </header>
 
     <!-- Main Workspace Area -->
     <div class="flex flex-1 overflow-hidden">
-        <!-- Left Sidebar: Capability & Tool Toggle Matrix (38+ Tools) -->
-        <aside class="w-80 bg-slate-900/50 border-r border-slate-800 p-4 overflow-y-auto flex flex-col gap-3">
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">38+ Active Tool Matrix</h2>
+        <!-- Left Sidebar: Active Tools -->
+        <aside class="w-72 bg-slate-900/50 border-r border-slate-800 p-4 overflow-y-auto flex flex-col gap-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">System Services</h2>
             <div id="tool-toggles" class="flex flex-col gap-2"></div>
         </aside>
 
         <!-- Dynamic Content View -->
-        <main class="flex-1 p-4 overflow-y-auto bg-slate-950 flex flex-col gap-4">
-            <div id="view-container" class="flex-1"></div>
+        <main class="flex-1 p-4 overflow-hidden bg-slate-950 flex flex-col gap-4">
             
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-section active overflow-y-auto">
+                <h2 class="text-2xl font-bold text-white mb-4">System Overview</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">Server Status</h3>
+                        <p class="text-emerald-400 font-bold text-xl mt-1">ONLINE</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">Active Tools</h3>
+                        <p class="text-sky-400 font-bold text-xl mt-1" id="dash-tool-count">38 Loaded</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">OS Host</h3>
+                        <p class="text-white font-bold text-xl mt-1">Windows Core</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool Matrix View -->
+            <div id="view-matrix" class="view-section overflow-y-auto">
+                <h2 class="text-2xl font-bold text-white mb-4">Integrated Repos & Capabilities</h2>
+                <div id="matrix-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Terminal View -->
+            <div id="view-terminal" class="view-section overflow-y-auto bg-black p-4 rounded border border-slate-800">
+                <div class="text-slate-400 text-sm mb-2">AI Workspace OS Terminal Session Started.</div>
+                <div id="terminal-output" class="flex-1 overflow-y-auto pb-4"></div>
+            </div>
+
             <!-- Bottom Interactive Command Input -->
-            <div class="bg-slate-900 border border-slate-800 rounded p-2 flex gap-2 items-center">
+            <div class="bg-slate-900 border border-slate-800 rounded p-2 flex gap-2 items-center mt-auto">
                 <span class="text-sky-400 font-bold">&gt;</span>
-                <input id="cmd-input" type="text" placeholder="Enter command or instruction... (Press Enter to Execute)" class="flex-1 bg-transparent text-white outline-none font-mono text-sm">
-                <button id="btn-execute" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1 text-sm rounded font-bold">Execute [Enter]</button>
+                <input id="cmd-input" type="text" placeholder="Enter command (e.g., 'dir' or 'python --version')..." class="flex-1 bg-transparent text-white outline-none font-mono text-sm">
+                <button id="btn-execute" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1 text-sm rounded font-bold">Execute</button>
             </div>
         </main>
     </div>
 
-    <script src="/static/keyboard_listener.js"></script>
     <script src="/static/app_bus.js"></script>
+    <script src="/static/terminal.js"></script>
 </body>
 </html>
