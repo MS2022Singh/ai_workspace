@@ -15,3 +15,8 @@ Modular backend orchestration, vector memory, and autonomous tool engine.
 - Implemented `core/memory_manager.py` containing Working, Semantic, Episodic, and Preference memory layers.
 - Provisioned `core/memory_store.db` SQLite engine for persistent state tracking.
 - Wired local storage integration for persistent agent context.
+
+## Phase 4 Completed: External Tool Wrappers & Local Inference Engines
+- Implemented `core/inference_router.py` supporting unified model routing (Ollama, vLLM, SGLang, LiteLLM).
+- Implemented `core/system_tools.py` for PowerShell execution, process inspection, and system diagnostics bounded by `PermissionEngine`.
+- Integrated tool invocation logging into `MemoryManager` episodic timeline.
