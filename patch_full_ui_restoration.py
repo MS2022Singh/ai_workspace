@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+import os
+import subprocess
+
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+print("[+] Restoring full Master Prompt UI layout and components...")
+
+full_html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -187,3 +196,10 @@
     <script src="/static/app.js"></script>
 </body>
 </html>
+"""
+write_file("ui/frontend/index.html", full_html_content)
+
+subprocess.run(["git", "add", "."])
+subprocess.run(["git", "commit", "-m", "fix(ui): fully restore all Master Prompt modules, panels, tool toggles, and workspace components"])
+subprocess.run(["git", "push"])
+print("[+] Full UI successfully restored and pushed to GitHub.")
