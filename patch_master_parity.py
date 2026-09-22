@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+import os
+import subprocess
+
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+print("[+] Upgrading Command Center to 100% Master Prompt Parity...")
+
+master_html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -247,3 +256,22 @@
     <script src="/static/app.js"></script>
 </body>
 </html>
+"""
+
+write_file("ui/frontend/index.html", master_html_content)
+
+# Update CSS for new badge elements
+css_patch = """
+.badge { background: var(--bg-dark); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+.badge.active { color: var(--success); border: 1px solid var(--success); }
+.badge.inactive { color: var(--text-muted); border: 1px solid var(--border); }
+.framework-btn { background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; transition: 0.2s; }
+.framework-btn:hover { background: var(--accent); border-color: var(--accent); }
+"""
+with open("ui/frontend/styles.css", "a", encoding="utf-8") as f:
+    f.write(css_patch)
+
+subprocess.run(["git", "add", "."])
+subprocess.run(["git", "commit", "-m", "fix(ui): inject Master Prompt 7-rule prompt bar, Specialist Agents, Autonomy levels, and categorized tool registry"])
+subprocess.run(["git", "push"])
+print("[+] Master parity UI fully injected and pushed to GitHub.")

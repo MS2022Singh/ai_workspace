@@ -77,3 +77,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .mt-20 { margin-top: 20px; }
 .mt-10 { margin-top: 10px; }
+
+.badge { background: var(--bg-dark); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+.badge.active { color: var(--success); border: 1px solid var(--success); }
+.badge.inactive { color: var(--text-muted); border: 1px solid var(--border); }
+.framework-btn { background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; transition: 0.2s; }
+.framework-btn:hover { background: var(--accent); border-color: var(--accent); }
