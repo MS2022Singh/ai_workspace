@@ -3,185 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace OS</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>AI Workspace - Unified Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: monospace; }
+        .active-tab { border-bottom: 2px solid #38bdf8; color: #38bdf8; }
+        .view-section { display: none; height: 100%; flex-direction: column; }
+        .view-section.active { display: flex; }
+    </style>
 </head>
-<body>
-    <header class="top-nav">
-        <div class="brand">
-            <span class="title">AI WORKSPACE OS</span>
-            <span class="badge online">Event Bus: ONLINE</span>
-            <span class="badge active">Bug-Detector: ACTIVE</span>
+<body class="h-screen flex flex-col">
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <h1 class="text-xl font-bold text-sky-400">AI WORKSPACE OS</h1>
+            <span class="text-xs bg-sky-500/10 text-sky-400 px-2 py-1 rounded border border-sky-500/20">v1.0 Interactive</span>
         </div>
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('chat-tab')">Command Center</button>
-            <button class="tab-btn" onclick="switchTab('converter-tab')">Converter & Compressor</button>
-            <button class="tab-btn" onclick="switchTab('editor-tab')">Media/Doc Editor</button>
-            <button class="tab-btn" onclick="switchTab('tools-tab')">Tool Matrix (100+)</button>
-            <button class="tab-btn" onclick="switchTab('devices-tab')">Devices & Permissions</button>
-            <button class="tab-btn" onclick="switchTab('memory-tab')">Project Memory</button>
+        <div class="flex gap-4 text-sm text-slate-400">
+            <button id="tab-dashboard" class="active-tab px-3 py-1 font-semibold hover:text-white" onclick="switchTab('dashboard')">[Alt+1] Dashboard</button>
+            <button id="tab-matrix" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('matrix')">[Alt+2] Tool Matrix</button>
+            <button id="tab-terminal" class="px-3 py-1 font-semibold hover:text-white" onclick="switchTab('terminal')">[Alt+3] Terminal</button>
         </div>
-        <button class="voice-btn">Listening (Voice Mode)</button>
     </header>
 
-    <main class="content-container">
-        <!-- TAB 1: COMMAND CENTER -->
-        <section id="chat-tab" class="workspace-tab active">
-            <div class="layout-grid">
-                <div class="sidebar">
-                    <h3>Orchestrator Layers</h3>
-                    <div class="layer-item active">[Level 0] Read / Observe</div>
-                    <div class="layer-item">[Level 1] Low-Risk Actions</div>
-                    <div class="layer-item">[Level 2] Controlled Mods</div>
-                    <div class="layer-item locked">[Level 3] High-Risk (Locked)</div>
+    <!-- Main Workspace Area -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Left Sidebar: Active Tools -->
+        <aside class="w-72 bg-slate-900/50 border-r border-slate-800 p-4 overflow-y-auto flex flex-col gap-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">System Services</h2>
+            <div id="tool-toggles" class="flex flex-col gap-2"></div>
+        </aside>
 
-                    <h3>Specialist Agents</h3>
-                    <select id="agent-selector" class="select-input">
-                        <option value="Orchestrator">Orchestrator Agent</option>
-                        <option value="Research">Research Agent</option>
-                        <option value="Coding">Coding Agent</option>
-                        <option value="PC/OS">PC / OS Agent</option>
-                        <option value="Business">Business Agent</option>
-                        <option value="Audio">Audio Agent</option>
-                    </select>
-
-                    <div class="ingest-box">
-                        <h3>Auto-Incorporate Repo</h3>
-                        <input type="text" id="repo-url-input" placeholder="Paste GitHub URL...">
-                        <button onclick="ingestRepo()" class="action-btn">Ingest & Merge</button>
+        <!-- Dynamic Content View -->
+        <main class="flex-1 p-4 overflow-hidden bg-slate-950 flex flex-col gap-4">
+            
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-section active overflow-y-auto">
+                <h2 class="text-2xl font-bold text-white mb-4">System Overview</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">Server Status</h3>
+                        <p class="text-emerald-400 font-bold text-xl mt-1">ONLINE</p>
                     </div>
-                </div>
-
-                <div class="main-panel">
-                    <div class="cognitive-bar">
-                        <span class="section-title">Cognitive Frameworks (Quick Prompts):</span>
-                        <div class="btn-group">
-                            <button onclick="triggerCognitive('genius')">Understand as Genius</button>
-                            <button onclick="triggerCognitive('master')">Master Skill (20+ yrs)</button>
-                            <button onclick="triggerCognitive('blocks')">Fix Mental Blocks</button>
-                            <button onclick="triggerCognitive('clarity')">Confusion to Clarity</button>
-                            <button onclick="triggerCognitive('phd')">PhD Level Breakdown</button>
-                            <button onclick="triggerCognitive('framework')">Build Mental Framework</button>
-                            <button onclick="triggerCognitive('upgrade')">Upgrade Brain (30 Days)</button>
-                        </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">Active Tools</h3>
+                        <p class="text-sky-400 font-bold text-xl mt-1" id="dash-tool-count">38 Loaded</p>
                     </div>
-
-                    <div class="interaction-container">
-                        <div id="chat-history" class="chat-history">
-                            <div class="msg system">AI Workspace OS Initialization Complete. Waiting for instructions...</div>
-                        </div>
-                        <div class="input-row">
-                            <input type="text" id="chat-input" placeholder="Enter query, instruction, or trigger event..." onkeydown="if(event.key==='Enter') sendChat()">
-                            <button onclick="sendChat()" class="send-btn">Send</button>
-                        </div>
-                    </div>
-
-                    <div class="terminal-container">
-                        <div class="terminal-header">EVENT BUS / I-O TERMINAL</div>
-                        <pre id="terminal-out">Waiting for CLI command output...</pre>
-                        <input type="text" id="terminal-input" placeholder="Execute terminal command (e.g. dir, git status)..." onkeydown="if(event.key==='Enter') execCmd()">
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded">
+                        <h3 class="text-slate-400 text-sm">OS Host</h3>
+                        <p class="text-white font-bold text-xl mt-1">Windows Core</p>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- TAB 2: CONVERTER & COMPRESSOR -->
-        <section id="converter-tab" class="workspace-tab">
-            <h2>Universal File & Media Converter / Compressor</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h3>Universal File Converter</h3>
-                    <div class="form-group">
-                        <label>Select File Name:</label>
-                        <input type="text" id="convert-file-input" placeholder="e.g. document.pdf">
-                    </div>
-                    <div class="form-group">
-                        <label>Source Type:</label>
-                        <select id="convert-type" class="select-input">
-                            <option value="document">Document (PDF, DOCX, TXT, MD, EPUB)</option>
-                            <option value="image">Image (PNG, JPG, WEBP, SVG, GIF)</option>
-                            <option value="video">Video (MP4, MKV, AVI, MOV, WEBM)</option>
-                            <option value="audio">Audio (MP3, WAV, FLAC, AAC, OGG)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Target Format:</label>
-                        <input type="text" id="convert-target" placeholder="e.g. pdf, docx, mp4, mp3, png">
-                    </div>
-                    <button onclick="runConvert()" class="action-btn">Convert File</button>
-                    <div id="convert-result" class="result-box">Ready for file conversion...</div>
-                </div>
-
-                <div class="card">
-                    <h3>Universal Media Compressor</h3>
-                    <div class="form-group">
-                        <label>File Name:</label>
-                        <input type="text" id="compress-file-input" placeholder="e.g. video.mp4">
-                    </div>
-                    <div class="form-group">
-                        <label>Compression Level (%):</label>
-                        <input type="range" id="compress-quality" min="10" max="90" value="80">
-                    </div>
-                    <div class="form-group">
-                        <label>Target Size (MB):</label>
-                        <input type="number" id="compress-target-size" value="2.0" step="0.5">
-                    </div>
-                    <button onclick="runCompress()" class="action-btn">Compress File</button>
-                    <div id="compress-result" class="result-box">Ready for compression...</div>
+            <!-- Tool Matrix View -->
+            <div id="view-matrix" class="view-section overflow-y-auto">
+                <h2 class="text-2xl font-bold text-white mb-4">Integrated Repos & Capabilities</h2>
+                <div id="matrix-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Populated by JS -->
                 </div>
             </div>
-        </section>
 
-        <!-- TAB 3: MEDIA & DOCUMENT EDITOR -->
-        <section id="editor-tab" class="workspace-tab">
-            <h2>Universal Document & Media Editor Workspace</h2>
-            <div class="editor-container">
-                <div class="editor-toolbar">
-                    <button class="tool-btn">Bold</button>
-                    <button class="tool-btn">Italic</button>
-                    <button class="tool-btn">Code Block</button>
-                    <button class="tool-btn">Clear</button>
-                </div>
-                <textarea id="editor-content" class="editor-textarea" placeholder="Edit document text, code, or workspace notes here..."></textarea>
+            <!-- Terminal View -->
+            <div id="view-terminal" class="view-section overflow-y-auto bg-black p-4 rounded border border-slate-800">
+                <div class="text-slate-400 text-sm mb-2">AI Workspace OS Terminal Session Started.</div>
+                <div id="terminal-output" class="flex-1 overflow-y-auto pb-4"></div>
             </div>
-        </section>
 
-        <!-- TAB 4: TOOL MATRIX -->
-        <section id="tools-tab" class="workspace-tab">
-            <h2>Master Tool & Repository Matrix (100+ Incorporated Repos)</h2>
-            <div id="tools-matrix-container" class="tools-grid">Loading incorporated repository tools...</div>
-        </section>
-
-        <!-- TAB 5: DEVICES & PERMISSIONS -->
-        <section id="devices-tab" class="workspace-tab">
-            <h2>Device Registry & Permission Controls</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h3>Synchronized Device Registry</h3>
-                    <div class="device-item"><strong>Local Workstation</strong> - Windows 11 (Active)</div>
-                    <div class="device-item"><strong>FastAPI Core Server</strong> - http://127.0.0.1:8000</div>
-                </div>
-                <div class="card">
-                    <h3>Permission Engine (Strict Enforcement)</h3>
-                    <div class="perm-item">Level 0: Read / Observe (Active)</div>
-                    <div class="perm-item">Level 1: Low-Risk Actions (Active)</div>
-                    <div class="perm-item">Level 2: Controlled Modifications (Active)</div>
-                    <div class="perm-item">Level 3: High-Risk Actions (Approval Required)</div>
-                </div>
+            <!-- Bottom Interactive Command Input -->
+            <div class="bg-slate-900 border border-slate-800 rounded p-2 flex gap-2 items-center mt-auto">
+                <span class="text-sky-400 font-bold">&gt;</span>
+                <input id="cmd-input" type="text" placeholder="Enter command (e.g., 'dir' or 'python --version')..." class="flex-1 bg-transparent text-white outline-none font-mono text-sm">
+                <button id="btn-execute" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1 text-sm rounded font-bold">Execute</button>
             </div>
-        </section>
-
-        <!-- TAB 6: PROJECT MEMORY -->
-        <section id="memory-tab" class="workspace-tab">
-            <h2>Project Memory & Knowledge Graph</h2>
-            <div class="memory-box">
-                <p><strong>System State:</strong> Active</p>
-                <p><strong>Modules Loaded:</strong> Converters, Ingestor, Bug-Detector, Cognitive Frameworks</p>
-                <p><strong>Port:</strong> 8000</p>
-            </div>
-        </section>
-    </main>
+        </main>
+    </div>
 
     <script src="/static/app_bus.js"></script>
+    <script src="/static/terminal.js"></script>
 </body>
 </html>
