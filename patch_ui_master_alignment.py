@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+import os
+import subprocess
+
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+print("[+] Aligning UI with Master Prompt requirements (Memory, File Tree, Logs)...")
+
+# 1. Update HTML with Project Memory and File Explorer
+index_html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -171,3 +181,10 @@
     <script src="/static/app.js"></script>
 </body>
 </html>
+"""
+write_file("ui/frontend/index.html", index_html_content)
+
+subprocess.run(["git", "add", "."])
+subprocess.run(["git", "commit", "-m", "feat(ui): add Project Memory, File Explorer, and Agent Status to align with Master Prompt"])
+subprocess.run(["git", "push"])
+print("[+] Master alignment components injected. Pushed to GitHub.")
