@@ -74,3 +74,6 @@ textarea { flex-grow: 1; background: transparent; border: none; color: var(--tex
 input:checked + .slider { background-color: var(--success); }
 input:checked + .slider:before { transform: translateX(20px); }
 .hidden { display: none !important; }
+
+.mt-20 { margin-top: 20px; }
+.mt-10 { margin-top: 10px; }

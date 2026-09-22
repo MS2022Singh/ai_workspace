@@ -50,13 +50,30 @@
                 </div>
             </section>
 
+            <!-- Panel: Research (Crawl4AI & Deep Search) -->
+            <section id="research-panel" class="workspace-panel">
+                <div class="panel-header"><h2>Deep Research & Crawling</h2></div>
+                <div class="repo-input">
+                    <input type="text" placeholder="Enter research topic or URL to crawl (e.g., 'Latest AI models' or 'https://...')">
+                    <button class="action-btn"><i class="fas fa-spider"></i> Dispatch Crawler</button>
+                </div>
+                <div class="chat-stream mt-20" style="border: 1px dashed var(--border); border-radius: 8px;">
+                    <div class="message system-msg">
+                        <div class="msg-avatar"><i class="fas fa-info-circle"></i></div>
+                        <div class="msg-content">
+                            <p>Research module standing by. Awaiting targets.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Panel: Files & Media (Conversion & Editors) -->
-            <section id="media-panel" class="workspace-panel hidden">
+            <section id="media-panel" class="workspace-panel">
                 <div class="panel-header"><h2>Files, Media & Conversion</h2></div>
                 <div class="drop-zone" id="file-drop-zone">
                     <i class="fas fa-cloud-upload-alt fa-3x"></i>
                     <p>Drag & Drop files here, or click to upload</p>
-                    <span class="sub-text">Supports conversion, compression, and editing</span>
+                    <span class="sub-text">Supports format conversion, data extraction, and visual analysis</span>
                 </div>
                 <div class="conversion-tools">
                     <button class="action-btn"><i class="fas fa-file-pdf"></i> PDF Tools</button>
@@ -67,12 +84,35 @@
             </section>
 
             <!-- Panel: Code -->
-            <section id="code-panel" class="workspace-panel hidden">
+            <section id="code-panel" class="workspace-panel">
                 <div class="panel-header"><h2>Code & Repository Operations</h2></div>
                 <div class="code-workspace">
                     <div class="repo-input">
                         <input type="text" placeholder="Paste GitHub URL or Tool link for Auto-Incorporation...">
-                        <button class="action-btn">Analyze & Merge</button>
+                        <button class="action-btn"><i class="fas fa-code-branch"></i> Analyze & Merge</button>
+                    </div>
+                </div>
+                <div class="chat-stream mt-20" style="background: var(--bg-input); border-radius: 8px;">
+                    <pre style="padding: 15px; color: var(--text-muted); font-family: monospace;">// Code analysis workspace loaded.
+// Ready to invoke OpenHands or Qwen logic.</pre>
+                </div>
+            </section>
+
+            <!-- Panel: System -->
+            <section id="system-panel" class="workspace-panel">
+                <div class="panel-header"><h2>System & Environment Control</h2></div>
+                <div class="system-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="sys-card" style="background: var(--bg-input); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 15px;"><i class="fas fa-key"></i> API Configuration</h3>
+                        <input type="password" placeholder="OpenAI API Key" style="width: 100%; padding: 10px; margin-bottom: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: white; border-radius: 4px;">
+                        <input type="password" placeholder="Anthropic API Key" style="width: 100%; padding: 10px; margin-bottom: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: white; border-radius: 4px;">
+                        <button class="action-btn" style="width: 100%;">Save Configuration</button>
+                    </div>
+                    <div class="sys-card" style="background: var(--bg-input); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 15px;"><i class="fas fa-terminal"></i> Local Terminal Output</h3>
+                        <div class="terminal-window" style="background: #000; padding: 10px; border-radius: 4px; font-family: monospace; color: #0f0; height: 110px; overflow-y: auto;">
+                            <p>PS C:\AI_Workspacei_workspace_core> </p>
+                        </div>
                     </div>
                 </div>
             </section>

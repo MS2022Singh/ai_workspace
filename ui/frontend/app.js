@@ -1,16 +1,18 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Panel Switching Logic
+    // Panel Switching Logic - FIXED
     const navButtons = document.querySelectorAll(".nav-btn");
     const panels = document.querySelectorAll(".workspace-panel");
 
     navButtons.forEach(btn => {
         btn.addEventListener("click", () => {
+            // Remove active states from all buttons and panels
             navButtons.forEach(b => b.classList.remove("active"));
-            panels.forEach(p => p.classList.add("hidden"));
+            panels.forEach(p => p.classList.remove("active"));
             
+            // Add active state to clicked button and targeted panel
             btn.classList.add("active");
-            document.getElementById(btn.dataset.target).classList.remove("hidden");
+            document.getElementById(btn.dataset.target).classList.add("active");
         });
     });
 
