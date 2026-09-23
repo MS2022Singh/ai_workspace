@@ -48,6 +48,13 @@
             "active": true,
             "perm": "EXECUTE",
             "source_repo": "https://github.com/example/scraper"
+        },
+        "scraper_tool_294b13": {
+            "name": "Scraper Tool 294b13",
+            "category": "auto_incorporated",
+            "active": true,
+            "perm": "EXECUTE",
+            "source_repo": "https://github.com/example/scraper"
         }
     },
     "models": {
