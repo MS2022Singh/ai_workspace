@@ -15,7 +15,7 @@
         "pyrit": {
             "name": "PyRIT Red-Teaming",
             "category": "security",
-            "active": false,
+            "active": true,
             "perm": "SYSTEM"
         },
         "crawl4ai": {
