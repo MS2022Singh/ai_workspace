@@ -19,7 +19,7 @@
         body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
         #sidebar {
-            width: 300px;
+            width: 320px;
             background-color: var(--panel-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -36,12 +36,19 @@
             background-color: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .tool-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .tool-name { font-weight: 600; font-size: 0.9rem; }
-        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; background-color: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-        .tool-meta { font-size: 0.8rem; color: var(--text-muted); }
+        .tool-info { display: flex; flex-direction: column; gap: 2px; }
+        .tool-name { font-weight: 600; font-size: 0.88rem; }
+        .tool-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+        .toggle-switch { width: 34px; height: 18px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
+        .toggle-switch:checked { background: var(--accent-green); }
+        .toggle-switch::before { content: ''; width: 14px; height: 14px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
+        .toggle-switch:checked::before { left: 18px; }
 
         #main-content { flex: 1; display: flex; flex-direction: column; }
 
@@ -77,6 +84,7 @@
         }
         .msg-system { background-color: var(--panel-bg); border: 1px solid var(--border-color); align-self: flex-start; }
         .msg-user { background-color: var(--accent-blue); color: white; align-self: flex-end; }
+        .msg-media { margin-top: 10px; border-radius: 6px; max-width: 100%; border: 1px solid var(--border-color); display: block; }
         .msg-logs { font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; background: #090d16; color: #38bdf8; padding: 10px; border-radius: 6px; margin-top: 10px; }
 
         #input-panel {
@@ -139,7 +147,7 @@
                 <div class="status-pill"><span class="status-dot"></span> System Clean</div>
                 <div id="device-info" class="tool-meta">Device: Loading...</div>
             </div>
-            <div class="tool-meta" id="version-tag">Version: v0.8.2</div>
+            <div class="tool-meta" id="version-tag">Version: v0.8.3</div>
         </div>
 
         <div id="chat-window">
@@ -151,10 +159,8 @@
 
         <div id="input-panel">
             <select class="agent-select" id="agent-selector">
-                <option value="Auto-Orchestrator">Auto-Orchestrator</option>
-                <option value="PhD Research Agent">PhD Research Agent</option>
-                <option value="Full-Stack Engineer">Full-Stack Engineer</option>
-                <option value="Voice Assistant">Voice Assistant</option>
+                <option value="research">PhD Research Agent</option>
+                <option value="coding">Full-Stack Engineer</option>
             </select>
             <input type="text" class="command-input" id="prompt-input" placeholder="Enter task or tool payload command..." onkeydown="if(event.key==='Enter') executeCommand()">
             <button class="send-btn" onclick="executeCommand()">Execute</button>
@@ -173,16 +179,24 @@
                     const tool = tools[id];
                     const card = document.createElement('div');
                     card.className = 'tool-card';
-                    card.innerHTML = '<div class="tool-header">' +
+                    card.innerHTML = '<div class="tool-info">' +
                         '<span class="tool-name">' + (tool.name || id) + '</span>' +
-                        '<span class="badge">' + (tool.perm || 'ACTIVE') + '</span>' +
+                        '<span class="tool-meta">Cat: ' + (tool.category || 'General') + '</span>' +
                         '</div>' +
-                        '<div class="tool-meta">Category: ' + (tool.category || 'General') + '</div>';
+                        '<input type="checkbox" class="toggle-switch" ' + (tool.active ? 'checked' : '') + ' onchange="toggleTool(\'' + id + '\', this.checked)">';
                     container.appendChild(card);
                 });
             } catch (err) {
                 console.error("Failed to load tools:", err);
             }
+        }
+
+        async function toggleTool(toolId, active) {
+            await fetch('/api/tools/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tool_id: toolId, active: active })
+            });
         }
 
         async function loadSystemStatus() {
@@ -224,9 +238,14 @@
                 sysMsg.className = 'message-box msg-system';
                 
                 let logHtml = data.execution_logs.map(log => '• ' + log).join('<br>');
-                sysMsg.innerHTML = '<strong>' + data.agent + '</strong><br>' +
-                    data.response +
-                    '<div class="msg-logs">' + logHtml + '</div>';
+                let contentHtml = '<strong>' + data.agent + '</strong><br>' + data.response;
+
+                if (data.type === 'image' && data.media_url) {
+                    contentHtml += '<br><img src="' + data.media_url + '" class="msg-media"/>';
+                }
+
+                contentHtml += '<div class="msg-logs">' + logHtml + '</div>';
+                sysMsg.innerHTML = contentHtml;
                 chatWindow.appendChild(sysMsg);
                 chatWindow.scrollTop = chatWindow.scrollHeight;
             } catch (err) {
