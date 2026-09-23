@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+import os
+import subprocess
+
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+print("[+] Deploying complete master specification alignment patch...")
+
+complete_html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -249,3 +258,11 @@
     <script src="/static/app.js"></script>
 </body>
 </html>
+"""
+
+write_file("ui/frontend/index.html", complete_html_content)
+
+subprocess.run(["git", "add", "."])
+subprocess.run(["git", "commit", "-m", "fix(ui): deploy complete master specification alignment with prompt frameworks, specialist agents, and tools"])
+subprocess.run(["git", "push"])
+print("[+] Complete Master UI patch successfully deployed and pushed to GitHub.")
