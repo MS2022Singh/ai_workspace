@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center v0.1.0</title>
+    <title>AI Workspace Command Center v0.1.1</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #090d16; color: #f8fafc; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar */
         .sidebar { width: 340px; background-color: #0f172a; border-right: 1px solid #1e293b; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
         .sidebar h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 12px; margin-top: 15px; }
         .sidebar h2:first-child { margin-top: 0; }
@@ -24,7 +23,6 @@
         .tool-name { font-weight: 600; color: #f1f5f9; }
         .tool-cat { font-size: 11px; color: #64748b; text-transform: uppercase; }
         
-        /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .3s; border-radius: 22px; }
@@ -32,7 +30,6 @@
         input:checked + .slider { background-color: #10b981; }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* Main Workspace */
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
         .header { height: 60px; background-color: #0f172a; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .header h1 { font-size: 18px; font-weight: 600; color: #f8fafc; }
@@ -40,7 +37,6 @@
 
         .chat-container { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
         
-        /* Message Bubbles */
         .msg { max-width: 80%; padding: 16px; border-radius: 12px; line-height: 1.5; font-size: 14px; }
         .msg.user { background: #3b82f6; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         .msg.agent { background: #1e293b; border: 1px solid #334155; align-self: flex-start; border-bottom-left-radius: 2px; width: 100%; }
@@ -49,7 +45,6 @@
         .logs-box { margin-top: 12px; background: #0f172a; border: 1px solid #334155; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #94a3b8; }
         .log-item { margin: 4px 0; color: #38bdf8; }
 
-        /* Input Footer */
         .footer { padding: 20px 30px; background: #0f172a; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 10px; }
         .input-row { display: flex; gap: 15px; }
         textarea { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-size: 14px; resize: none; height: 50px; outline: none; }
@@ -75,14 +70,14 @@
 
     <div class="main-container">
         <div class="header">
-            <h1>AI Workspace Command Center</h1>
-            <div class="status-badge" id="systemStatus">System Clean (Windows)</div>
+            <h1>AI Workspace Command Center v0.1.1</h1>
+            <div class="status-badge" id="systemStatus">System Clean (v0.1.1)</div>
         </div>
 
         <div class="chat-container" id="chatContainer">
             <div class="msg agent">
-                <div class="agent-title">AI Workspace OS Active</div>
-                Integrated with multi-agent reasoning pipelines, dynamic cognitive frameworks, thread-safe memory stores, and self-upgrading tool execution handlers. Select a cognitive framework or specialist agent below and enter your task.
+                <div class="agent-title">AI Workspace OS v0.1.1 Active</div>
+                Upgraded with live telemetry logging, sandbox repository verification, and cognitive framework routing. Select a specialist agent or framework below to begin execution.
             </div>
         </div>
 
