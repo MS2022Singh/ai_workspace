@@ -30,7 +30,7 @@ class CommandCenterHandler(http.server.SimpleHTTPRequestHandler):
             sys_status = {
                 "bug_report": bug_eliminator.inspect_system(),
                 "device": device_registry.device_info,
-                "version": "v0.8.1"
+                "version": "v0.8.2"
             }
             self.wfile.write(json.dumps(sys_status).encode("utf-8"))
         else:
@@ -49,12 +49,12 @@ class CommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                 "status": "success",
                 "agent": agent,
                 "prompt": prompt,
-                "response": f"Task processed successfully by {agent}.",
+                "response": f"Task '{prompt}' executed successfully by {agent}.",
                 "execution_logs": [
-                    "Request received & parsed",
-                    f"Assigned to {agent}",
-                    "Policy permissions validated (READ/WRITE)",
-                    "Task execution verified clean"
+                    "Received task payload",
+                    f"Delegated execution to {agent}",
+                    "Validated permission boundary policies",
+                    "Task output generated cleanly"
                 ]
             }
 
