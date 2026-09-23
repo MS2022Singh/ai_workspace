@@ -37,7 +37,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                 sys_status = {
                     "bug_report": bug_eliminator.inspect_system(),
                     "device": device_registry.device_info,
-                    "version": "v0.9.0"
+                    "version": "v0.9.1"
                 }
                 self._send_json(sys_status)
             else:
@@ -122,7 +122,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server(port=8080):
     handler = ThreadedCommandCenterHandler
-    with socketserver.ThreadingHTTPServer(("", port), handler) as httpd:
+    with http.server.ThreadingHTTPServer(("", port), handler) as httpd:
         print(f"[UI SERVER] Multithreaded Command Center API active on http://localhost:{port}")
         httpd.serve_forever()
 
