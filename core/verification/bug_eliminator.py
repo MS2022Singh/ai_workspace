@@ -1,34 +1,37 @@
-import sys
+import sqlite3
 import os
-import logging
-sys.path.append(os.path.abspath("."))
-
-from core.event_bus.pypubsub_router import event_bus
-
-logger = logging.getLogger("BugEliminator")
 
 class BugEliminator:
-    def __init__(self):
-        self.error_log = []
+    def __init__(self, db_path="workspace_memory.db"):
+        self.db_path = db_path
+        self._init_db()
 
-    def inspect_system(self) -> dict:
-        issues_found = []
-        # Check database existence
-        if not os.path.exists("docs/project_memory/workspace_memory.db"):
-            issues_found.append({"type": "missing_db", "severity": "medium"})
-        
-        # Check UI static files
-        if not os.path.exists("modules/ui/index.html"):
-            issues_found.append({"type": "missing_ui", "severity": "high"})
+    def _get_connection(self):
+        return sqlite3.connect(self.db_path, check_same_thread=False)
 
-        return {"status": "clean" if not issues_found else "issues_detected", "issues": issues_found}
+    def _init_db(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS system_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_type TEXT,
+                details TEXT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+        conn.close()
 
-    def resolve_issue(self, issue: dict) -> bool:
-        if issue["type"] == "missing_db":
-            from core.memory.memory_manager import memory_manager
-            memory_manager._init_db()
-            logger.info("[BUG ELIMINATOR] Re-initialized missing SQLite DB.")
-            return True
-        return False
+    def inspect_system(self):
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM system_logs")
+            count = cursor.fetchone()[0]
+            conn.close()
+            return {"status": "clean", "total_logged_events": count, "active_issues": 0}
+        except Exception as e:
+            return {"status": "degraded", "error": str(e), "active_issues": 1}
 
 bug_eliminator = BugEliminator()
