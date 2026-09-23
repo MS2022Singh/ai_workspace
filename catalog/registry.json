@@ -41,6 +41,13 @@
             "category": "creative",
             "active": true,
             "perm": "WRITE"
+        },
+        "custom_scraper_tool": {
+            "name": "Custom Scraper Tool",
+            "category": "auto_incorporated",
+            "active": true,
+            "perm": "EXECUTE",
+            "source_repo": "https://github.com/example/scraper"
         }
     },
     "models": {

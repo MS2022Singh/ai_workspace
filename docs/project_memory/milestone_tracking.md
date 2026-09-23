@@ -19,7 +19,12 @@
 ## Milestone 5: Front-End Command Center UI & Full Verification Test Suite
 - **Status:** Complete
 - **Tag:** v0.5.0
+
+## Milestone 6: Bug Eliminator, Hardware Device Registry & Self-Upgradation Engine
+- **Status:** Complete
+- **Tag:** v0.6.0
 - **Components Implemented:**
-  - Interactive Command Center Web Interface (modules/ui/index.html)
-  - Web Server & Static File Router (modules/ui/server.py)
-  - Automated Unit & Integration Test Discovery Package (	ests/)
+  - Real-Time Bug Detector & Eliminator (core/verification/bug_eliminator.py)
+  - Hardware Device Registry (devices/registry.py)
+  - Autonomous Self-Upgradation Pipeline (core/orchestrator/self_upgrade.py)
+  - System Resilience Verification Suite (	ests/unit/test_system_resilience.py)
