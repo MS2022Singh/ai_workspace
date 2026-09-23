@@ -5,112 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Workspace Command Center</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { display: flex; height: 100vh; background: #0f172a; color: #f8fafc; }
-        #sidebar { width: 320px; background: #1e293b; border-right: 1px solid #334155; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-        #main-chat { flex: 1; display: flex; flex-direction: column; height: 100vh; }
-        #chat-stream { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-        .message { padding: 14px 18px; border-radius: 8px; max-width: 80%; line-height: 1.5; }
-        .user { background: #2563eb; align-self: flex-end; }
-        .assistant { background: #334155; align-self: flex-start; }
-        .media-payload { margin-top: 10px; border-radius: 6px; max-width: 100%; border: 1px solid #475569; }
-        #input-panel { padding: 20px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 12px; }
-        textarea { flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 12px; border-radius: 6px; resize: none; height: 50px; }
-        button { background: #2563eb; color: #fff; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #1d4ed8; }
-        .tool-card { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
-        .toggle-switch { width: 36px; height: 20px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
-        .toggle-switch:checked { background: #10b981; }
-        .toggle-switch::before { content: ''; width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
-        .toggle-switch:checked::before { left: 18px; }
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        #sidebar {
+            width: 320px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .sidebar-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: var(--accent-blue); display: flex; align-items: center; justify-content: space-between; }
+        .refresh-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
+        .refresh-btn:hover { color: var(--text-main); }
+
+        .tool-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .tool-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s ease;
+        }
+        .tool-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+        .tool-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .tool-name { font-weight: 600; font-size: 0.95rem; }
+        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .badge-active { background-color: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+        .tool-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Main Workspace */
+        #main-content { flex: 1; display: flex; flex-direction: column; }
+
+        /* Top Status Bar */
+        #top-bar {
+            height: 60px;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        .system-status { display: flex; align-items: center; gap: 15px; font-size: 0.85rem; }
+        .status-pill { display: flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .status-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; }
+
+        /* Execution Terminal / Chat Window */
+        #chat-window {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-box {
+            max-width: 80%;
+            padding: 15px 18px;
+            border-radius: 10px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .msg-system { background-color: var(--panel-bg); border: 1px solid var(--border-color); align-self: flex-start; }
+        .msg-user { background-color: var(--accent-blue); color: white; align-self: flex-end; }
+        .msg-logs { font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; background: #090d16; color: #38bdf8; padding: 10px; border-radius: 6px; margin-top: 10px; }
+
+        /* Input Controls */
+        #input-panel {
+            padding: 20px 25px;
+            background-color: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .agent-select {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .command-input {
+            flex: 1;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .command-input:focus { border-color: var(--accent-blue); }
+
+        .send-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .send-btn:hover { background-color: #2563eb; }
     </style>
 </head>
 <body>
+
+    <!-- Left Sidebar: Tool Registry -->
     <div id="sidebar">
-        <h2>Tool Registry Hub</h2>
-        <div id="tools-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
-    </div>
-    <div id="main-chat">
-        <div id="chat-stream">
-            <div class="message assistant">AI Workspace Command Center active. Assign a task or trigger a registered tool.</div>
+        <div class="sidebar-title">
+            <span>Tool Registry Hub</span>
+            <button class="refresh-btn" onclick="loadTools()" title="Refresh Registry">?</button>
         </div>
+        <div class="tool-list" id="tool-list-container">
+            <div class="tool-meta">Loading registered tools...</div>
+        </div>
+    </div>
+
+    <!-- Main Workspace Area -->
+    <div id="main-content">
+        <!-- Top Status Bar -->
+        <div id="top-bar">
+            <div class="system-status">
+                <div class="status-pill"><span class="status-dot"></span> System Clean</div>
+                <div id="device-info" class="tool-meta">Device: Loading...</div>
+            </div>
+            <div class="tool-meta" id="version-tag">Version: v0.8.1</div>
+        </div>
+
+        <!-- Chat / Output Area -->
+        <div id="chat-window">
+            <div class="message-box msg-system">
+                <strong>Command Center Ready</strong><br>
+                AI Workspace active with full Agent & Tool Integration. Type a prompt or trigger an action below.
+            </div>
+        </div>
+
+        <!-- Input Bar -->
         <div id="input-panel">
-            <textarea id="task-input" placeholder="Type a task or command... (Press Enter to send)"></textarea>
-            <button id="send-btn">Send</button>
+            <select class="agent-select" id="agent-selector">
+                <option value="Auto-Orchestrator">Auto-Orchestrator</option>
+                <option value="PhD Research Agent">PhD Research Agent</option>
+                <option value="Full-Stack Engineer">Full-Stack Engineer</option>
+                <option value="Voice Assistant">Voice Assistant</option>
+            </select>
+            <input type="text" class="command-input" id="prompt-input" placeholder="Enter task or tool payload command..." onkeydown="if(event.key==='Enter') executeCommand()">
+            <button class="send-btn" onclick="executeCommand()">Execute</button>
         </div>
     </div>
 
     <script>
-        async function fetchStatus() {
-            const res = await fetch('/api/status');
-            const data = await res.json();
-            const container = document.getElementById('tools-list');
-            container.innerHTML = '';
-            for (const [id, tool] of Object.entries(data.tools)) {
-                const card = document.createElement('div');
-                card.className = 'tool-card';
-                card.innerHTML = 
-                    <span></span>
-                    <input type="checkbox" class="toggle-switch"  onchange="toggleTool('', this.checked)">
-                ;
-                container.appendChild(card);
+        async function loadTools() {
+            try {
+                const res = await fetch('/api/tools');
+                const tools = await res.json();
+                const container = document.getElementById('tool-list-container');
+                container.innerHTML = '';
+
+                Object.keys(tools).forEach(id => {
+                    const tool = tools[id];
+                    const card = document.createElement('div');
+                    card.className = 'tool-card';
+                    card.innerHTML = 
+                        <div class="tool-header">
+                            <span class="tool-name">\</span>
+                            <span class="badge badge-active">\</span>
+                        </div>
+                        <div class="tool-meta">Category: \</div>
+                    ;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Failed to load tools:", err);
             }
         }
 
-        async function toggleTool(toolId, active) {
-            await fetch('/api/tools/toggle', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tool_id: toolId, active: active })
-            });
+        async function loadSystemStatus() {
+            try {
+                const res = await fetch('/api/system');
+                const sys = await res.json();
+                document.getElementById('device-info').innerText = Device: \ (\);
+                document.getElementById('version-tag').innerText = Version: \;
+            } catch (err) {
+                console.error("Failed to load system status:", err);
+            }
         }
 
-        async function sendTask() {
-            const input = document.getElementById('task-input');
-            const task = input.value.trim();
-            if (!task) return;
+        async function executeCommand() {
+            const input = document.getElementById('prompt-input');
+            const prompt = input.value.trim();
+            if (!prompt) return;
 
-            const stream = document.getElementById('chat-stream');
-            stream.innerHTML += <div class="message user"></div>;
+            const agent = document.getElementById('agent-selector').value;
+            const chatWindow = document.getElementById('chat-window');
+
+            // Render User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message-box msg-user';
+            userMsg.innerText = prompt;
+            chatWindow.appendChild(userMsg);
+
             input.value = '';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
 
-            let res, data;
-            if (task.toLowerCase().includes("image") || task.toLowerCase().includes("generate")) {
-                res = await fetch('/api/tool', {
+            try {
+                const res = await fetch('/api/execute', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tool_id: "fooocus", params: { prompt: task } })
+                    body: JSON.stringify({ prompt, agent })
                 });
-            } else {
-                res = await fetch('/api/dispatch', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ agent: "research", task: task })
-                });
-            }
+                const data = await res.json();
 
-            data = await res.json();
-            let msg = <div class="message assistant">;
-            if (data.status === "success") {
-                if (data.type === "image") {
-                    msg += <p></p><img src="https://via.placeholder.com/400x300.png?text=Generated+Image+Output" class="media-payload"/>;
-                } else {
-                    msg += <p></p>;
-                }
-            } else {
-                msg += <p style="color:#ef4444;">Error/Blocked: </p>;
+                // Render Agent Response
+                const sysMsg = document.createElement('div');
+                sysMsg.className = 'message-box msg-system';
+                
+                let logHtml = data.execution_logs.map(log => • \).join('<br>');
+                sysMsg.innerHTML = 
+                    <strong>\</strong><br>
+                    \
+                    <div class="msg-logs">\</div>
+                ;
+                chatWindow.appendChild(sysMsg);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            } catch (err) {
+                console.error("Execution failed:", err);
             }
-            msg += </div>;
-            stream.innerHTML += msg;
-            stream.scrollTop = stream.scrollHeight;
         }
 
-        document.getElementById('send-btn').addEventListener('click', sendTask);
-        document.getElementById('task-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTask(); }
-        });
-
-        fetchStatus();
+        // Initialize Page
+        loadTools();
+        loadSystemStatus();
     </script>
 </body>
 </html>
