@@ -1,0 +1,60 @@
+{
+    "models": [
+        {
+            "id": "vllm-engine",
+            "name": "VLLm High-Throughput",
+            "category": "llm",
+            "active": false
+        },
+        {
+            "id": "ollama-local",
+            "name": "Ollama Local Fleet",
+            "category": "llm",
+            "active": false
+        },
+        {
+            "id": "qwen-3.8-local",
+            "name": "Qwen 3.8 Local",
+            "category": "llm",
+            "active": true
+        },
+        {
+            "id": "deepseek-reasonix",
+            "name": "DeepSeek Reasonix",
+            "category": "llm",
+            "active": false
+        },
+        {
+            "id": "wan2.2-vlm",
+            "name": "Wan2.2 Vision Language",
+            "category": "vlm",
+            "active": false
+        },
+        {
+            "id": "comfyui-engine",
+            "name": "ComfyUI Image Gen",
+            "category": "vlm",
+            "active": false
+        },
+        {
+            "id": "whisper-local",
+            "name": "Whisper Audio",
+            "category": "audio",
+            "active": false
+        }
+    ],
+    "personas": [
+        {
+            "id": "phd-researcher",
+            "prompt": "Act as a PhD-level researcher. Base all output on real evidence and provide citations."
+        },
+        {
+            "id": "expert-attorney",
+            "prompt": "Act as an expert attorney. Draft documents with legal precision and cite relevant precedent."
+        },
+        {
+            "id": "patent-drafter",
+            "prompt": "Act as a patent drafter. Structure claims logically with technical exactness."
+        }
+    ]
+}

@@ -1,97 +1,97 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-    const navButtons = document.querySelectorAll(".nav-btn");
+    // Navigation Panel Switching
+    const navBtns = document.querySelectorAll(".nav-btn");
     const panels = document.querySelectorAll(".workspace-panel");
-    let activePanelId = "chat-panel"; // Default tracking
 
-    navButtons.forEach(btn => {
+    navBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            navButtons.forEach(b => b.classList.remove("active"));
+            navBtns.forEach(b => b.classList.remove("active"));
             panels.forEach(p => p.classList.remove("active"));
+
             btn.classList.add("active");
-            activePanelId = btn.dataset.target;
-            document.getElementById(activePanelId).classList.add("active");
+            const targetId = btn.getAttribute("data-target");
+            const target = document.getElementById(targetId);
+            if(target) target.classList.add("active");
         });
     });
 
-    const chatInput = document.getElementById("main-input");
+    // Chat Command Handling
     const sendBtn = document.getElementById("send-btn");
+    const mainInput = document.getElementById("main-input");
     const chatStream = document.getElementById("chat-stream");
 
-    // Phase 4: Async backend communication
-    const sendToEventBus = async (commandText, source) => {
+    async function sendCommand(actionText, module="Chat Hub") {
+        if(!actionText.trim()) return;
+
+        // User Message
+        const userDiv = document.createElement("div");
+        userDiv.className = "message user";
+        userDiv.innerHTML = `<div class="msg-bubble"><p>${escapeHtml(actionText)}</p></div>`;
+        chatStream.appendChild(userDiv);
+        chatStream.scrollTop = chatStream.scrollHeight;
+
+        mainInput.value = "";
+
         try {
-            const response = await fetch('/api/command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    source_panel: source,
-                    command: commandText,
-                    parameters: {}
-                })
+            const res = await fetch("/api/command", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ module: module, action: actionText })
             });
-            const data = await response.json();
-            return data.message;
-        } catch (error) {
-            console.error("Bus Error:", error);
-            return "Error: Event Bus connection failed.";
+            const data = await res.json();
+
+            // System Response
+            const sysDiv = document.createElement("div");
+            sysDiv.className = "message system";
+            sysDiv.innerHTML = `<div class="msg-bubble"><p>${escapeHtml(data.response)}</p></div>`;
+            chatStream.appendChild(sysDiv);
+            chatStream.scrollTop = chatStream.scrollHeight;
+        } catch (err) {
+            console.error("Command execution failed:", err);
         }
-    };
+    }
 
-    const sendMessage = async () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        // Render User Message
-        const userMsg = document.createElement("div");
-        userMsg.className = "message user-msg";
-        userMsg.innerHTML = `<div class="msg-content"><p>${text}</p></div>`;
-        chatStream.appendChild(userMsg);
-        chatInput.value = "";
-        chatStream.scrollTop = chatStream.scrollHeight;
-
-        // Await Backend Response
-        const backendResponse = await sendToEventBus(text, activePanelId);
-        
-        // Render System Message
-        const sysMsg = document.createElement("div");
-        sysMsg.className = "message system-msg";
-        sysMsg.innerHTML = `<div class="msg-avatar"><i class="fas fa-robot"></i></div>
-                            <div class="msg-content"><p>${backendResponse}</p></div>`;
-        chatStream.appendChild(sysMsg);
-        chatStream.scrollTop = chatStream.scrollHeight;
-    };
-
-    chatInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-    sendBtn.addEventListener("click", sendMessage);
-
-    // Panel Action Buttons Mapping
-    document.querySelectorAll(".action-btn").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            const btnText = e.target.innerText.trim();
-            const parentInput = e.target.previousElementSibling;
-            const command = parentInput && parentInput.tagName === "INPUT" ? parentInput.value : btnText;
-            
-            if(command) {
-                const sysResponse = await sendToEventBus(command, activePanelId);
-                alert(`System Response:\n${sysResponse}`);
+    if(sendBtn && mainInput) {
+        sendBtn.addEventListener("click", () => sendCommand(mainInput.value));
+        mainInput.addEventListener("keydown", (e) => {
+            if(e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendCommand(mainInput.value);
             }
         });
-    });
-
-    const dropZone = document.getElementById("file-drop-zone");
-    if(dropZone) {
-        dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent)"; });
-        dropZone.addEventListener("dragleave", () => { dropZone.style.borderColor = "var(--border)"; });
-        dropZone.addEventListener("drop", (e) => {
-            e.preventDefault();
-            dropZone.style.borderColor = "var(--border)";
-            alert("File upload event triggered. Ready for backend pipeline.");
-        });
     }
+
+    // Prompt Framework Injector
+    window.injectFramework = function(type) {
+        if(type === 'genius') mainInput.value = "I want to understand [insert topic] as if I were a genius. Break down concept using advanced analogies, real world applications, counterexamples and multiple perspectives.";
+        if(type === 'skill') mainInput.value = "Assume you're a master of [insert skill] with 20+ years of experience. Reverse engineer the process and build a day-by-day plan using free/low-cost resources.";
+        if(type === 'blocks') mainInput.value = "I have been struggling with [insert personal issue]. Analyze it like a cognitive scientist, identify root causes, and design a habit loop.";
+        if(type === 'clarity') mainInput.value = "I don't understand [insert complex concept]. Break it down step-by-step using metaphors and create a permanent mental shortcut.";
+        if(type === 'phd') mainInput.value = "Teach me [insert topic] like I'm preparing for a PhD. Start from first principles, foundational theories, and historical evolution.";
+        if(type === 'frameworks') mainInput.value = "I'm trying to master [insert skill/topic]. Build me a custom mental model or decision framework.";
+        if(type === 'upgrade') mainInput.value = "Design a 30-day brain upgrade program including high IQ thinking routines, memory techniques, and rest habits.";
+        mainInput.focus();
+    };
+
+    // Tool Registry Toggles
+    document.querySelectorAll(".tool-toggle-item input").forEach(checkbox => {
+        checkbox.addEventListener("change", async (e) => {
+            const item = e.target.closest(".tool-toggle-item");
+            const toolName = item.getAttribute("data-tool");
+            const category = item.getAttribute("data-category");
+            const enabled = e.target.checked;
+
+            await fetch("/api/toggle-tool", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ category: category, tool: toolName, enabled: enabled })
+            });
+        });
+    });
 });
+
+function escapeHtml(text) {
+    const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
