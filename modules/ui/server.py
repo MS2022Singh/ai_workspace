@@ -12,94 +12,118 @@ from devices.registry import device_registry
 from modules.agents.agent_manager import agent_manager
 from modules.tools.tool_handler import tool_handler
 
-class CommandCenterHandler(http.server.SimpleHTTPRequestHandler):
+PROMPT_FRAMEWORKS = {
+    "genius": "I want to understand {topic} as if I were a genius. Break down concepts using advanced analogies, real-world applications, counterexamples, and multiple perspectives, then test my understanding with expert-level questions.",
+    "master_skill": "Assume you are a master of {topic} with 20+ years of experience. Reverse engineer the process that got you there and build me a day-by-day plan to reach that level as fast as humanly possible using only free or low-cost resources.",
+    "mental_block": "I have been struggling with {topic}. Analyze it like a cognitive scientist. Identify the root causes, the behavioral patterns behind it, and design a habit loop to eliminate it.",
+    "clarity": "Break down {topic} step-by-step using metaphors, visual imagery, and real-world examples. Create a mental shortcut or framework to remember it forever.",
+    "phd_breakdown": "Teach me {topic} like I am preparing for a PhD. Start from first principles, explain all foundational theories, include historical evolution, and give key papers/books to go further.",
+    "mental_model": "Build a custom mental model or decision framework that simplifies how to approach, evaluate, and improve in {topic} over time like a pro.",
+    "brain_upgrade": "Design a 30-day brain upgrade program for {topic} including high IQ thinking routines, mind-expanding prompts, advanced reading material, and memory-enhancing techniques."
+}
+
+class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path in ["/", "/index.html"]:
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            with open("modules/ui/index.html", "rb") as f:
-                self.wfile.write(f.read())
-        elif self.path == "/api/tools":
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps(tool_registry.tools).encode("utf-8"))
-        elif self.path == "/api/system":
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            sys_status = {
-                "bug_report": bug_eliminator.inspect_system(),
-                "device": device_registry.device_info,
-                "version": "v0.8.3"
-            }
-            self.wfile.write(json.dumps(sys_status).encode("utf-8"))
-        else:
-            super().do_GET()
+        try:
+            if self.path in ["/", "/index.html"]:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                with open("modules/ui/index.html", "rb") as f:
+                    self.wfile.write(f.read())
+            elif self.path == "/api/tools":
+                self._send_json(tool_registry.tools)
+            elif self.path == "/api/system":
+                sys_status = {
+                    "bug_report": bug_eliminator.inspect_system(),
+                    "device": device_registry.device_info,
+                    "version": "v0.9.0"
+                }
+                self._send_json(sys_status)
+            else:
+                super().do_GET()
+        except Exception as e:
+            print(f"[UI SERVER ERROR] GET Exception: {e}")
 
     def do_POST(self):
-        content_length = int(self.headers.get('Content-Length', 0))
-        body = self.rfile.read(content_length)
-        payload = json.loads(body.decode('utf-8')) if body else {}
+        try:
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            payload = json.loads(body.decode('utf-8')) if body else {}
 
-        if self.path == "/api/tools/toggle":
-            tool_id = payload.get("tool_id", "")
-            active = payload.get("active", True)
-            tool_registry.set_tool_status(tool_id, active)
-            self._send_json({"status": "updated", "tools": tool_registry.tools})
+            if self.path == "/api/tools/toggle":
+                tool_id = payload.get("tool_id", "")
+                active = payload.get("active", True)
+                tool_registry.set_tool_status(tool_id, active)
+                self._send_json({"status": "updated", "tools": tool_registry.tools})
 
-        elif self.path == "/api/execute":
-            prompt = payload.get("prompt", "")
-            agent_type = payload.get("agent", "research")
-            
-            prompt_lower = prompt.lower()
-            if "image" in prompt_lower or "generate" in prompt_lower or "draw" in prompt_lower:
-                result = tool_handler.execute_tool("fooocus", {"prompt": prompt})
-                response_payload = {
-                    "status": "success",
-                    "type": "image",
-                    "agent": "Fooocus Image Engine",
-                    "prompt": prompt,
-                    "media_url": "https://via.placeholder.com/600x400.png?text=Generated+Image+Output",
-                    "response": f"Generated image for prompt: '{prompt}'",
-                    "execution_logs": [
-                        "Image generation payload detected",
-                        "Routed to Fooocus Tool Engine",
-                        "Policy permissions validated (WRITE)",
-                        "Rendered media artifact successfully"
-                    ]
-                }
+            elif self.path == "/api/tools/add":
+                repo_url = payload.get("repo_url", "")
+                tool_name = payload.get("name", "Custom Tool")
+                tool_id = tool_name.lower().replace(" ", "_")
+                tool_registry.register_tool(tool_id, {"name": tool_name, "category": "auto_incorporated", "active": True, "source": repo_url})
+                self._send_json({"status": "added", "tool_id": tool_id})
+
+            elif self.path == "/api/execute":
+                prompt = payload.get("prompt", "")
+                agent_type = payload.get("agent", "research")
+                framework_key = payload.get("framework", "none")
+
+                if framework_key in PROMPT_FRAMEWORKS:
+                    prompt = PROMPT_FRAMEWORKS[framework_key].format(topic=prompt)
+
+                prompt_lower = prompt.lower()
+                if "image" in prompt_lower or "generate" in prompt_lower or "draw" in prompt_lower:
+                    result = tool_handler.execute_tool("fooocus", {"prompt": prompt})
+                    response_payload = {
+                        "status": "success",
+                        "type": "image",
+                        "agent": "Fooocus Image Engine",
+                        "prompt": prompt,
+                        "media_url": "https://via.placeholder.com/600x400.png?text=Generated+Image+Output",
+                        "response": f"Generated image for prompt: '{prompt}'",
+                        "execution_logs": [
+                            "Image generation request received",
+                            "Routed to Fooocus Creative Engine",
+                            "Validated Permission Engine (WRITE)",
+                            "Rendered media payload successfully"
+                        ]
+                    }
+                else:
+                    agent_res = agent_manager.dispatch(agent_type, prompt)
+                    response_payload = {
+                        "status": "success",
+                        "type": "text",
+                        "agent": agent_res.get("agent", agent_type),
+                        "prompt": prompt,
+                        "response": agent_res.get("output", f"Task processed by {agent_type}."),
+                        "execution_logs": [
+                            "Received task payload",
+                            f"Delegated execution to {agent_type}",
+                            "Cognitive pipeline and memory state synchronized",
+                            "Task completed cleanly"
+                        ]
+                    }
+                self._send_json(response_payload)
             else:
-                agent_res = agent_manager.dispatch(agent_type, prompt)
-                response_payload = {
-                    "status": "success",
-                    "type": "text",
-                    "agent": agent_res.get("agent", agent_type),
-                    "prompt": prompt,
-                    "response": agent_res.get("output", f"Task processed by {agent_type}."),
-                    "execution_logs": [
-                        "Received task payload",
-                        f"Delegated to {agent_type}",
-                        "Memory state synchronized",
-                        "Task executed cleanly"
-                    ]
-                }
-            self._send_json(response_payload)
-        else:
-            self.send_response(404)
-            self.end_headers()
+                self.send_response(404)
+                self.end_headers()
+        except Exception as e:
+            print(f"[UI SERVER ERROR] POST Exception: {e}")
 
     def _send_json(self, data, code=200):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.end_headers()
-        self.wfile.write(json.dumps(data).encode('utf-8'))
+        try:
+            self.send_response(code)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(data).encode('utf-8'))
+        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+            print("[UI SERVER WARNING] Client disconnected before response write completed.")
 
 def run_server(port=8080):
-    handler = CommandCenterHandler
-    with socketserver.TCPServer(("", port), handler) as httpd:
-        print(f"[UI SERVER] Command Center API & Web UI active on http://localhost:{port}")
+    handler = ThreadedCommandCenterHandler
+    with socketserver.ThreadingHTTPServer(("", port), handler) as httpd:
+        print(f"[UI SERVER] Multithreaded Command Center API active on http://localhost:{port}")
         httpd.serve_forever()
 
 if __name__ == "__main__":

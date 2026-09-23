@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center</title>
+    <title>AI Workspace Command Center v0.9.0</title>
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -19,41 +19,45 @@
         body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
         #sidebar {
-            width: 320px;
+            width: 340px;
             background-color: var(--panel-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 15px;
+            gap: 15px;
         }
 
-        .sidebar-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--accent-blue); display: flex; align-items: center; justify-content: space-between; }
+        .sidebar-title { font-size: 1rem; font-weight: bold; color: var(--accent-blue); display: flex; align-items: center; justify-content: space-between; }
         .refresh-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
-        .refresh-btn:hover { color: var(--text-main); }
 
-        .tool-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .tool-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .tool-card {
             background-color: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px 12px;
+            border-radius: 6px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .tool-info { display: flex; flex-direction: column; gap: 2px; }
-        .tool-name { font-weight: 600; font-size: 0.88rem; }
-        .tool-meta { font-size: 0.75rem; color: var(--text-muted); }
+        .tool-name { font-weight: 600; font-size: 0.85rem; }
+        .tool-meta { font-size: 0.72rem; color: var(--text-muted); }
 
-        .toggle-switch { width: 34px; height: 18px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
+        .toggle-switch { width: 30px; height: 16px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
         .toggle-switch:checked { background: var(--accent-green); }
-        .toggle-switch::before { content: ''; width: 14px; height: 14px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
-        .toggle-switch:checked::before { left: 18px; }
+        .toggle-switch::before { content: ''; width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
+        .toggle-switch:checked::before { left: 16px; }
+
+        .repo-installer { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .repo-input { background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; outline: none; }
+        .add-btn { background: var(--accent-blue); color: white; border: none; padding: 6px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
 
         #main-content { flex: 1; display: flex; flex-direction: column; }
 
         #top-bar {
-            height: 55px;
+            height: 50px;
             background-color: var(--panel-bg);
             border-bottom: 1px solid var(--border-color);
             display: flex;
@@ -80,12 +84,23 @@
             padding: 12px 16px;
             border-radius: 8px;
             line-height: 1.5;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         .msg-system { background-color: var(--panel-bg); border: 1px solid var(--border-color); align-self: flex-start; }
         .msg-user { background-color: var(--accent-blue); color: white; align-self: flex-end; }
         .msg-media { margin-top: 10px; border-radius: 6px; max-width: 100%; border: 1px solid var(--border-color); display: block; }
-        .msg-logs { font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; background: #090d16; color: #38bdf8; padding: 10px; border-radius: 6px; margin-top: 10px; }
+        .msg-logs { font-family: 'Courier New', Courier, monospace; font-size: 0.78rem; background: #090d16; color: #38bdf8; padding: 10px; border-radius: 6px; margin-top: 10px; }
+
+        #drop-zone {
+            margin: 0 20px;
+            padding: 10px;
+            border: 2px dashed var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.01);
+        }
 
         #input-panel {
             padding: 15px 20px;
@@ -96,12 +111,13 @@
             align-items: center;
         }
 
-        .agent-select {
+        .panel-select {
             background-color: var(--bg-dark);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 6px;
+            font-size: 0.85rem;
             outline: none;
             cursor: pointer;
         }
@@ -113,7 +129,7 @@
             color: var(--text-main);
             padding: 10px 14px;
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
         }
 
@@ -121,7 +137,7 @@
             background-color: var(--accent-blue);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
@@ -136,6 +152,14 @@
             <span>Tool Registry Hub</span>
             <button class="refresh-btn" onclick="loadTools()" title="Refresh Registry">?</button>
         </div>
+
+        <div class="repo-installer">
+            <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">Auto-Incorporate Repo/Tool</span>
+            <input type="text" id="new-tool-name" class="repo-input" placeholder="Tool Name (e.g., StreamBERT)">
+            <input type="text" id="new-repo-url" class="repo-input" placeholder="GitHub Repository URL">
+            <button class="add-btn" onclick="addNewTool()">Integrate & Sync</button>
+        </div>
+
         <div class="tool-list" id="tool-list-container">
             <div class="tool-meta">Loading registered tools...</div>
         </div>
@@ -147,22 +171,39 @@
                 <div class="status-pill"><span class="status-dot"></span> System Clean</div>
                 <div id="device-info" class="tool-meta">Device: Loading...</div>
             </div>
-            <div class="tool-meta" id="version-tag">Version: v0.8.3</div>
+            <div class="tool-meta" id="version-tag">Version: v0.9.0</div>
         </div>
 
         <div id="chat-window">
             <div class="message-box msg-system">
-                <strong>Command Center Ready</strong><br>
-                AI Workspace active with full Agent & Tool Integration. Type a prompt or trigger an action below.
+                <strong>AI Workspace Command Center Active</strong><br>
+                Integrated with multi-agent execution pipelines, dynamic cognitive frameworks, and self-upgradation routing.
             </div>
         </div>
 
+        <div id="drop-zone" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+            Drag & drop files or media here to inspect, convert, or process
+        </div>
+
         <div id="input-panel">
-            <select class="agent-select" id="agent-selector">
+            <select class="panel-select" id="agent-selector">
                 <option value="research">PhD Research Agent</option>
                 <option value="coding">Full-Stack Engineer</option>
+                <option value="business">Business Attorney Agent</option>
             </select>
-            <input type="text" class="command-input" id="prompt-input" placeholder="Enter task or tool payload command..." onkeydown="if(event.key==='Enter') executeCommand()">
+
+            <select class="panel-select" id="framework-selector">
+                <option value="none">Standard Prompting</option>
+                <option value="genius">Understand Like a Genius</option>
+                <option value="master_skill">Master Any Skill</option>
+                <option value="phd_breakdown">PhD Level Breakdown</option>
+                <option value="clarity">Confusion to Clarity</option>
+                <option value="mental_block">Fix Mental Blocks</option>
+                <option value="mental_model">Build Mental Framework</option>
+                <option value="brain_upgrade">30-Day Brain Upgrade</option>
+            </select>
+
+            <input type="text" class="command-input" id="prompt-input" placeholder="Enter task, prompt, or command..." onkeydown="if(event.key==='Enter') executeCommand()">
             <button class="send-btn" onclick="executeCommand()">Execute</button>
         </div>
     </div>
@@ -199,6 +240,22 @@
             });
         }
 
+        async function addNewTool() {
+            const name = document.getElementById('new-tool-name').value.trim();
+            const repo = document.getElementById('new-repo-url').value.trim();
+            if (!name || !repo) return;
+
+            await fetch('/api/tools/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, repo_url: repo })
+            });
+
+            document.getElementById('new-tool-name').value = '';
+            document.getElementById('new-repo-url').value = '';
+            loadTools();
+        }
+
         async function loadSystemStatus() {
             try {
                 const res = await fetch('/api/system');
@@ -210,17 +267,26 @@
             }
         }
 
+        function handleDrop(e) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('drop-zone').innerText = 'Selected: ' + files[0].name + ' (' + (files[0].size/1024).toFixed(1) + ' KB)';
+            }
+        }
+
         async function executeCommand() {
             const input = document.getElementById('prompt-input');
             const prompt = input.value.trim();
             if (!prompt) return;
 
             const agent = document.getElementById('agent-selector').value;
+            const framework = document.getElementById('framework-selector').value;
             const chatWindow = document.getElementById('chat-window');
 
             const userMsg = document.createElement('div');
             userMsg.className = 'message-box msg-user';
-            userMsg.innerText = prompt;
+            userMsg.innerText = prompt + (framework !== 'none' ? ' [' + framework + ']' : '');
             chatWindow.appendChild(userMsg);
 
             input.value = '';
@@ -230,7 +296,7 @@
                 const res = await fetch('/api/execute', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, agent: agent })
+                    body: JSON.stringify({ prompt: prompt, agent: agent, framework: framework })
                 });
                 const data = await res.json();
 
