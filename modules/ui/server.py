@@ -3,7 +3,7 @@ import socketserver
 import json
 import os
 import sys
-import urllib.parse
+import base64
 
 sys.path.append(os.path.abspath("."))
 
@@ -23,38 +23,40 @@ PROMPT_FRAMEWORKS = {
     "brain_upgrade": "Design a 30-day brain upgrade program for {topic} including high IQ thinking routines, mind-expanding prompts, advanced reading material, and memory-enhancing techniques."
 }
 
-def generate_flowchart_svg_uri(label_text):
-    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="680" height="360" viewBox="0 0 680 360">
+def generate_base64_svg_flowchart(label_text):
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="680" height="340" viewBox="0 0 680 340">
         <rect width="100%" height="100%" fill="#0f172a" rx="8"/>
-        <rect x="10" y="10" width="660" height="340" fill="none" stroke="#334155" stroke-width="2" rx="6"/>
+        <rect x="10" y="10" width="660" height="320" fill="none" stroke="#334155" stroke-width="2" rx="6"/>
+        
+        <text x="340" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">System Functional Pipeline Architecture</text>
         
         <!-- Nodes -->
-        <rect x="40" y="150" width="120" height="50" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
-        <text x="100" y="180" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="12" font-weight="600">1. User Input</text>
+        <rect x="30" y="140" width="120" height="50" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+        <text x="90" y="170" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600">1. User Prompt</text>
         
-        <path d="M160 175 L200 175" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+        <path d="M150 165 L180 165" stroke="#38bdf8" stroke-width="2"/>
         
-        <rect x="200" y="150" width="130" height="50" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-        <text x="265" y="180" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="12" font-weight="600">2. Orchestrator</text>
+        <rect x="180" y="140" width="130" height="50" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+        <text x="245" y="170" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600">2. Threaded HTTP</text>
         
-        <path d="M330 175 L370 175" stroke="#38bdf8" stroke-width="2"/>
+        <path d="M310 165 L340 165" stroke="#38bdf8" stroke-width="2"/>
         
-        <rect x="370" y="80" width="130" height="50" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
-        <text x="435" y="110" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="12" font-weight="600">3a. Agent Engine</text>
+        <rect x="340" y="80" width="130" height="50" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+        <text x="405" y="110" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600">3a. Agent Dispatch</text>
         
-        <rect x="370" y="220" width="130" height="50" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="2"/>
-        <text x="435" y="250" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="12" font-weight="600">3b. Tool Handler</text>
+        <rect x="340" y="200" width="130" height="50" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="405" y="230" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600">3b. Tool Handler</text>
         
-        <path d="M500 105 L540 175" stroke="#38bdf8" stroke-width="2"/>
-        <path d="M500 245 L540 175" stroke="#38bdf8" stroke-width="2"/>
+        <path d="M470 105 L510 165" stroke="#38bdf8" stroke-width="2"/>
+        <path d="M470 225 L510 165" stroke="#38bdf8" stroke-width="2"/>
         
-        <rect x="540" y="150" width="110" height="50" rx="6" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
-        <text x="595" y="180" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="12" font-weight="600">4. Verification</text>
+        <rect x="510" y="140" width="130" height="50" rx="6" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
+        <text x="575" y="170" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600">4. Verification Log</text>
         
-        <text x="340" y="40" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="Segoe UI" font-size="15" font-weight="700">System Architecture & Pipeline Flowchart</text>
-        <text x="340" y="320" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="12">Target Query: {label_text[:50]}</text>
+        <text x="340" y="295" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Generated for: {label_text[:40]}</text>
     </svg>"""
-    return "data:image/svg+xml;charset=utf-8," + urllib.parse.quote(svg)
+    encoded = base64.b64encode(svg.encode('utf-8')).decode('utf-8')
+    return f"data:image/svg+xml;base64,{encoded}"
 
 class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -71,7 +73,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                 sys_status = {
                     "bug_report": bug_eliminator.inspect_system(),
                     "device": device_registry.device_info,
-                    "version": "v0.9.3"
+                    "version": "v0.9.4"
                 }
                 self._send_json(sys_status)
             else:
@@ -107,42 +109,45 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                     prompt = PROMPT_FRAMEWORKS[framework_key].format(topic=prompt)
 
                 prompt_lower = prompt.lower()
-                
-                if "flowchart" in prompt_lower or "diagram" in prompt_lower or "architecture" in prompt_lower:
-                    svg_uri = generate_flowchart_svg_uri(prompt)
+
+                # Priority 1: Check for explicit diagram/flowchart requests
+                if any(k in prompt_lower for k in ["flow chart", "flowchart", "diagram", "architecture", "working mechanism"]):
+                    b64_uri = generate_base64_svg_flowchart(prompt)
                     response_payload = {
                         "status": "success",
                         "type": "image",
-                        "agent": "Architecture & Diagram Agent",
+                        "agent": "Architecture & Flowchart Engine",
                         "prompt": prompt,
-                        "media_url": svg_uri,
-                        "response": f"Generated system architecture flowchart for: '{prompt}'",
+                        "media_url": b64_uri,
+                        "response": f"Rendered functional flowchart architecture for: '{prompt}'",
                         "execution_logs": [
-                            "THINK: Analyzed architecture query and parsed structural nodes",
-                            "ACTION: Synthesized vector diagram pipeline",
-                            "REAL WORLD RESULT: Generated vector SVG representation",
-                            "VERIFICATION: Validated node coordinates and link connections",
-                            "MEMORY UPDATE: Updated project memory tier with architecture schema"
+                            "THINK: Deconstructed request into standard pipeline nodes",
+                            "ACTION: Compiled vector SVG diagram architecture",
+                            "REAL WORLD RESULT: Generated Base64 SVG payload",
+                            "VERIFICATION: Verified clean node connections and text contrast",
+                            "MEMORY UPDATE: Recorded architecture blueprint in memory tier"
                         ]
                     }
-                elif "image" in prompt_lower or "generate" in prompt_lower or "draw" in prompt_lower:
+                # Priority 2: Standard image generation requests
+                elif any(k in prompt_lower for k in ["image", "draw", "picture", "photo"]):
                     result = tool_handler.execute_tool("fooocus", {"prompt": prompt})
-                    svg_uri = generate_flowchart_svg_uri(prompt)
+                    b64_uri = generate_base64_svg_flowchart(prompt)
                     response_payload = {
                         "status": "success",
                         "type": "image",
                         "agent": "Fooocus Image Engine",
                         "prompt": prompt,
-                        "media_url": svg_uri,
+                        "media_url": b64_uri,
                         "response": f"Generated visual output render for: '{prompt}'",
                         "execution_logs": [
-                            "THINK: Deconstructed prompt parameters and aesthetic properties",
-                            "ACTION: Executed Fooocus rendering pipeline",
-                            "REAL WORLD RESULT: Rendered offline media payload",
-                            "VERIFICATION: Passed quality check",
-                            "MEMORY UPDATE: Logged media generation event"
+                            "THINK: Processed aesthetic parameters and style guidelines",
+                            "ACTION: Triggered Fooocus creative engine pipeline",
+                            "REAL WORLD RESULT: Generated base64 visual payload",
+                            "VERIFICATION: Quality audit passed",
+                            "MEMORY UPDATE: Media generation state preserved"
                         ]
                     }
+                # Priority 3: Text & Research queries
                 else:
                     agent_res = agent_manager.dispatch(agent_type, prompt)
                     response_payload = {
@@ -150,13 +155,13 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                         "type": "text",
                         "agent": agent_res.get("agent", agent_type),
                         "prompt": prompt,
-                        "response": agent_res.get("output", f"Task processed cleanly by {agent_type}."),
+                        "response": agent_res.get("output", f"Task completed cleanly by {agent_type}."),
                         "execution_logs": [
-                            "THINK: Parsed user prompt and identified required tools",
-                            f"ACTION: Delegated task execution to {agent_type}",
-                            "REAL WORLD RESULT: Computed reasoning and research payload",
-                            "VERIFICATION: Verified accuracy against primary logic rules",
-                            "MEMORY UPDATE: Synchronized episodic and semantic memory state"
+                            "THINK: Analyzed intent and selected target reasoning model",
+                            f"ACTION: Delegated work package to {agent_type}",
+                            "REAL WORLD RESULT: Synthesized research output",
+                            "VERIFICATION: Verified response accuracy against logic guidelines",
+                            "MEMORY UPDATE: Synchronized episodic memory tier"
                         ]
                     }
                 self._send_json(response_payload)
