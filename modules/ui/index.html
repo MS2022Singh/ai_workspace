@@ -3,324 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center v0.9.0</title>
+    <title>AI Workspace Command Center - v0.9.6</title>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --panel-bg: #1e293b;
+            --bg-dark: #090d16;
+            --bg-panel: #111827;
+            --bg-card: #1f2937;
+            --border-color: #374151;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
             --accent-blue: #3b82f6;
             --accent-green: #10b981;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f59e0b;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Top Navigation Header */
+        header { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; height: 60px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; color: #fff; }
+        .system-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent-green); }
+        .system-status span.dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+        
+        /* Main Layout */
+        .app-container { display: flex; flex: 1; height: calc(100vh - 60px); overflow: hidden; }
+        
+        /* Sidebar Tools & Repo Hub */
+        sidebar { width: 320px; background-color: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 16px; gap: 16px; overflow-y: auto; }
+        .sidebar-section h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+        .repo-form { display: flex; flex-direction: column; gap: 8px; background: var(--bg-card); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .repo-form input { background: var(--bg-dark); border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.85rem; }
+        .btn { background: var(--accent-blue); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; font-size: 0.85rem; }
+        .btn:hover { opacity: 0.9; }
+        
+        .tool-list { display: flex; flex-direction: column; gap: 6px; }
+        .tool-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4b5563; transition: .3s; border-radius: 18px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-green); }
+        input:checked + .slider:before { transform: translateX(16px); }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        /* Main Chat & Execution Area */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-dark); position: relative; }
+        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        .welcome-card { background: var(--bg-panel); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; max-width: 700px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .welcome-card h2 { font-size: 1.2rem; margin-bottom: 8px; color: #fff; }
+        .welcome-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
 
-        #sidebar {
-            width: 340px;
-            background-color: var(--panel-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            gap: 15px;
-        }
+        .message-bubble { display: flex; flex-direction: column; max-width: 85%; gap: 8px; }
+        .message-bubble.user { align-self: flex-end; align-items: flex-end; }
+        .message-bubble.assistant { align-self: flex-start; align-items: flex-start; width: 100%; max-width: 900px; }
+        
+        .bubble-content { background: var(--bg-panel); border: 1px solid var(--border-color); padding: 16px; border-radius: 10px; font-size: 0.95rem; line-height: 1.6; width: 100%; }
+        .user .bubble-content { background: var(--accent-blue); color: #fff; border: none; }
+        
+        .logs-box { background: #030712; border: 1px solid #1e293b; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: #38bdf8; display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+        
+        /* Drag & Drop Zone */
+        .drop-zone { border: 2px dashed var(--border-color); margin: 0 24px 12px 24px; padding: 16px; text-align: center; border-radius: 8px; color: var(--text-muted); font-size: 0.85rem; background: rgba(31, 41, 55, 0.4); }
 
-        .sidebar-title { font-size: 1rem; font-weight: bold; color: var(--accent-blue); display: flex; align-items: center; justify-content: space-between; }
-        .refresh-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
-
-        .tool-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .tool-card {
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .tool-info { display: flex; flex-direction: column; gap: 2px; }
-        .tool-name { font-weight: 600; font-size: 0.85rem; }
-        .tool-meta { font-size: 0.72rem; color: var(--text-muted); }
-
-        .toggle-switch { width: 30px; height: 16px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
-        .toggle-switch:checked { background: var(--accent-green); }
-        .toggle-switch::before { content: ''; width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
-        .toggle-switch:checked::before { left: 16px; }
-
-        .repo-installer { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .repo-input { background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; outline: none; }
-        .add-btn { background: var(--accent-blue); color: white; border: none; padding: 6px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
-
-        #main-content { flex: 1; display: flex; flex-direction: column; }
-
-        #top-bar {
-            height: 50px;
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-
-        .system-status { display: flex; align-items: center; gap: 15px; font-size: 0.85rem; }
-        .status-pill { display: flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-        .status-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; }
-
-        #chat-window {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message-box {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            line-height: 1.5;
-            font-size: 0.92rem;
-        }
-        .msg-system { background-color: var(--panel-bg); border: 1px solid var(--border-color); align-self: flex-start; }
-        .msg-user { background-color: var(--accent-blue); color: white; align-self: flex-end; }
-        .msg-media { margin-top: 10px; border-radius: 6px; max-width: 100%; border: 1px solid var(--border-color); display: block; }
-        .msg-logs { font-family: 'Courier New', Courier, monospace; font-size: 0.78rem; background: #090d16; color: #38bdf8; padding: 10px; border-radius: 6px; margin-top: 10px; }
-
-        #drop-zone {
-            margin: 0 20px;
-            padding: 10px;
-            border: 2px dashed var(--border-color);
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            background: rgba(255,255,255,0.01);
-        }
-
-        #input-panel {
-            padding: 15px 20px;
-            background-color: var(--panel-bg);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .panel-select {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .command-input {
-            flex: 1;
-            background-color: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .send-btn {
-            background-color: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .send-btn:hover { background-color: #2563eb; }
+        /* Input Bar */
+        .input-panel { padding: 16px 24px 24px 24px; background: var(--bg-panel); border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; }
+        .controls-row { display: flex; gap: 12px; align-items: center; }
+        .select-box { background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; outline: none; }
+        
+        .prompt-input-row { display: flex; gap: 12px; }
+        .prompt-input-row textarea { flex: 1; background: var(--bg-dark); border: 1px solid var(--border-color); color: #fff; padding: 12px; border-radius: 8px; font-size: 0.95rem; resize: none; height: 50px; outline: none; }
+        .prompt-input-row textarea:focus { border-color: var(--accent-blue); }
+        .execute-btn { background: var(--accent-blue); color: #fff; border: none; padding: 0 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .execute-btn:hover { background: #2563eb; }
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <div class="sidebar-title">
-            <span>Tool Registry Hub</span>
-            <button class="refresh-btn" onclick="loadTools()" title="Refresh Registry">?</button>
+    <header>
+        <div class="logo-area">
+            <h1>AI Workspace Command Center</h1>
         </div>
-
-        <div class="repo-installer">
-            <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">Auto-Incorporate Repo/Tool</span>
-            <input type="text" id="new-tool-name" class="repo-input" placeholder="Tool Name (e.g., StreamBERT)">
-            <input type="text" id="new-repo-url" class="repo-input" placeholder="GitHub Repository URL">
-            <button class="add-btn" onclick="addNewTool()">Integrate & Sync</button>
+        <div class="system-status" id="systemStatusBadge">
+            <span class="dot"></span> System Clean (Windows)
         </div>
+    </header>
 
-        <div class="tool-list" id="tool-list-container">
-            <div class="tool-meta">Loading registered tools...</div>
-        </div>
-    </div>
-
-    <div id="main-content">
-        <div id="top-bar">
-            <div class="system-status">
-                <div class="status-pill"><span class="status-dot"></span> System Clean</div>
-                <div id="device-info" class="tool-meta">Device: Loading...</div>
+    <div class="app-container">
+        <!-- Sidebar Tool Registry Hub -->
+        <sidebar>
+            <div class="sidebar-section">
+                <h3>Auto-Incorporate Repo / Tool</h3>
+                <div class="repo-form">
+                    <input type="text" id="toolNameInput" placeholder="Tool Name (e.g., StreamBERT)">
+                    <input type="text" id="repoUrlInput" placeholder="GitHub Repository URL">
+                    <button class="btn" onclick="integrateRepo()">Integrate & Sync</button>
+                </div>
             </div>
-            <div class="tool-meta" id="version-tag">Version: v0.9.0</div>
-        </div>
 
-        <div id="chat-window">
-            <div class="message-box msg-system">
-                <strong>AI Workspace Command Center Active</strong><br>
-                Integrated with multi-agent execution pipelines, dynamic cognitive frameworks, and self-upgradation routing.
+            <div class="sidebar-section">
+                <h3>Active Tool Registry Hub</h3>
+                <div class="tool-list" id="toolRegistryList">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
-        </div>
+        </sidebar>
 
-        <div id="drop-zone" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
-            Drag & drop files or media here to inspect, convert, or process
-        </div>
+        <!-- Main Chat & Command Panel -->
+        <div class="chat-area">
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-card">
+                    <h2>AI Workspace OS Active</h2>
+                    <p>Integrated with multi-agent reasoning pipelines, dynamic cognitive frameworks, thread-safe memory stores, and self-upgrading tool execution handlers. Select a cognitive framework or specialist agent below and enter your task.</p>
+                </div>
+            </div>
 
-        <div id="input-panel">
-            <select class="panel-select" id="agent-selector">
-                <option value="research">PhD Research Agent</option>
-                <option value="coding">Full-Stack Engineer</option>
-                <option value="business">Business Attorney Agent</option>
-            </select>
+            <div class="drop-zone" id="dropZone">
+                Drag & drop files, documents, or media here to inspect, convert, compress, or analyze
+            </div>
 
-            <select class="panel-select" id="framework-selector">
-                <option value="none">Standard Prompting</option>
-                <option value="genius">Understand Like a Genius</option>
-                <option value="master_skill">Master Any Skill</option>
-                <option value="phd_breakdown">PhD Level Breakdown</option>
-                <option value="clarity">Confusion to Clarity</option>
-                <option value="mental_block">Fix Mental Blocks</option>
-                <option value="mental_model">Build Mental Framework</option>
-                <option value="brain_upgrade">30-Day Brain Upgrade</option>
-            </select>
+            <div class="input-panel">
+                <div class="controls-row">
+                    <select class="select-box" id="agentSelect">
+                        <option value="research">PhD Research Agent</option>
+                        <option value="coding">Full-Stack Engineer Agent</option>
+                        <option value="attorney">Business Attorney Agent</option>
+                        <option value="security">Cybersecurity & Pentest Agent</option>
+                        <option value="audio">DIVIORA Audio/Media Agent</option>
+                    </select>
 
-            <input type="text" class="command-input" id="prompt-input" placeholder="Enter task, prompt, or command..." onkeydown="if(event.key==='Enter') executeCommand()">
-            <button class="send-btn" onclick="executeCommand()">Execute</button>
+                    <select class="select-box" id="frameworkSelect">
+                        <option value="none">Standard Prompting</option>
+                        <option value="genius">Understand Like a Genius</option>
+                        <option value="master_skill">Master Any Skill for Free</option>
+                        <option value="phd_breakdown">PhD Level Breakdown</option>
+                        <option value="clarity">Turn Confusion to Clarity</option>
+                        <option value="mental_block">Fix Mental Blocks</option>
+                        <option value="mental_model">Build Mental Frameworks</option>
+                        <option value="brain_upgrade">Upgrade Your Brain in 30 Days</option>
+                    </select>
+                </div>
+
+                <div class="prompt-input-row">
+                    <textarea id="promptInput" placeholder="Enter task, prompt, research query, or diagram request... (Press Enter to execute, Ctrl+Enter for newline)" onkeydown="handleKeyDown(event)"></textarea>
+                    <button class="execute-btn" onclick="executeTask()">Execute</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        async function loadTools() {
+        async function fetchTools() {
             try {
                 const res = await fetch('/api/tools');
                 const tools = await res.json();
-                const container = document.getElementById('tool-list-container');
-                container.innerHTML = '';
-
-                Object.keys(tools).forEach(id => {
-                    const tool = tools[id];
-                    const card = document.createElement('div');
-                    card.className = 'tool-card';
-                    card.innerHTML = '<div class="tool-info">' +
-                        '<span class="tool-name">' + (tool.name || id) + '</span>' +
-                        '<span class="tool-meta">Cat: ' + (tool.category || 'General') + '</span>' +
-                        '</div>' +
-                        '<input type="checkbox" class="toggle-switch" ' + (tool.active ? 'checked' : '') + ' onchange="toggleTool(\'' + id + '\', this.checked)">';
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                console.error("Failed to load tools:", err);
+                const list = document.getElementById('toolRegistryList');
+                list.innerHTML = '';
+                for (const [id, tool] of Object.entries(tools)) {
+                    list.innerHTML += `
+                        <div class="tool-item">
+                            <div>
+                                <div style="font-weight: 600;">${tool.name}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Cat: ${tool.category}</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" ${tool.active ? 'checked' : ''} onchange="toggleTool('${id}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error("Failed to fetch tools", e);
             }
         }
 
         async function toggleTool(toolId, active) {
             await fetch('/api/tools/toggle', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tool_id: toolId, active: active })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({tool_id: toolId, active: active})
             });
+            fetchTools();
         }
 
-        async function addNewTool() {
-            const name = document.getElementById('new-tool-name').value.trim();
-            const repo = document.getElementById('new-repo-url').value.trim();
-            if (!name || !repo) return;
-
-            await fetch('/api/tools/add', {
+        async function integrateRepo() {
+            const name = document.getElementById('toolNameInput').value;
+            const repoUrl = document.getElementById('repoUrlInput').value;
+            if (!name || !repoUrl) return alert("Please provide both Tool Name and GitHub Repository URL.");
+            
+            const res = await fetch('/api/tools/add', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, repo_url: repo })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: name, repo_url: repoUrl})
             });
-
-            document.getElementById('new-tool-name').value = '';
-            document.getElementById('new-repo-url').value = '';
-            loadTools();
-        }
-
-        async function loadSystemStatus() {
-            try {
-                const res = await fetch('/api/system');
-                const sys = await res.json();
-                document.getElementById('device-info').innerText = 'Device: ' + sys.device.device_id + ' (' + sys.device.os + ')';
-                document.getElementById('version-tag').innerText = 'Version: ' + sys.version;
-            } catch (err) {
-                console.error("Failed to load system status:", err);
+            const data = await res.json();
+            if (data.status === 'added') {
+                alert(`Successfully integrated and synced repo: ${name}`);
+                document.getElementById('toolNameInput').value = '';
+                document.getElementById('repoUrlInput').value = '';
+                fetchTools();
             }
         }
 
-        function handleDrop(e) {
-            e.preventDefault();
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('drop-zone').innerText = 'Selected: ' + files[0].name + ' (' + (files[0].size/1024).toFixed(1) + ' KB)';
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                executeTask();
             }
         }
 
-        async function executeCommand() {
-            const input = document.getElementById('prompt-input');
+        async function executeTask() {
+            const input = document.getElementById('promptInput');
             const prompt = input.value.trim();
             if (!prompt) return;
 
-            const agent = document.getElementById('agent-selector').value;
-            const framework = document.getElementById('framework-selector').value;
-            const chatWindow = document.getElementById('chat-window');
+            const agent = document.getElementById('agentSelect').value;
+            const framework = document.getElementById('frameworkSelect').value;
 
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message-box msg-user';
-            userMsg.innerText = prompt + (framework !== 'none' ? ' [' + framework + ']' : '');
-            chatWindow.appendChild(userMsg);
-
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Append User Message
+            chatMessages.innerHTML += `
+                <div class="message-bubble user">
+                    <div class="bubble-content">${escapeHtml(prompt)}</div>
+                </div>
+            `;
             input.value = '';
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Append loading indicator
+            const loadingId = 'loading-' + Date.now();
+            chatMessages.innerHTML += `
+                <div class="message-bubble assistant" id="${loadingId}">
+                    <div class="bubble-content" style="color: var(--text-muted);">Executing cognitive pipeline and reasoning...</div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
                 const res = await fetch('/api/execute', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, agent: agent, framework: framework })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({prompt: prompt, agent: agent, framework: framework})
                 });
                 const data = await res.json();
 
-                const sysMsg = document.createElement('div');
-                sysMsg.className = 'message-box msg-system';
-                
-                let logHtml = data.execution_logs.map(log => '• ' + log).join('<br>');
-                let contentHtml = '<strong>' + data.agent + '</strong><br>' + data.response;
-
+                const loadingEl = document.getElementById(loadingId);
+                let mediaHtml = '';
                 if (data.type === 'image' && data.media_url) {
-                    contentHtml += '<br><img src="' + data.media_url + '" class="msg-media"/>';
+                    mediaHtml = `<div style="margin-top: 12px;"><img src="${data.media_url}" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color);" alt="Visual Output"></div>`;
                 }
 
-                contentHtml += '<div class="msg-logs">' + logHtml + '</div>';
-                sysMsg.innerHTML = contentHtml;
-                chatWindow.appendChild(sysMsg);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            } catch (err) {
-                console.error("Execution failed:", err);
+                let logsHtml = '';
+                if (data.execution_logs && data.execution_logs.length > 0) {
+                    logsHtml = `<div class="logs-box">`;
+                    data.execution_logs.forEach(log => {
+                        logsHtml += `<div>?? ${escapeHtml(log)}</div>`;
+                    });
+                    logsHtml += `</div>`;
+                }
+
+                loadingEl.outerHTML = `
+                    <div class="message-bubble assistant">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 4px;">${escapeHtml(data.agent)}</div>
+                        <div class="bubble-content">
+                            <div>${escapeHtml(data.response)}</div>
+                            ${mediaHtml}
+                            ${logsHtml}
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById(loadingId).outerHTML = `
+                    <div class="message-bubble assistant">
+                        <div class="bubble-content" style="color: #ef4444;">Execution failed: ${e.message}</div>
+                    </div>
+                `;
             }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        loadTools();
-        loadSystemStatus();
+        function escapeHtml(text) {
+            const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        window.onload = fetchTools;
     </script>
 </body>
 </html>
