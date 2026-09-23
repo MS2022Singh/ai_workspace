@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center v0.9.9</title>
+    <title>AI Workspace Command Center v0.1.0</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #090d16; color: #f8fafc; display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: 320px; background-color: #0f172a; border-right: 1px solid #1e293b; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
-        .sidebar h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 15px; }
+        .sidebar { width: 340px; background-color: #0f172a; border-right: 1px solid #1e293b; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .sidebar h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 12px; margin-top: 15px; }
+        .sidebar h2:first-child { margin-top: 0; }
         
+        .auto-box { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .auto-box input { background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 8px; color: white; font-size: 12px; outline: none; }
+        .auto-box input:focus { border-color: #3b82f6; }
+        .auto-btn { background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+        .auto-btn:hover { background: #2563eb; }
+
         .tool-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
         .tool-info { font-size: 13px; }
         .tool-name { font-weight: 600; color: #f1f5f9; }
@@ -55,7 +62,14 @@
 <body>
 
     <div class="sidebar">
-        <h2>Active Tool Registry</h2>
+        <h2>Auto-Incorporate Tool</h2>
+        <div class="auto-box">
+            <input type="text" id="toolNameInput" placeholder="Tool Name (e.g., StreamBERT)">
+            <input type="text" id="repoUrlInput" placeholder="GitHub Repository URL">
+            <button class="auto-btn" onclick="addCustomTool()">Integrate & Sync</button>
+        </div>
+
+        <h2>Active Tool Registry Hub</h2>
         <div id="toolList">Loading tools...</div>
     </div>
 
@@ -84,7 +98,11 @@
                     <option value="none">Standard Prompting</option>
                     <option value="genius">Genius Level Breakdown</option>
                     <option value="master_skill">Master Skill Roadmap</option>
-                    <option value="phd_breakdown">PhD First-Principles</option>
+                    <option value="mental_block">Fix Mental Blocks</option>
+                    <option value="clarity">Turn Confusion into Clarity</option>
+                    <option value="phd_breakdown">PhD-Level Breakdown</option>
+                    <option value="mental_model">Build Mental Frameworks</option>
+                    <option value="brain_upgrade">30-Day Brain Upgrade</option>
                 </select>
             </div>
             <div class="input-row">
@@ -126,6 +144,23 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({tool_id: toolId, active: active})
             });
+            loadTools();
+        }
+
+        async function addCustomTool() {
+            const nameInput = document.getElementById('toolNameInput');
+            const urlInput = document.getElementById('repoUrlInput');
+            const name = nameInput.value.trim();
+            const repo_url = urlInput.value.trim();
+            if (!name) return;
+
+            await fetch('/api/tools/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, repo_url})
+            });
+            nameInput.value = '';
+            urlInput.value = '';
             loadTools();
         }
 

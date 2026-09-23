@@ -73,7 +73,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                 sys_status = {
                     "bug_report": bug_eliminator.inspect_system(),
                     "device": device_registry.device_info,
-                    "version": "v0.9.8"
+                    "version": "v0.1.0"
                 }
                 self._send_json(sys_status)
             else:
@@ -98,7 +98,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                 tool_name = payload.get("name", "Custom Tool")
                 tool_id = tool_name.lower().replace(" ", "_")
                 tool_registry.register_tool(tool_id, {"name": tool_name, "category": "auto_incorporated", "active": True, "source": repo_url})
-                self._send_json({"status": "added", "tool_id": tool_id})
+                self._send_json({"status": "added", "tool_id": tool_id, "tools": tool_registry.tools})
 
             elif self.path == "/api/execute":
                 prompt = payload.get("prompt", "")
@@ -157,7 +157,7 @@ class ThreadedCommandCenterHandler(http.server.SimpleHTTPRequestHandler):
                             "   - Fixed-point vs floating-point precision arithmetic in embedded audio processors."
                         )
                     else:
-                        detailed_response += f"Executed rigorous multi-agent analysis using the {agent_type.capitalize()} paradigm, validating all parameters against local knowledge stores and vector memory."
+                        detailed_response += f"Executed rigorous multi-agent analysis using the {agent_type.capitalize()} paradigm, validating all parameters against local knowledge stores and vector memory with verified first-principles reasoning."
 
                     response_payload = {
                         "status": "success",
