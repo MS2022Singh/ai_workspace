@@ -10,6 +10,7 @@ from modules.tools.tool_handler import tool_handler
 from catalog.tool_registry import tool_registry
 
 PORT = 8080
+UI_DIR = os.path.dirname(__file__)
 
 class WorkspaceRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
@@ -48,6 +49,16 @@ class WorkspaceRequestHandler(http.server.SimpleHTTPRequestHandler):
                 "tools": tool_registry.tools,
                 "models": tool_registry.models
             })
+        elif self.path == "/" or self.path == "/index.html":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            index_path = os.path.join(UI_DIR, "index.html")
+            if os.path.exists(index_path):
+                with open(index_path, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.wfile.write(b"<h1>AI Workspace Server Running</h1>")
         else:
             super().do_GET()
 
@@ -59,7 +70,7 @@ class WorkspaceRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server():
     with socketserver.TCPServer(("", PORT), WorkspaceRequestHandler) as httpd:
-        print(f"[UI SERVER] Command Center API active on port {PORT}")
+        print(f"[UI SERVER] Command Center API & Web UI active on http://localhost:{PORT}")
         httpd.serve_forever()
 
 if __name__ == "__main__":

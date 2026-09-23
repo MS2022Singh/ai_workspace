@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workspace Command Center</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { display: flex; height: 100vh; background: #0f172a; color: #f8fafc; }
+        #sidebar { width: 320px; background: #1e293b; border-right: 1px solid #334155; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        #main-chat { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+        #chat-stream { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .message { padding: 14px 18px; border-radius: 8px; max-width: 80%; line-height: 1.5; }
+        .user { background: #2563eb; align-self: flex-end; }
+        .assistant { background: #334155; align-self: flex-start; }
+        .media-payload { margin-top: 10px; border-radius: 6px; max-width: 100%; border: 1px solid #475569; }
+        #input-panel { padding: 20px; background: #1e293b; border-top: 1px solid #334155; display: flex; gap: 12px; }
+        textarea { flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 12px; border-radius: 6px; resize: none; height: 50px; }
+        button { background: #2563eb; color: #fff; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1d4ed8; }
+        .tool-card { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
+        .toggle-switch { width: 36px; height: 20px; appearance: none; background: #475569; border-radius: 10px; position: relative; cursor: pointer; outline: none; }
+        .toggle-switch:checked { background: #10b981; }
+        .toggle-switch::before { content: ''; width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
+        .toggle-switch:checked::before { left: 18px; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Tool Registry Hub</h2>
+        <div id="tools-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+    <div id="main-chat">
+        <div id="chat-stream">
+            <div class="message assistant">AI Workspace Command Center active. Assign a task or trigger a registered tool.</div>
+        </div>
+        <div id="input-panel">
+            <textarea id="task-input" placeholder="Type a task or command... (Press Enter to send)"></textarea>
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function fetchStatus() {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            const container = document.getElementById('tools-list');
+            container.innerHTML = '';
+            for (const [id, tool] of Object.entries(data.tools)) {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = 
+                    <span></span>
+                    <input type="checkbox" class="toggle-switch"  onchange="toggleTool('', this.checked)">
+                ;
+                container.appendChild(card);
+            }
+        }
+
+        async function toggleTool(toolId, active) {
+            await fetch('/api/tools/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tool_id: toolId, active: active })
+            });
+        }
+
+        async function sendTask() {
+            const input = document.getElementById('task-input');
+            const task = input.value.trim();
+            if (!task) return;
+
+            const stream = document.getElementById('chat-stream');
+            stream.innerHTML += <div class="message user"></div>;
+            input.value = '';
+
+            let res, data;
+            if (task.toLowerCase().includes("image") || task.toLowerCase().includes("generate")) {
+                res = await fetch('/api/tool', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tool_id: "fooocus", params: { prompt: task } })
+                });
+            } else {
+                res = await fetch('/api/dispatch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agent: "research", task: task })
+                });
+            }
+
+            data = await res.json();
+            let msg = <div class="message assistant">;
+            if (data.status === "success") {
+                if (data.type === "image") {
+                    msg += <p></p><img src="https://via.placeholder.com/400x300.png?text=Generated+Image+Output" class="media-payload"/>;
+                } else {
+                    msg += <p></p>;
+                }
+            } else {
+                msg += <p style="color:#ef4444;">Error/Blocked: </p>;
+            }
+            msg += </div>;
+            stream.innerHTML += msg;
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        document.getElementById('send-btn').addEventListener('click', sendTask);
+        document.getElementById('task-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTask(); }
+        });
+
+        fetchStatus();
+    </script>
+</body>
+</html>
