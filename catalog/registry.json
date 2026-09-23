@@ -1,0 +1,73 @@
+{
+    "tools": {
+        "openhands": {
+            "name": "OpenHands Coding Agent",
+            "category": "coding",
+            "active": true,
+            "perm": "EXECUTE"
+        },
+        "browser_use": {
+            "name": "Browser Use Engine",
+            "category": "web",
+            "active": true,
+            "perm": "NETWORK"
+        },
+        "pyrit": {
+            "name": "PyRIT Red-Teaming",
+            "category": "security",
+            "active": false,
+            "perm": "SYSTEM"
+        },
+        "crawl4ai": {
+            "name": "Crawl4AI Web Crawler",
+            "category": "rag",
+            "active": true,
+            "perm": "NETWORK"
+        },
+        "semantica": {
+            "name": "Semantica GraphRAG",
+            "category": "rag",
+            "active": true,
+            "perm": "READ"
+        },
+        "stirling_pdf": {
+            "name": "Stirling PDF Converter",
+            "category": "media",
+            "active": true,
+            "perm": "WRITE"
+        },
+        "fooocus": {
+            "name": "Fooocus Image Gen",
+            "category": "creative",
+            "active": true,
+            "perm": "WRITE"
+        }
+    },
+    "models": {
+        "qwen-3.8-local": {
+            "name": "Qwen 3.8 Local",
+            "type": "llm",
+            "active": true
+        },
+        "vllm-engine": {
+            "name": "vLLM Server",
+            "type": "llm",
+            "active": false
+        },
+        "ollama-local": {
+            "name": "Ollama Local Fleet",
+            "type": "llm",
+            "active": true
+        },
+        "wan2.2-vlm": {
+            "name": "Wan2.2 Vision Video",
+            "type": "vlm",
+            "active": false
+        },
+        "whisper-local": {
+            "name": "Whisper Speech-to-Text",
+            "type": "audio",
+            "active": true
+        }
+    }
+}
