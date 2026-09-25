@@ -33,11 +33,13 @@ class ConnectionManager:
 manager = ConnectionManager()
 event_bus = AIWorkspaceEventBus()
 
-# Bridge event bus to WebSocket broadcast
 def event_listener(event):
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
-        asyncio.run_coroutine_threadsafe(manager.broadcast(json.dumps(event)), loop)
+    try:
+        loop = asyncio.get_running_loop()
+        if loop.is_running():
+            asyncio.run_coroutine_threadsafe(manager.broadcast(json.dumps(event)), loop)
+    except RuntimeError:
+        pass
 
 event_bus.subscribe(event_listener)
 engine = TaskExecutionEngine(event_bus)
@@ -51,12 +53,14 @@ async def websocket_endpoint(websocket: WebSocket):
             payload = json.loads(data)
             task_text = payload.get("task", "Default Task")
             
-            # Run execution engine asynchronously
             loop = asyncio.get_running_loop()
             await loop.run_in_executor(None, engine.execute_task, task_text)
             
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+# Mount frontend static directory to serve index.html at root
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 if __name__ == "__main__":
     import uvicorn

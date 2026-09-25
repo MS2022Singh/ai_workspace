@@ -36,6 +36,6 @@ class TaskExecutionEngine:
 
 if __name__ == "__main__":
     bus = AIWorkspaceEventBus()
-    bus.subscribe(lambda e: print(f"[{e['type']}] {json.dumps(e['data']}"))
+    bus.subscribe(lambda e: print(f"[{e['type']}] {json.dumps(e['data'])}"))
     engine = TaskExecutionEngine(bus)
     engine.execute_task("Build responsive dashboard panel")
