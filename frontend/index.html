@@ -30,13 +30,14 @@
         <!-- Input Bar -->
         <div class="mt-4 flex gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 shadow-lg">
             <input id="user-input" type="text" placeholder="Enter task (e.g., 'Build a responsive dashboard panel')..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition">
-            <button id="execute-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2">
+            <button id="execute-btn" type="button" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2 cursor-pointer">
                 <span>Execute</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
         </div>
     </main>
 
-    <script src="app.js"></script>
+    <!-- Cache-busting parameter to force fresh JS load -->
+    <script src="app.js?v=3"></script>
 </body>
 </html>
