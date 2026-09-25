@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center v0.1.1</title>
+    <title>AI Workspace Command Center v0.1.2</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #090d16; color: #f8fafc; display: flex; height: 100vh; overflow: hidden; }
@@ -17,6 +17,10 @@
         .auto-box input:focus { border-color: #3b82f6; }
         .auto-btn { background: #3b82f6; color: white; border: none; border-radius: 6px; padding: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: background 0.2s; }
         .auto-btn:hover { background: #2563eb; }
+
+        .expert-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; font-size: 12px; }
+        .expert-role { color: #38bdf8; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+        .expert-name { color: #f1f5f9; font-weight: 500; margin-top: 2px; }
 
         .tool-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
         .tool-info { font-size: 13px; }
@@ -42,6 +46,7 @@
         .msg.agent { background: #1e293b; border: 1px solid #334155; align-self: flex-start; border-bottom-left-radius: 2px; width: 100%; }
         
         .agent-title { font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .team-box { margin-bottom: 10px; font-size: 12px; color: #34d399; background: #064e3b; padding: 6px 10px; border-radius: 6px; }
         .logs-box { margin-top: 12px; background: #0f172a; border: 1px solid #334155; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #94a3b8; }
         .log-item { margin: 4px 0; color: #38bdf8; }
 
@@ -57,6 +62,14 @@
 <body>
 
     <div class="sidebar">
+        <h2>AI Expert Team</h2>
+        <div id="expertTeamList">
+            <div class="expert-card"><div class="expert-role">Lead Architect</div><div class="expert-name">Dr. Alan Vance</div></div>
+            <div class="expert-card"><div class="expert-role">Systems Integrator</div><div class="expert-name">Elena Rostova</div></div>
+            <div class="expert-card"><div class="expert-role">UI/UX Specialist</div><div class="expert-name">Marcus Brody</div></div>
+            <div class="expert-card"><div class="expert-role">Verification & QA</div><div class="expert-name">Sarah Chen</div></div>
+        </div>
+
         <h2>Auto-Incorporate Tool</h2>
         <div class="auto-box">
             <input type="text" id="toolNameInput" placeholder="Tool Name (e.g., StreamBERT)">
@@ -70,14 +83,14 @@
 
     <div class="main-container">
         <div class="header">
-            <h1>AI Workspace Command Center v0.1.1</h1>
-            <div class="status-badge" id="systemStatus">System Clean (v0.1.1)</div>
+            <h1>AI Workspace Command Center v0.1.2</h1>
+            <div class="status-badge" id="systemStatus">System Clean (v0.1.2)</div>
         </div>
 
         <div class="chat-container" id="chatContainer">
             <div class="msg agent">
-                <div class="agent-title">AI Workspace OS v0.1.1 Active</div>
-                Upgraded with live telemetry logging, sandbox repository verification, and cognitive framework routing. Select a specialist agent or framework below to begin execution.
+                <div class="agent-title">AI Workspace OS v0.1.2 Active</div>
+                Multiexpert AI team assigned and standing by. Every task will be structured, executed, tested, and verified across specialized worker pipelines.
             </div>
         </div>
 
@@ -181,6 +194,9 @@
                 const data = await res.json();
 
                 let contentHtml = `<div class="agent-title">${escapeHtml(data.agent)}</div>`;
+                if (data.expert_team && data.expert_team.length > 0) {
+                    contentHtml += `<div class="team-box">Assigned AI Expert Team: ${escapeHtml(data.expert_team.join(', '))}</div>`;
+                }
                 if (data.type === 'image') {
                     contentHtml += `<div style="margin-bottom:10px;">${escapeHtml(data.response)}</div>`;
                     contentHtml += `<img src="${data.media_url}" style="max-width:100%; border-radius:8px; border:1px solid #334155;" />`;
