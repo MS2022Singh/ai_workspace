@@ -1,0 +1,31 @@
+﻿{
+  "tools": [
+    {
+      "id": "openhands",
+      "name": "OpenHands",
+      "category": "Software Engineering",
+      "description": "Autonomous development agent in sandboxed environment.",
+      "enabled": true,
+      "permission_class": "CONTROLLED",
+      "ui_binding": "btn_openhands_launch"
+    },
+    {
+      "id": "crawl4ai",
+      "name": "Crawl4AI",
+      "category": "Scraping & RAG Ingestion",
+      "description": "High-speed LLM-ready web crawler.",
+      "enabled": true,
+      "permission_class": "NETWORK",
+      "ui_binding": "btn_crawl4ai_scrape"
+    },
+    {
+      "id": "pyrit",
+      "name": "PyRIT Security Red-Team",
+      "category": "Security & Auditing",
+      "description": "AI system risk identification framework.",
+      "enabled": false,
+      "permission_class": "SYSTEM",
+      "ui_binding": "btn_pyrit_scan"
+    }
+  ]
+}
