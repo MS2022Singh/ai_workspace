@@ -15,7 +15,10 @@ class ToolRegistry:
                 self.tools = data.get("tools", {})
                 self.models = data.get("models", {})
         else:
+<<<<<<< HEAD
             # Default Core Master Catalog
+=======
+>>>>>>> 78e8a806eb50e6d7df7d97903781627a982b424f
             self.tools = {
                 "openhands": {"name": "OpenHands Coding Agent", "category": "coding", "active": True, "perm": "EXECUTE"},
                 "browser_use": {"name": "Browser Use Engine", "category": "web", "active": True, "perm": "NETWORK"},
