@@ -1,57 +1,33 @@
-﻿{
-  "registry_version": "1.0.0",
-  "system_files": {
-    "raw_core": "gem os",
-    "refined_core": "gem os 1"
-  },
-  "domains": {
-    "software_engineering": [
-      {
-        "id": "tool_openhands_01",
-        "name": "OpenHands Autonomous Sandbox",
-        "endpoint": "ws://localhost:3001/openhands",
-        "permission_level": 2,
-        "description": "Executes complex codebase modifications in an isolated docker environment."
-      },
-      {
-        "id": "tool_git_bridge_02",
-        "name": "GitHub Repo Manager",
-        "endpoint": "local://core/git",
-        "permission_level": 2,
-        "description": "Clones, commits, and manages version control."
-      }
-    ],
-    "research_osint": [
-      {
-        "id": "tool_crawl4ai_01",
-        "name": "Crawl4AI Web Scraper",
-        "endpoint": "local://core/scraper",
-        "permission_level": 1,
-        "description": "High-speed LLM-ready DOM parsing and markdown extraction."
-      }
-    ],
-    "cybersecurity": [
-      {
-        "id": "tool_pyrit_01",
-        "name": "PyRIT Security Scanner",
-        "endpoint": "local://core/security/pyrit",
-        "permission_level": 3,
-        "description": "Red-team auditing and vulnerability scanning."
-      }
-    ],
-    "document_processing": [
-      {
-        "id": "tool_stirling_01",
-        "name": "Stirling PDF Engine",
-        "endpoint": "local://core/docs/stirling",
-        "permission_level": 1,
-        "description": "MIME-aware PDF manipulation, splitting, and OCR."
-      }
+{
+    "version": "1.0.0",
+    "tools": [
+        {
+            "id": "event_bus",
+            "name": "Event Bus",
+            "category": "core",
+            "status": "active",
+            "permission": 0
+        },
+        {
+            "id": "state_machine",
+            "name": "State Machine",
+            "category": "core",
+            "status": "active",
+            "permission": 0
+        },
+        {
+            "id": "permission_engine",
+            "name": "Permission Engine",
+            "category": "governance",
+            "status": "active",
+            "permission": 3
+        },
+        {
+            "id": "tool_registry_hub",
+            "name": "Tool Registry Hub",
+            "category": "catalog",
+            "status": "active",
+            "permission": 1
+        }
     ]
-  },
-  "metadata": {
-    "active_tools": 5,
-    "pending_integration": 195,
-    "validation_status": "schema_verified"
-  }
 }
