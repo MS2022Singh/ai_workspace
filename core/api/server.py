@@ -31,3 +31,8 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text(f'Echo: {data}')
     except:
         pass
+
+
+@app.get("/")
+async def root():
+    return {"status": "online", "system": "AI Workspace OS API", "version": "1.0.0"}
