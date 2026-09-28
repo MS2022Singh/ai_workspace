@@ -1,163 +1,43 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace OS | Master Command Center</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>AI Workspace Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="os-container">
-        <!-- Left Navigation Sidebar -->
-        <aside class="nav-sidebar">
-            <div class="logo">
-                <i class="fas fa-brain"></i>
-                <span>Master OS v3.5</span>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col">
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="h-3 w-3 bg-emerald-500 rounded-full animate-pulse"></span>
+            <h1 class="font-bold text-lg tracking-wide text-white">AI WORKSPACE OS</h1>
+        </div>
+        <div class="text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded border border-slate-700">
+            Active Agents: <span class="text-emerald-400 font-semibold">Software Architect, UI Designer, Reality Checker</span>
+        </div>
+    </header>
+
+    <!-- Main Chat & Stream Workspace -->
+    <main class="flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 overflow-hidden">
+        <div id="chat-stream-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50 rounded-xl border border-slate-800 shadow-inner">
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow">
+                <h3 class="font-bold text-blue-400 text-sm mb-1">SYSTEM INITIALIZED</h3>
+                <p class="text-sm text-slate-300">Multi-expert AI team active. Enter your command or task below to execute across worker pipelines.</p>
             </div>
-            <nav class="nav-menu">
-                <button class="nav-btn active" data-target="chat-panel"><i class="fas fa-comment-dots"></i> Chat & Prompt Hub</button>
-                <button class="nav-btn" data-target="agents-panel"><i class="fas fa-users-cog"></i> Multi-Agent & DAG</button>
-                <button class="nav-btn" data-target="research-panel"><i class="fas fa-search"></i> Deep Research & RAG</button>
-                <button class="nav-btn" data-target="code-panel"><i class="fas fa-code"></i> Code & Workspace</button>
-                <button class="nav-btn" data-target="media-panel"><i class="fas fa-photo-video"></i> Media & Editors</button>
-                <button class="nav-btn" data-target="security-panel"><i class="fas fa-shield-alt"></i> Security & OSINT</button>
-                <button class="nav-btn" data-target="system-panel"><i class="fas fa-terminal"></i> System & Policy</button>
-            </nav>
-        </aside>
+        </div>
 
-        <!-- Main Workspace -->
-        <main class="main-workspace">
-            <!-- Panel 1: Chat & Prompt Hub -->
-            <section id="chat-panel" class="workspace-panel active">
-                <div class="prompt-bar">
-                    <button class="framework-chip" onclick="injectFramework('genius')"><i class="fas fa-lightbulb"></i> Genius Breakdown</button>
-                    <button class="framework-chip" onclick="injectFramework('skill')"><i class="fas fa-graduation-cap"></i> Master Skill</button>
-                    <button class="framework-chip" onclick="injectFramework('blocks')"><i class="fas fa-brain"></i> Fix Mental Blocks</button>
-                    <button class="framework-chip" onclick="injectFramework('clarity')"><i class="fas fa-bolt"></i> Clarity & Metaphor</button>
-                    <button class="framework-chip" onclick="injectFramework('phd')"><i class="fas fa-atom"></i> PhD-Level</button>
-                    <button class="framework-chip" onclick="injectFramework('frameworks')"><i class="fas fa-project-diagram"></i> Mental Models</button>
-                    <button class="framework-chip" onclick="injectFramework('upgrade')"><i class="fas fa-rocket"></i> 30-Day Upgrade</button>
-                </div>
-                <div class="chat-stream" id="chat-stream">
-                    <div class="message system">
-                        <div class="msg-bubble">
-                            <p><strong>Master OS Online.</strong> All orchestration tools, RAG pipelines, permission engines, and event bus handlers synchronized successfully.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-area">
-                    <div class="input-wrapper">
-                        <textarea id="main-input" placeholder="Enter task, prompt, or command (Press Enter)..." rows="1"></textarea>
-                    </div>
-                    <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </section>
+        <!-- Input Bar -->
+        <div class="mt-4 flex gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 shadow-lg">
+            <input id="user-input" type="text" placeholder="Enter task (e.g., 'Build a responsive dashboard panel')..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition">
+            <button id="execute-btn" type="button" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2 cursor-pointer">
+                <span>Execute</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+        </div>
+    </main>
 
-            <!-- Panel 2: Multi-Agent & DAG -->
-            <section id="agents-panel" class="workspace-panel">
-                <div class="panel-header"><h2>Multi-Agent Orchestration & DAG Pipelines</h2></div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                        <h3><i class="fas fa-microchip"></i> OpenHands Coding Agent</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Autonomous software engineering sandbox running in isolated git worktrees.</p>
-                        <span class="status-badge" style="margin-top: 15px;"><span class="status-dot"></span> Active Sandbox</span>
-                    </div>
-                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                        <h3><i class="fas fa-globe"></i> Browser Use Engine</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Autonomous web navigation and task execution agent.</p>
-                        <span class="status-badge" style="margin-top: 15px;"><span class="status-dot"></span> Ready</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Panel 3: Research & RAG -->
-            <section id="research-panel" class="workspace-panel">
-                <div class="panel-header"><h2>Deep Research & Semantica GraphRAG</h2></div>
-                <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                    <input type="text" placeholder="Enter research query or URL to ingest..." style="width: 100%; padding: 12px; background: var(--bg-input); border: 1px solid var(--border); color: white; border-radius: 8px; margin-bottom: 15px;">
-                    <button class="framework-chip" style="background: var(--accent); border: none;"><i class="fas fa-spider"></i> Dispatch Crawl4AI Crawler</button>
-                </div>
-            </section>
-
-            <!-- Panel 4: Code & Workspace -->
-            <section id="code-panel" class="workspace-panel">
-                <div class="panel-header"><h2>Code Workspace & Repository Auto-Sync</h2></div>
-                <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border); font-family: monospace; font-size: 0.9rem; color: var(--text-muted);">
-                    // Active Repository: https://github.com/MS2022Singh/ai_workspace<br>
-                    // Sandbox Environment: Isolated Python / Uvicorn Active
-                </div>
-            </section>
-
-            <!-- Panel 5: Media & Editors -->
-            <section id="media-panel" class="workspace-panel">
-                <div class="panel-header"><h2>Media Conversion & Visual Editors</h2></div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                    <button class="framework-chip" style="padding: 15px; text-align: center;"><i class="fas fa-file-pdf fa-2x"></i><br>Stirling PDF Tools</button>
-                    <button class="framework-chip" style="padding: 15px; text-align: center;"><i class="fas fa-image fa-2x"></i><br>Fooocus Image Editor</button>
-                    <button class="framework-chip" style="padding: 15px; text-align: center;"><i class="fas fa-video fa-2x"></i><br>Video/Audio Compressor</button>
-                </div>
-            </section>
-
-            <!-- Panel 6: Security & OSINT -->
-            <section id="security-panel" class="workspace-panel">
-                <div class="panel-header"><h2>Security Threat Intel & PyRIT Red-Teaming</h2></div>
-                <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                    <h3>PyRIT AI Vulnerability Scanner</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Automated red-teaming checks for prompt injection and model safety.</p>
-                    <button class="framework-chip" style="background: var(--accent); border: none;">Run Security Audit</button>
-                </div>
-            </section>
-
-            <!-- Panel 7: System & Policy -->
-            <section id="system-panel" class="workspace-panel">
-                <div class="panel-header"><h2>System Diagnostics & Permission Policy</h2></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                        <h3>Autonomy Level</h3>
-                        <select style="width: 100%; padding: 10px; margin-top: 10px; background: var(--bg-input); color: white; border: 1px solid var(--border); border-radius: 6px;">
-                            <option>Level 1: Observe Only</option>
-                            <option>Level 2: Suggest Actions</option>
-                            <option>Level 3: Execute with Approval</option>
-                            <option>Level 4: Fully Autonomous</option>
-                        </select>
-                    </div>
-                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                        <h3>Permission Engine</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Zero-trust runtime guards active.</p>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Right Tool Registry Sidebar -->
-        <aside class="tool-sidebar">
-            <h3>Master Tool Registry <span class="status-dot"></span></h3>
-            
-            <div class="tool-category">
-                <div class="tool-category-title">Orchestration & Workflows</div>
-                <div class="tool-toggle-item" data-category="Orchestration" data-tool="ToolJet"><span>ToolJet</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="tool-toggle-item" data-category="Orchestration" data-tool="n8n Workflows"><span>n8n Workflows</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            </div>
-
-            <div class="tool-category">
-                <div class="tool-category-title">Multi-Agent & DAG</div>
-                <div class="tool-toggle-item" data-category="Multi-Agent" data-tool="OpenHands Sandbox"><span>OpenHands Sandbox</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="tool-toggle-item" data-category="Multi-Agent" data-tool="Browser Use"><span>Browser Use</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            </div>
-
-            <div class="tool-category">
-                <div class="tool-category-title">Models & RAG</div>
-                <div class="tool-toggle-item" data-category="Models & RAG" data-tool="Qwen 3.8 Local"><span>Qwen 3.8 Local</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="tool-toggle-item" data-category="Models & RAG" data-tool="Semantica GraphRAG"><span>Semantica GraphRAG</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            </div>
-
-            <div class="tool-category">
-                <div class="tool-category-title">Security & OSINT</div>
-                <div class="tool-toggle-item" data-category="Security & OSINT" data-tool="PyRIT Red-Teaming"><span>PyRIT Red-Teaming</span><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-            </div>
-        </aside>
-    </div>
-    <script src="/static/app.js"></script>
+    <!-- Cache-busting parameter to force fresh JS load -->
+    <script src="app.js?v=3"></script>
 </body>
 </html>
