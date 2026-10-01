@@ -1,0 +1,36 @@
+﻿{
+  "categories": [
+    {
+      "name": "AI Orchestration & LLMs",
+      "tools": [
+        {"id": "vllm", "name": "vLLM Engine", "type": "Microservice", "status": "Ready", "description": "High-throughput and memory-efficient LLM serving engine."},
+        {"id": "ollama", "name": "Ollama Local API", "type": "Local Engine", "status": "Connected", "description": "Local Llama 3 / Mistral parameter runtime runner."},
+        {"id": "flowise", "name": "Flowise AI", "type": "Node Workflow", "status": "Ready", "description": "Drag & drop UI to build customized LLM flow pipelines."},
+        {"id": "litellm", "name": "LiteLLM Router", "type": "Python Library", "status": "Active", "description": "Unified I/O gateway for 100+ LLM APIs."}
+      ]
+    },
+    {
+      "name": "Security, OSINT & Reverse Engineering",
+      "tools": [
+        {"id": "sherlock", "name": "Sherlock OSINT", "type": "CLI Tool", "status": "Ready", "description": "Hunt down social media accounts across hundreds of networks."},
+        {"id": "pyrit", "name": "PyRIT Red Teaming", "type": "Security Framework", "status": "Active", "description": "Python Risk Identification Tool for AI asset red-teaming."},
+        {"id": "ghidra", "name": "Ghidra SRE", "type": "Binary Analysis", "status": "Standby", "description": "NSA Reverse Engineering Software suite for binary analysis."}
+      ]
+    },
+    {
+      "name": "Media & Generative Studio",
+      "tools": [
+        {"id": "pollinations", "name": "Pollinations AI", "type": "REST API", "status": "Active", "description": "Zero-latency open generative image renderer."},
+        {"id": "comfyui", "name": "ComfyUI Pipeline", "type": "Node Workflow", "status": "Ready", "description": "Modular Stable Diffusion GUI and execution backend."},
+        {"id": "ytdlp", "name": "yt-dlp Engine", "type": "CLI Utility", "status": "Active", "description": "Universal media extractor and stream downloader."}
+      ]
+    },
+    {
+      "name": "Automation & Business Workflows",
+      "tools": [
+        {"id": "n8n", "name": "n8n Automation", "type": "Microservice", "status": "Ready", "description": "Fair-code workflow automation tool with native REST hooks."},
+        {"id": "erpnext", "name": "ERPNext Core", "type": "Business Engine", "status": "Standby", "description": "Open-source ERP for finance, inventory, and ledger auditing."}
+      ]
+    }
+  ]
+}

@@ -3,41 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workspace Command Center</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AI Workspace OS | Master Command Center</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col">
-    <!-- Top Navigation Header -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="h-3 w-3 bg-emerald-500 rounded-full animate-pulse"></span>
-            <h1 class="font-bold text-lg tracking-wide text-white">AI WORKSPACE OS</h1>
-        </div>
-        <div class="text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded border border-slate-700">
-            Active Agents: <span class="text-emerald-400 font-semibold">Software Architect, UI Designer, Reality Checker</span>
-        </div>
-    </header>
-
-    <!-- Main Chat & Stream Workspace -->
-    <main class="flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 overflow-hidden">
-        <div id="chat-stream-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50 rounded-xl border border-slate-800 shadow-inner">
-            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow">
-                <h3 class="font-bold text-blue-400 text-sm mb-1">SYSTEM INITIALIZED</h3>
-                <p class="text-sm text-slate-300">Multi-expert AI team active. Enter your command or task below to execute across worker pipelines.</p>
+<body class="bg-dark text-light">
+    <div class="app-container">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="brand">
+                <i class="fa-solid fa-brain brand-icon"></i>
+                <span class="brand-title">AI WORKSPACE OS</span>
+                <span class="version-tag">v5.0-PROD</span>
             </div>
-        </div>
+            <div class="topbar-status">
+                <div class="status-indicator">
+                    <span id="ws-status-dot" class="dot offline"></span>
+                    <span id="ws-status-text">Connecting...</span>
+                </div>
+                <div class="autonomy-badge" id="autonomy-badge">Autonomy: Level 1 (Observe)</div>
+                <div class="device-badge" id="device-badge"><i class="fa-solid fa-desktop"></i> Primary Desktop Node</div>
+            </div>
+        </header>
 
-        <!-- Input Bar -->
-        <div class="mt-4 flex gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800 shadow-lg">
-            <input id="user-input" type="text" placeholder="Enter task (e.g., 'Build a responsive dashboard panel')..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 transition">
-            <button id="execute-btn" type="button" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2 cursor-pointer">
-                <span>Execute</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-        </div>
-    </main>
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar">
+                <div class="nav-section-title">COMMAND PANELS</div>
+                <button class="nav-btn active" data-panel="interaction"><i class="fa-solid fa-comments"></i> 1. Interaction &amp; Chat</button>
+                <button class="nav-btn" data-panel="discussion"><i class="fa-solid fa-comments-dollar"></i> 2. Discussion Stream</button>
+                <button class="nav-btn" data-panel="research"><i class="fa-solid fa-microscope"></i> 3. Research Agent</button>
+                <button class="nav-btn" data-panel="coding"><i class="fa-solid fa-code"></i> 4. Coding Agent</button>
+                <button class="nav-btn" data-panel="computer"><i class="fa-solid fa-terminal"></i> 5. Computer Control</button>
+                <button class="nav-btn" data-panel="filedoc"><i class="fa-solid fa-file-contract"></i> 6. File &amp; Document</button>
+                <button class="nav-btn" data-panel="image"><i class="fa-solid fa-image"></i> 7. Image Studio</button>
+                <button class="nav-btn" data-panel="video"><i class="fa-solid fa-video"></i> 8. Video Studio</button>
+                <button class="nav-btn" data-panel="audio"><i class="fa-solid fa-music"></i> 9. Audio Engine</button>
+                <button class="nav-btn" data-panel="business"><i class="fa-solid fa-briefcase"></i> 10. Business &amp; ERP</button>
+                <button class="nav-btn" data-panel="web"><i class="fa-solid fa-globe"></i> 11. Web &amp; Scraping</button>
+                <button class="nav-btn" data-panel="memory"><i class="fa-solid fa-database"></i> 12. Memory &amp; Knowledge</button>
+                <button class="nav-btn" data-panel="tools"><i class="fa-solid fa-cubes"></i> 13. Tool Hub</button>
+                <button class="nav-btn" data-panel="workflow"><i class="fa-solid fa-diagram-project"></i> 14. Workflow &amp; DAG</button>
+                <button class="nav-btn" data-panel="security"><i class="fa-solid fa-shield-halved"></i> 15. Security &amp; OSINT</button>
+                <button class="nav-btn" data-panel="permission"><i class="fa-solid fa-user-lock"></i> 16. Permission Policy</button>
+                <button class="nav-btn" data-panel="logs"><i class="fa-solid fa-list-check"></i> 17. Real-Time Logs</button>
+                <button class="nav-btn" data-panel="devices"><i class="fa-solid fa-hard-drive"></i> 18. Device Registry</button>
+                <button class="nav-btn" data-panel="settings"><i class="fa-solid fa-sliders"></i> 19. Settings</button>
+                <button class="nav-btn" data-panel="help"><i class="fa-solid fa-circle-info"></i> 20. Help &amp; Shortcuts</button>
+            </nav>
 
-    <!-- Cache-busting parameter to force fresh JS load -->
-    <script src="app.js?v=3"></script>
+            <!-- Active View Area -->
+            <main class="content-area">
+                <!-- Panel 1: Interaction & Chat -->
+                <section id="panel-interaction" class="panel active">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-comments"></i> Interaction &amp; Response Panel</h2>
+                        <div class="prompt-method-selector">
+                            <label>Methodology:</label>
+                            <select id="prompt-methodology-select">
+                                <option value="">Standard Mode</option>
+                                <option value="genius">Understand Anything Like a Genius</option>
+                                <option value="skill_mastery">Master Any Skill for Free</option>
+                                <option value="fix_mental_blocks">Fix Mental Blocks</option>
+                                <option value="clarity">Turn Confusion Into Clarity</option>
+                                <option value="phd_breakdown">Get a PhD-Level Breakdown</option>
+                                <option value="mental_framework">Build Mental Frameworks</option>
+                                <option value="brain_upgrade_30days">Upgrade Your Brain in 30 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chat-display" id="chat-output">
+                        <div class="system-msg">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <strong>AI WORKSPACE OS ONLINE:</strong> Multi-Agent Orchestrator &amp; Real-Time Event Bus operational.
+                        </div>
+                    </div>
+                    <div class="input-bar">
+                        <textarea id="cmd-input" placeholder="Enter command or task... Press Enter to execute."></textarea>
+                        <button id="send-btn" class="primary-btn"><i class="fa-solid fa-paper-plane"></i> Execute</button>
+                    </div>
+                </section>
+
+                <!-- Panel 2: Discussion Stream -->
+                <section id="panel-discussion" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-comments-dollar"></i> Multi-Agent Discussion Stream</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Agent Debate &amp; Consensus Builder</h3>
+                        <p class="sub-text">Initiate a structured debate between specialized AI agents.</p>
+                        <div class="form-group">
+                            <label>Discussion Topic or Problem Statement:</label>
+                            <input type="text" id="discussion-topic" placeholder="e.g., Should we migrate from REST to GraphQL for our microservices?">
+                        </div>
+                        <button id="start-discussion-btn" class="action-btn"><i class="fa-solid fa-users-gear"></i> Start Agent Debate</button>
+                    </div>
+                    <div class="chat-display" id="discussion-output" style="margin-top:15px; height: 350px;">
+                        <div class="system-msg">Discussion stream ready. Start a debate above to view multi-agent consensus.</div>
+                    </div>
+                </section>
+
+                <!-- Panel 3: Research Agent -->
+                <section id="panel-research" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-microscope"></i> Deep Research &amp; Synthesis Agent</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Autonomous Academic &amp; Web Research</h3>
+                        <div class="form-group">
+                            <label>Research Topic / Query:</label>
+                            <input type="text" id="research-query" placeholder="e.g., Recent breakthroughs in quantum fault tolerance (2025-2026)">
+                        </div>
+                        <div class="form-group">
+                            <label>Search Scope:</label>
+                            <select id="research-scope">
+                                <option value="academic">Academic Papers (arXiv, PubMed, IEEE)</option>
+                                <option value="web">Global Web &amp; News</option>
+                                <option value="patents">Patent Databases</option>
+                            </select>
+                        </div>
+                        <button id="run-research-btn" class="action-btn"><i class="fa-solid fa-magnifying-glass-chart"></i> Execute Deep Research</button>
+                    </div>
+                    <div id="research-results" class="result-box" style="margin-top:15px; min-height: 200px;"></div>
+                </section>
+
+                <!-- Panel 4: Coding Agent -->
+                <section id="panel-coding" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-code"></i> Autonomous Coding &amp; Refactoring Agent</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Code Generation &amp; Bug Fixing</h3>
+                        <div class="form-group">
+                            <label>Coding Task / Problem Description:</label>
+                            <textarea id="coding-prompt" style="height: 80px; background:#1f2937; border:1px solid #374151; color:white; padding:10px; border-radius:6px;" placeholder="e.g., Write a thread-safe LRU Cache in Python with TTL support..."></textarea>
+                        </div>
+                        <button id="run-coding-btn" class="action-btn"><i class="fa-solid fa-laptop-code"></i> Generate &amp; Verify Code</button>
+                    </div>
+                    <div class="result-box" id="coding-output" style="margin-top:15px; font-family: monospace; white-space: pre-wrap; min-height: 200px;"></div>
+                </section>
+
+                <!-- Panel 5: Computer Control -->
+                <section id="panel-computer" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-terminal"></i> Computer &amp; Terminal Control</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Shell Command Execution</h3>
+                        <p class="sub-text">Execute native system commands under current security policy control.</p>
+                        <div class="form-group">
+                            <label>Command (PowerShell / Bash):</label>
+                            <input type="text" id="terminal-cmd" placeholder="e.g., Get-Process | Sort-Object CPU -Descending | Select-Object -First 5">
+                        </div>
+                        <button id="exec-terminal-btn" class="action-btn"><i class="fa-solid fa-terminal"></i> Run Command</button>
+                    </div>
+                    <div id="terminal-output" class="log-monitor" style="margin-top:15px; height: 300px;"></div>
+                </section>
+
+                <!-- Panel 6: File & Doc -->
+                <section id="panel-filedoc" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-file-contract"></i> File, Document, Conversion &amp; Compression</h2>
+                    </div>
+                    <div class="tools-grid-2">
+                        <div class="tool-card">
+                            <h3><i class="fa-solid fa-right-left"></i> Universal Format Converter</h3>
+                            <div class="form-group">
+                                <label>Source File:</label>
+                                <input type="file" id="convert-file-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Target Format:</label>
+                                <select id="convert-target-format">
+                                    <option value="pdf">PDF Document</option>
+                                    <option value="docx">Word Document (DOCX)</option>
+                                    <option value="png">PNG Image</option>
+                                    <option value="mp4">MP4 Video</option>
+                                    <option value="mp3">MP3 Audio</option>
+                                </select>
+                            </div>
+                            <button id="convert-btn" class="action-btn"><i class="fa-solid fa-arrows-rotate"></i> Convert</button>
+                            <div id="convert-result" class="result-box"></div>
+                        </div>
+
+                        <div class="tool-card">
+                            <h3><i class="fa-solid fa-compress"></i> Media &amp; File Compressor</h3>
+                            <div class="form-group">
+                                <label>Select File:</label>
+                                <input type="file" id="compress-file-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Compression Quality (%):</label>
+                                <input type="range" id="compress-quality" min="10" max="100" value="80" oninput="this.nextElementSibling.value = this.value + '%'">
+                                <output>80%</output>
+                            </div>
+                            <button id="compress-btn" class="action-btn"><i class="fa-solid fa-file-arrow-down"></i> Compress</button>
+                            <div id="compress-result" class="result-box"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Panel 7: Image Studio -->
+                <section id="panel-image" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-image"></i> Image Studio &amp; Generative AI</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Image Generation / Editing Prompt</h3>
+                        <div class="form-group">
+                            <label>Prompt Description:</label>
+                            <input type="text" id="image-prompt" placeholder="e.g., Cyberpunk city street at dusk, highly detailed 8K render...">
+                        </div>
+                        <div class="form-group">
+                            <label>Aspect Ratio:</label>
+                            <select id="image-aspect">
+                                <option value="1:1">1:1 Square</option>
+                                <option value="16:9">16:9 Widescreen</option>
+                                <option value="9:16">9:16 Portrait</option>
+                            </select>
+                        </div>
+                        <button id="gen-image-btn" class="action-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Image</button>
+                    </div>
+                    <div id="image-result" class="result-box" style="margin-top:15px; min-height: 150px; text-align: center;"></div>
+                </section>
+
+                <!-- Panel 8: Video Studio -->
+                <section id="panel-video" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-video"></i> Video Studio &amp; Animation</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Text-to-Video / Motion Synthesis</h3>
+                        <div class="form-group">
+                            <label>Video Scene Prompt:</label>
+                            <input type="text" id="video-prompt" placeholder="e.g., Drone footage over misty mountain peaks at sunrise...">
+                        </div>
+                        <button id="gen-video-btn" class="action-btn"><i class="fa-solid fa-clapperboard"></i> Render Video Sequence</button>
+                    </div>
+                    <div id="video-result" class="result-box" style="margin-top:15px; min-height: 150px;"></div>
+                </section>
+
+                <!-- Panel 9: Audio Engine -->
+                <section id="panel-audio" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-music"></i> Audio Engine &amp; Voice Synthesis</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Text-To-Speech / Audio Generation</h3>
+                        <div class="form-group">
+                            <label>Text Script:</label>
+                            <textarea id="audio-script" style="height: 60px; background:#1f2937; border:1px solid #374151; color:white; padding:10px; border-radius:6px;" placeholder="e.g., Welcome to AI Workspace OS Version 5..."></textarea>
+                        </div>
+                        <button id="gen-audio-btn" class="action-btn"><i class="fa-solid fa-microphone-lines"></i> Synthesize Audio</button>
+                    </div>
+                    <div id="audio-result" class="result-box" style="margin-top:15px;"></div>
+                </section>
+
+                <!-- Panel 10: Business & ERP -->
+                <section id="panel-business" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-briefcase"></i> Business, ERP &amp; Analytics</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Financial Strategy &amp; KPI Reporter</h3>
+                        <div class="form-group">
+                            <label>Target Department / Project:</label>
+                            <input type="text" id="business-target" placeholder="e.g., Q3 Marketing Campaign ROI &amp; Conversion Pipeline">
+                        </div>
+                        <button id="gen-business-btn" class="action-btn"><i class="fa-solid fa-chart-line"></i> Generate Executive Summary</button>
+                    </div>
+                    <div id="business-result" class="result-box" style="margin-top:15px; min-height: 150px;"></div>
+                </section>
+
+                <!-- Panel 11: Web & Scraping -->
+                <section id="panel-web" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-globe"></i> Web Scraping &amp; Crawler Hub</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Target Web Extractor</h3>
+                        <div class="form-group">
+                            <label>Target URL:</label>
+                            <input type="text" id="scrape-url" placeholder="https://news.ycombinator.com">
+                        </div>
+                        <button id="run-scrape-btn" class="action-btn"><i class="fa-solid fa-spider"></i> Crawl &amp; Extract Structured Data</button>
+                    </div>
+                    <div id="scrape-result" class="result-box" style="margin-top:15px; font-family: monospace; min-height: 150px;"></div>
+                </section>
+
+                <!-- Panel 12: Memory -->
+                <section id="panel-memory" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-database"></i> Memory &amp; Knowledge Feeding</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3><i class="fa-solid fa-book-bookmark"></i> Ingest Knowledge Source</h3>
+                        <p class="sub-text">Teach the system once using web links, PDFs, eBooks, or repos.</p>
+                        <div class="form-group">
+                            <label>Source URL or Path:</label>
+                            <input type="text" id="learn-url-input" placeholder="https://arxiv.org/abs/... or path/to/file.pdf">
+                        </div>
+                        <div class="form-group">
+                            <label>Source Type:</label>
+                            <select id="learn-type-select">
+                                <option value="url">Web Link / Article</option>
+                                <option value="pdf">PDF / Research Paper</option>
+                                <option value="ebook">eBook / Text Document</option>
+                                <option value="repo">GitHub Repository</option>
+                            </select>
+                        </div>
+                        <button id="learn-btn" class="action-btn"><i class="fa-solid fa-graduation-cap"></i> Feed Knowledge</button>
+                        <div id="learn-result" class="result-box"></div>
+                    </div>
+                </section>
+
+                <!-- Panel 13: Tools -->
+                <section id="panel-tools" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-cubes"></i> Tool &amp; Repository Hub</h2>
+                        <div class="self-upgrade-bar">
+                            <input type="text" id="upgrade-repo-input" placeholder="GitHub Repo URL to auto-incorporate...">
+                            <button id="upgrade-btn" class="primary-btn"><i class="fa-solid fa-cloud-arrow-down"></i> Integrate</button>
+                        </div>
+                    </div>
+                    <div class="tool-search-bar">
+                        <input type="text" id="tool-search" placeholder="Search tools..." onkeyup="filterTools()">
+                    </div>
+                    <div class="tools-grid" id="tools-container"></div>
+                </section>
+
+                <!-- Panel 14: Workflow & DAG -->
+                <section id="panel-workflow" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-diagram-project"></i> Workflow Engine &amp; DAG Orchestrator</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Pipeline Trigger</h3>
+                        <div class="form-group">
+                            <label>Pipeline Strategy Name:</label>
+                            <input type="text" id="workflow-name" placeholder="e.g., Autonomous Code Audit &amp; Deploy Pipeline">
+                        </div>
+                        <button id="run-workflow-btn" class="action-btn"><i class="fa-solid fa-play"></i> Trigger Pipeline DAG</button>
+                    </div>
+                    <div id="workflow-result" class="result-box" style="margin-top:15px; min-height: 150px;"></div>
+                </section>
+
+                <!-- Panel 15: Security & OSINT -->
+                <section id="panel-security" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-shield-halved"></i> Security &amp; OSINT Scanner</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Target Reconnaissance</h3>
+                        <div class="form-group">
+                            <label>Domain / IP Target:</label>
+                            <input type="text" id="security-target" placeholder="e.g., example.com or 192.168.1.1">
+                        </div>
+                        <button id="run-security-btn" class="action-btn"><i class="fa-solid fa-bug"></i> Run Vulnerability &amp; OSINT Scan</button>
+                    </div>
+                    <div id="security-result" class="result-box" style="margin-top:15px; min-height: 150px; font-family: monospace;"></div>
+                </section>
+
+                <!-- Panel 16: Permission Policy -->
+                <section id="panel-permission" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-user-lock"></i> Permission Policy Engine</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Autonomy Level Configuration</h3>
+                        <div class="autonomy-selector">
+                            <label><input type="radio" name="autonomy" value="1" checked> Level 1 — Observe (Read Only)</label><br>
+                            <label><input type="radio" name="autonomy" value="2"> Level 2 — Suggest (Recommendations)</label><br>
+                            <label><input type="radio" name="autonomy" value="3"> Level 3 — Controlled Execution</label><br>
+                            <label><input type="radio" name="autonomy" value="4"> Level 4 — Fully Autonomous</label>
+                        </div>
+                        <h3>Permission Class Toggles</h3>
+                        <div class="permissions-grid">
+                            <label><input type="checkbox" id="perm-read" checked disabled> READ (System info, files)</label>
+                            <label><input type="checkbox" id="perm-write" checked> WRITE (File modifications)</label>
+                            <label><input type="checkbox" id="perm-execute" checked> EXECUTE (Scripts &amp; binaries)</label>
+                            <label><input type="checkbox" id="perm-network" checked> NETWORK (Internet &amp; API access)</label>
+                            <label><input type="checkbox" id="perm-delete"> DELETE (File removal)</label>
+                            <label><input type="checkbox" id="perm-system"> SYSTEM (System settings)</label>
+                            <label><input type="checkbox" id="perm-financial"> FINANCIAL (Transactions)</label>
+                        </div>
+                        <button id="save-policy-btn" class="action-btn" style="margin-top:15px;"><i class="fa-solid fa-floppy-disk"></i> Save Policy</button>
+                    </div>
+                </section>
+
+                <!-- Panel 17: Logs -->
+                <section id="panel-logs" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-list-check"></i> Real-Time Event Bus Logs</h2>
+                    </div>
+                    <div class="log-monitor" id="event-log-container"></div>
+                </section>
+
+                <!-- Panel 18: Devices -->
+                <section id="panel-devices" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-hard-drive"></i> Device Registry &amp; Node Status</h2>
+                    </div>
+                    <div class="tool-card" id="device-info-card">
+                        <p>Loading node system specifications...</p>
+                    </div>
+                </section>
+
+                <!-- Panel 19: Settings -->
+                <section id="panel-settings" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-sliders"></i> Global System Settings</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>API Configuration &amp; Local Model Paths</h3>
+                        <div class="form-group">
+                            <label>Default Local Inference Server URL:</label>
+                            <input type="text" id="settings-inference-url" value="http://localhost:11434">
+                        </div>
+                        <button id="save-settings-btn" class="action-btn"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
+                    </div>
+                </section>
+
+                <!-- Panel 20: Help -->
+                <section id="panel-help" class="panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-circle-info"></i> System Help &amp; Shortcuts</h2>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Keyboard Shortcuts</h3>
+                        <table class="help-table">
+                            <tr><th>Shortcut</th><th>Action</th></tr>
+                            <tr><td><kbd>Enter</kbd></td><td>Submit command in Interaction Panel</td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>Save active output</td></tr>
+                            <tr><td><kbd>Esc</kbd></td><td>Cancel operation</td></tr>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script src="/app.js?v=6"></script>
 </body>
 </html>
