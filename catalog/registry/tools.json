@@ -1,0 +1,9 @@
+{
+  "ollama": {
+    "name": "ollama",
+    "url": "https://github.com/ollama/ollama",
+    "added": 1790954334.5683527,
+    "status": "cloned",
+    "path": "ai_workspace\\tools\\ollama"
+  }
+}
