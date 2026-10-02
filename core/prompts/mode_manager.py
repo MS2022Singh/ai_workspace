@@ -1,12 +1,22 @@
-﻿PROMPT_MODES = {
-    "auto": "You are the AI Workspace OS Orchestrator. Execute user requests with precision, high autonomy, and structured output.",
-    "genius": "You operate in Genius Mode. Deconstruct complex problems into first principles, analyze all edge cases, and output rigorously structured solutions.",
-    "phd": "You operate as a PhD Research Specialist. Provide detailed academic citations, formal methodological breakdowns, and rigorous peer-review style analysis.",
-    "skill_master": "You are a Skill Master Specialist. Provide step-by-step actionable tutorials, exact code snippets, and operational guidance.",
-    "mental_block": "You are an Executive Function Coach. Help overcome mental blocks by breaking down tasks into trivial, frictionless 2-minute steps.",
-    "clarity": "You are a Plain-Language Editor. Distill complex concepts into concise, ELI5-level operational definitions.",
-    "mental_framework": "You analyze problems using core mental models (Inversion, Second-Order Thinking, First Principles, Pareto Principle)."
-}
+﻿import json
+import os
 
-def get_system_prompt(mode: str = "auto") -> str:
-    return PROMPT_MODES.get(mode.lower(), PROMPT_MODES["auto"])
+PROMPTS_FILE = os.path.join(os.path.dirname(__file__), "prompts.json")
+
+def get_system_prompt(mode: str) -> str:
+    default_prompt = "You are Gem OS, a production-grade AI workspace orchestrator."
+    try:
+        if os.path.exists(PROMPTS_FILE):
+            with open(PROMPTS_FILE, "r", encoding="utf-8") as f:
+                prompts = json.load(f)
+            return prompts.get(mode.lower(), default_prompt)
+    except Exception as e:
+        print(f"Error loading prompts: {e}")
+    
+    hardcoded_prompts = {
+        "auto": "You are Gem OS. Analyze the request and respond optimally based on logic and evidence.",
+        "phd": "You are a PhD-level Research Agent. Provide deep, cited, and rigorously structured analysis.",
+        "attorney": "You are a Legal Agent. Structure responses as formal legal drafts or patent reviews.",
+        "skill master": "You are a Skill Master. Break down complex topics into easy, step-by-step learning modules."
+    }
+    return hardcoded_prompts.get(mode.lower(), default_prompt)

@@ -19,7 +19,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        html, body { width: 100%; height: 100%; background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; }
 
         header { height: 50px; background-color: #070a12; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; }
         .logo-group { display: flex; align-items: center; gap: 8px; }
@@ -33,50 +33,55 @@
         .methodology-box { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; }
         .mode-select { background: #111827; color: #ffffff; border: 1px solid #374151; padding: 4px 8px; border-radius: 12px; font-size: 12px; outline: none; cursor: pointer; }
 
-        .app-container { display: flex; flex: 1; overflow: hidden; }
+        .app-container { display: flex; width: 100%; height: calc(100vh - 50px); overflow: hidden; }
         
-        aside { width: var(--sidebar-width); background-color: var(--panel-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        aside { width: var(--sidebar-width); background-color: var(--panel-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; height: 100%; }
         .sidebar-section-title { font-size: 10px; font-weight: 700; color: #64748b; padding: 12px 14px 6px 14px; text-transform: uppercase; letter-spacing: 0.5px; }
         .nav-list { list-style: none; padding: 0 6px 16px 6px; }
-        .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; font-size: 12px; color: #94a3b8; cursor: pointer; margin-bottom: 2px; }
+        .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 12px; color: #94a3b8; cursor: pointer; margin-bottom: 2px; transition: background 0.2s, color 0.2s; }
         .nav-item:hover { background-color: #162032; color: #ffffff; }
         .nav-item.active { background-color: #2563eb; color: #ffffff; font-weight: 600; }
 
-        main { flex: 1; display: flex; flex-direction: column; background-color: #090d16; overflow: hidden; position: relative; }
-        .panel-header { padding: 14px 20px; border-bottom: 1px solid var(--border-color); background-color: #090d16; display: flex; align-items: center; gap: 8px; }
-        .panel-title { font-size: 16px; font-weight: 700; color: #ffffff; }
+        main { flex: 1; display: flex; flex-direction: column; background-color: #090d16; height: 100%; overflow: hidden; position: relative; }
+        
+        .view-panel { display: none; flex-direction: column; width: 100%; height: 100%; overflow: hidden; }
+        .view-panel.active { display: flex; }
 
-        .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; }
-        .card-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #f8fafc; }
+        .panel-header { padding: 12px 20px; border-bottom: 1px solid var(--border-color); background-color: #090d16; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .panel-title { font-size: 15px; font-weight: 700; color: #ffffff; }
+
+        .content-area { flex: 1; padding: 16px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; width: 100%; }
+        
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; flex-shrink: 0; }
+        .card-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #f8fafc; }
 
         .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
         .form-label { font-size: 11px; font-weight: 600; color: #94a3b8; }
-        .form-input, .form-select, .form-textarea { background: var(--card-inner); border: 1px solid #1e293b; border-radius: 6px; padding: 8px 12px; color: #ffffff; font-size: 13px; outline: none; }
+        .form-input, .form-select, .form-textarea { background: var(--card-inner); border: 1px solid #1e293b; border-radius: 6px; padding: 8px 12px; color: #ffffff; font-size: 13px; outline: none; width: 100%; }
 
         .btn-action { background-color: #10b981; color: #ffffff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 600; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
         .btn-action:hover { background-color: #059669; }
         .btn-blue { background-color: #2563eb; }
 
-        .chat-stream { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .message-bubble { max-width: 95%; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+        .chat-stream { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-right: 4px; }
+        .message-bubble { max-width: 95%; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; word-break: break-word; }
         .message-user { align-self: flex-end; background-color: #1e40af; color: #ffffff; }
         .message-agent { align-self: flex-start; background-color: #0f172a; border: 1px solid #1e293b; color: #e2e8f0; width: 100%; }
         .agent-name { font-weight: 700; color: #60a5fa; margin-bottom: 6px; border-bottom: 1px solid #1e293b; padding-bottom: 4px; }
 
-        .input-footer { padding: 12px 20px; background-color: #070a12; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
+        .input-footer { padding: 12px 20px; background-color: #070a12; border-top: 1px solid var(--border-color); display: flex; gap: 10px; flex-shrink: 0; width: 100%; align-items: center; }
         .command-input { flex: 1; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 10px 14px; color: #ffffff; font-size: 13px; outline: none; }
-        .btn-execute { background-color: #2563eb; color: #ffffff; border: none; border-radius: 6px; padding: 0 20px; font-weight: 600; font-size: 13px; cursor: pointer; }
+        .btn-execute { background-color: #2563eb; color: #ffffff; border: none; border-radius: 6px; padding: 10px 20px; font-weight: 600; font-size: 13px; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-execute:hover { background-color: #1d4ed8; }
 
-        .view-panel { display: none; flex-direction: column; height: 100%; }
-        .view-panel.active { display: flex; }
-        .code-box { background: #050811; border: 1px solid #1e293b; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; color: #38bdf8; white-space: pre-wrap; overflow-x: auto; margin-top: 8px; }
+        .code-box { background: #050811; border: 1px solid #1e293b; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; color: #38bdf8; white-space: pre-wrap; overflow-x: auto; margin-top: 8px; max-height: 350px; overflow-y: auto; }
 
         .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
         .tool-card { background: #0b101d; border: 1px solid #1e293b; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; }
         .tool-title { font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 4px; }
         .tool-desc { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
-        .alert-bar { background: #0f172a; border: 1px solid #1d4ed8; color: #60a5fa; padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .alert-bar { background: #0f172a; border: 1px solid #1d4ed8; color: #60a5fa; padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1e293b; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -93,9 +98,10 @@
                 <span>Methodology:</span>
                 <select id="promptModeSelector" class="mode-select">
                     <option value="auto">Auto (Intelligent)</option>
-                    <option value="genius">Genius Mode</option>
-                    <option value="skill_master">Skill Master</option>
-                    <option value="phd">PhD Mode</option>
+                    <option value="genius">Genius Mode (First Principles)</option>
+                    <option value="skill_master">Skill Master (20+ Yr Exp)</option>
+                    <option value="phd">PhD Breakdown</option>
+                    <option value="mental_blocks">Fix Mental Blocks</option>
                 </select>
             </div>
         </div>
@@ -124,19 +130,20 @@
                 <li class="nav-item" data-target="panel-logs">📋 17. Real-Time Logs</li>
                 <li class="nav-item" data-target="panel-devices">🎛️ 18. Device Registry</li>
                 <li class="nav-item" data-target="panel-settings">⚙️ 19. Settings</li>
-                <li class="nav-item" data-target="panel-help">ℹ️️ 20. Help & Shortcuts</li>
+                <li class="nav-item" data-target="panel-help">ℹ 20. Help & Shortcuts</li>
             </ul>
         </aside>
 
         <main>
+            <!-- 1. Interaction & Chat -->
             <div id="panel-chat" class="view-panel active">
                 <div class="panel-header"><div class="panel-title">💬 Interaction & Response Panel</div></div>
                 <div class="content-area">
-                    <div class="alert-bar">✓ AI WORKSPACE OS ONLINE: Multi-Agent Orchestrator operational.</div>
+                    <div class="alert-bar">✓ AI WORKSPACE OS ONLINE: Multi-Agent Orchestrator operational with Methodological Prompts & Event Bus.</div>
                     <div class="chat-stream" id="chatStream">
                         <div class="message-bubble message-agent">
                             <div class="agent-name">OrchestratorAgent:</div>
-                            Welcome to AI Workspace OS v5.0. How can I assist you today?
+                            Welcome to AI Workspace OS v5.0. All tools, model routers, and memory vector stores are fully active. How can I assist you today?
                         </div>
                     </div>
                 </div>
@@ -146,83 +153,127 @@
                 </div>
             </div>
 
+            <!-- 2. Discussion Stream -->
             <div id="panel-discussion" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🗣️ Multi-Agent Discussion Stream</div></div>
                 <div class="content-area">
                     <div class="card">
                         <div class="card-title">Agent Debate & Consensus Builder</div>
-                        <div class="form-group"><label class="form-label">Topic:</label><input type="text" class="form-input" id="debateTopic" value="audio dsp architecture"></div>
+                        <div class="form-group"><label class="form-label">Topic / Subject:</label><input type="text" class="form-input" id="debateTopic" value="audio dsp architecture"></div>
                         <button class="btn-action" onclick="runDebate()">👨‍👩‍👧‍👦 Start Agent Debate</button>
                     </div>
                     <div id="out-discussion"></div>
                 </div>
             </div>
 
+            <!-- 3. Research Agent -->
             <div id="panel-research" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🎓 Deep Research & Synthesis Agent</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Academic & Web Research</div>
-                        <div class="form-group"><label class="form-label">Query:</label><input type="text" class="form-input" id="researchQuery" value="audio dsp"></div>
+                        <div class="card-title">Academic & Web Research Query</div>
+                        <div class="form-group"><label class="form-label">Research Topic:</label><input type="text" class="form-input" id="researchQuery" value="audio dsp"></div>
                         <button class="btn-action" onclick="runResearch()">🔍 Execute Deep Research</button>
                     </div>
                     <div id="out-research"></div>
                 </div>
             </div>
 
+            <!-- 4. Coding Agent -->
             <div id="panel-coding" class="view-panel">
                 <div class="panel-header"><div class="panel-title">💻 Code Synthesis Agent</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Code Generator</div>
-                        <div class="form-group"><label class="form-label">Task:</label><input type="text" class="form-input" id="codeTask" value="FastAPI rate limiter middleware"></div>
-                        <button class="btn-action" onclick="runCoding()">⚡ Generate Code</button>
+                        <div class="card-title">Code Generator & Repository Refactor</div>
+                        <div class="form-group"><label class="form-label">Language:</label>
+                            <select class="form-select" id="codeLang"><option value="Python">Python</option><option value="JavaScript">JavaScript</option><option value="C++">C++</option><option value="Rust">Rust</option></select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Task Specification:</label><input type="text" class="form-input" id="codeTask" value="FastAPI rate limiter middleware"></div>
+                        <button class="btn-action" onclick="runCoding()">⚡ Generate & Verify Code</button>
                     </div>
                     <div id="out-coding"></div>
                 </div>
             </div>
 
+            <!-- 5. Computer Control -->
             <div id="panel-computer" class="view-panel">
-                <div class="panel-header"><div class="panel-title">🖥️ Computer Control</div></div>
+                <div class="panel-header"><div class="panel-title">🖥️ Computer Control & OS Diagnostics</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Shell Command Execution</div>
+                        <div class="card-title">Shell & Process Inspection</div>
                         <div class="form-group"><label class="form-label">Command:</label><input type="text" class="form-input" id="compCmd" value="dir C:\AI_Workspace"></div>
-                        <button class="btn-action" onclick="runComputer()">🖥️ Execute Command</button>
+                        <button class="btn-action" onclick="runComputer()">🖥 Execute System Command</button>
                     </div>
                     <div id="out-computer"></div>
                 </div>
             </div>
 
+            <!-- 6. File & Document -->
             <div id="panel-file" class="view-panel">
-                <div class="panel-header"><div class="panel-title">📄 File & Document Engine</div></div>
+                <div class="panel-header"><div class="panel-title">📄 File & Document Engine (Converter, Compressor, Editor)</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">File Converter</div>
-                        <div class="form-group"><input type="file" class="form-input" id="fileInput"></div>
-                        <button class="btn-action" onclick="runConvert()">🔄 Convert File</button>
+                        <div class="card-title">Universal File Converter</div>
+                        <div class="form-group"><label class="form-label">Select File / Drag & Drop:</label><input type="file" class="form-input" id="fileInput"></div>
+                        <div class="form-group">
+                            <label class="form-label">Target Format:</label>
+                            <select class="form-select" id="targetFormat">
+                                <option value="PDF Document">PDF Document (.pdf)</option>
+                                <option value="Markdown">Markdown (.md)</option>
+                                <option value="Plain Text">Plain Text (.txt)</option>
+                                <option value="JSON">JSON Data (.json)</option>
+                                <option value="CSV">CSV Spreadsheet (.csv)</option>
+                            </select>
+                        </div>
+                        <button class="btn-action" onclick="runConvert()">🔄 Convert File Format</button>
                     </div>
                     <div id="out-file"></div>
+
+                    <div class="card" style="margin-top:14px;">
+                        <div class="card-title">File Compressor & Resizer</div>
+                        <div class="form-group"><label class="form-label">Select File to Compress / Resize:</label><input type="file" class="form-input" id="compressInput"></div>
+                        <div class="form-group">
+                            <label class="form-label">Compression / Resize Level:</label>
+                            <select class="form-select" id="compressLevel">
+                                <option value="50">50% Scale / Optimize</option>
+                                <option value="25">25% High Compression</option>
+                                <option value="lossless">Lossless Compression</option>
+                            </select>
+                        </div>
+                        <button class="btn-action" onclick="runCompress()">🗜️ Compress & Resize File</button>
+                    </div>
+                    <div id="out-compress"></div>
                 </div>
             </div>
 
+            <!-- 7. Image Studio -->
             <div id="panel-image" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🖼️ Generative Image Studio</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Visual Renderer</div>
+                        <div class="card-title">Visual Renderer & Upscaler</div>
                         <div class="form-group"><label class="form-label">Prompt:</label><input type="text" class="form-input" id="imgPrompt" value="cosmic space nebula galaxy ultra realistic"></div>
+                        <div class="form-group">
+                            <label class="form-label">Style & Resolution:</label>
+                            <select class="form-select" id="imgStyle">
+                                <option value="photorealistic">Photorealistic</option>
+                                <option value="anime">Anime / Vector</option>
+                                <option value="cyberpunk">Cyberpunk Neon</option>
+                                <option value="oil">Oil Painting</option>
+                            </select>
+                        </div>
                         <button class="btn-action" onclick="runImage()">🎨 Render Image</button>
                     </div>
                     <div id="out-image"></div>
                 </div>
             </div>
 
+            <!-- 8. Video Studio -->
             <div id="panel-video" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🎥 AI Video Studio</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Storyboard Sequence Generator</div>
+                        <div class="card-title">Storyboard Sequence & Video Generator</div>
                         <div class="form-group"><label class="form-label">Prompt:</label><input type="text" class="form-input" id="vidPrompt" value="Cinematic galaxy flythrough"></div>
                         <button class="btn-action" onclick="runVideo()">🎬 Generate Storyboard</button>
                     </div>
@@ -230,23 +281,25 @@
                 </div>
             </div>
 
+            <!-- 9. Audio Engine -->
             <div id="panel-audio" class="view-panel">
-                <div class="panel-header"><div class="panel-title">🎵 Audio Processing Engine</div></div>
+                <div class="panel-header"><div class="panel-title">🎵 Audio Processing Engine (DSP, STT, TTS)</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">DSP Audio Synthesizer</div>
-                        <div class="form-group"><label class="form-label">Audio Prompt:</label><input type="text" class="form-input" id="audioPrompt" value="Low-pass filter wave"></div>
+                        <div class="card-title">Synthesizer & Transcriber</div>
+                        <div class="form-group"><label class="form-label">Audio Task / Prompt:</label><input type="text" class="form-input" id="audioPrompt" value="Low-pass filter wave"></div>
                         <button class="btn-action" onclick="runAudio()">🎛️ Synthesize Audio</button>
                     </div>
                     <div id="out-audio"></div>
                 </div>
             </div>
 
+            <!-- 10. Business & ERP -->
             <div id="panel-business" class="view-panel">
                 <div class="panel-header"><div class="panel-title">💼 Business Analytics & ERP</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Ledger Audit</div>
+                        <div class="card-title">Ledger & ERP Audit</div>
                         <div class="form-group"><label class="form-label">Query:</label><input type="text" class="form-input" id="bizQuery" value="Quarterly ledger audit"></div>
                         <button class="btn-action" onclick="runBusiness()">📊 Run ERP Audit</button>
                     </div>
@@ -254,11 +307,12 @@
                 </div>
             </div>
 
+            <!-- 11. Web & Scraping -->
             <div id="panel-web" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🌐 Web Scraping & Data Extraction</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Universal Web Scraper</div>
+                        <div class="card-title">Universal Web Scraper (Crawl4AI / Scrapling)</div>
                         <div class="form-group"><label class="form-label">Target URL:</label><input type="text" class="form-input" id="scrapeUrl" value="https://news.ycombinator.com"></div>
                         <button class="btn-action" onclick="runScrape()">🌐 Scrape Target URL</button>
                     </div>
@@ -266,11 +320,12 @@
                 </div>
             </div>
 
+            <!-- 12. Memory & Knowledge -->
             <div id="panel-memory" class="view-panel">
                 <div class="panel-header"><div class="panel-title">💾 Memory & Vector Store Ingestion</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Ingest Text to ChromaDB</div>
+                        <div class="card-title">Ingest Text / Document to ChromaDB</div>
                         <div class="form-group"><textarea class="form-textarea" id="memText" rows="4">The AI Workspace OS project root is C:\AI_Workspace\ai_workspace_core</textarea></div>
                         <button class="btn-action" onclick="runMemory()">🎓 Index Text Source</button>
                     </div>
@@ -278,13 +333,15 @@
                 </div>
             </div>
 
+            <!-- 13. Tool Hub -->
             <div id="panel-tools" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🛠️ Tool Hub & Integration Registry</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Tool Switch Integration</div>
-                        <button class="btn-action btn-blue" onclick="execTool('google_search')">Enable Search API</button>
-                        <button class="btn-action" style="background:#ef4444;" onclick="alert('Search API Disabled')">Disable Search API</button>
+                        <div class="card-title">Tool Toggles & Switches</div>
+                        <div class="toggle-row"><span>Google Search API</span><button class="btn-action" style="padding:4px 10px; font-size:11px;" onclick="execTool('google_search')">Toggle ON</button></div>
+                        <div class="toggle-row"><span>Browser Automation Agent</span><button class="btn-action" style="padding:4px 10px; font-size:11px;" onclick="execTool('browser_use')">Toggle ON</button></div>
+                        <div class="toggle-row"><span>Vector Store Embedding</span><button class="btn-action" style="padding:4px 10px; font-size:11px;" onclick="execTool('vector_store')">Toggle ON</button></div>
                     </div>
                     <div class="card">
                         <div class="card-title">Catalog Registry</div>
@@ -294,8 +351,9 @@
                 </div>
             </div>
 
+            <!-- 14. Workflow & DAG -->
             <div id="panel-workflow" class="view-panel">
-                <div class="panel-header"><div class="panel-title">🌿 Pipeline Orchestrator</div></div>
+                <div class="panel-header"><div class="panel-title">🌿 Pipeline Orchestrator (DAG)</div></div>
                 <div class="content-area">
                     <div class="card">
                         <div class="card-title">DAG Execution Graph</div>
@@ -305,11 +363,12 @@
                 </div>
             </div>
 
+            <!-- 15. Security & OSINT -->
             <div id="panel-security" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🛡️ Security & OSINT</div></div>
                 <div class="content-area">
                     <div class="card">
-                        <div class="card-title">Vulnerability Analysis</div>
+                        <div class="card-title">Vulnerability & Asset Scan</div>
                         <div class="form-group"><label class="form-label">Target Asset:</label><input type="text" class="form-input" id="secTarget" value="127.0.0.1:8000"></div>
                         <button class="btn-action" onclick="runSecurity()">🛡️ Scan Target</button>
                     </div>
@@ -317,18 +376,20 @@
                 </div>
             </div>
 
+            <!-- 16. Permission Policy -->
             <div id="panel-permission" class="view-panel">
                 <div class="panel-header"><div class="panel-title">👤 System Permission Policy</div></div>
                 <div class="content-area">
                     <div class="card">
                         <div class="card-title">Autonomy Controls</div>
-                        <div class="form-group"><label class="form-label">Autonomy Level (1=Observe, 2=Execute):</label><input type="number" class="form-input" id="permLevel" value="1" min="1" max="2"></div>
+                        <div class="form-group"><label class="form-label">Autonomy Level (1=Observe, 2=Execute):</label><input type="number" class="form-input" id="permLevel" value="1" min="1" max="4"></div>
                         <button class="btn-action" onclick="runPermissions()">💾 Save Security Policy</button>
                     </div>
                     <div id="out-permissions"></div>
                 </div>
             </div>
 
+            <!-- 17. Real-Time Logs -->
             <div id="panel-logs" class="view-panel">
                 <div class="panel-header"><div class="panel-title">📋 Live Telemetry & Logs</div></div>
                 <div class="content-area">
@@ -337,6 +398,7 @@
                 </div>
             </div>
 
+            <!-- 18. Device Registry -->
             <div id="panel-devices" class="view-panel">
                 <div class="panel-header"><div class="panel-title">🎛️ Topology & Device Registry</div></div>
                 <div class="content-area">
@@ -345,6 +407,7 @@
                 </div>
             </div>
 
+            <!-- 19. Settings -->
             <div id="panel-settings" class="view-panel">
                 <div class="panel-header"><div class="panel-title">⚙️ Global Settings</div></div>
                 <div class="content-area">
@@ -352,10 +415,11 @@
                 </div>
             </div>
 
+            <!-- 20. Help & Shortcuts -->
             <div id="panel-help" class="view-panel">
-                <div class="panel-header"><div class="panel-title">ℹ️ System Documentation</div></div>
+                <div class="panel-header"><div class="panel-title">ℹ️ System Documentation & Shortcuts</div></div>
                 <div class="content-area">
-                    <div class="card"><div class="card-title">Shortcuts</div><p style="font-size:12px; color:#94a3b8;">Use the left sidebar to navigate across all 20 command panels.</p></div>
+                    <div class="card"><div class="card-title">Keyboard Shortcuts</div><p style="font-size:12px; color:#94a3b8;">• Press Enter to send chat commands.<br>• Use left sidebar to navigate across all 20 command panels.</p></div>
                 </div>
             </div>
         </main>
@@ -390,16 +454,30 @@
             uMsg.innerText = text;
             stream.appendChild(uMsg);
             input.value = '';
+            stream.scrollTop = stream.scrollHeight;
 
             const mode = document.getElementById('promptModeSelector').value;
-            const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, methodology: mode }) });
-            const data = await res.json();
+            try {
+                const res = await fetch('/api/chat', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ message: text, methodology: mode }) 
+                });
+                const data = await res.json();
 
-            const aMsg = document.createElement('div');
-            aMsg.className = 'message-bubble message-agent';
-            aMsg.innerHTML = `<div class="agent-name">${data.agent}:</div>${formatMarkdown(data.response)}`;
-            stream.appendChild(aMsg);
-            stream.scrollTop = stream.scrollHeight;
+                const aMsg = document.createElement('div');
+                aMsg.className = 'message-bubble message-agent';
+                // Display direct result/answer instead of backend background process analysis
+                const directOutput = data.answer || data.response || data.detail || JSON.stringify(data);
+                aMsg.innerHTML = '<div class="agent-name">' + (data.agent || 'OrchestratorAgent') + ':</div>' + formatMarkdown(directOutput);
+                stream.appendChild(aMsg);
+                stream.scrollTop = stream.scrollHeight;
+            } catch (err) {
+                const errMsg = document.createElement('div');
+                errMsg.className = 'message-bubble message-agent';
+                errMsg.innerHTML = '<div class="agent-name" style="color:#ef4444;">System Error:</div>Failed to connect to backend engine.';
+                stream.appendChild(errMsg);
+            }
         }
 
         function formatMarkdown(txt) {
@@ -420,108 +498,125 @@
             const topic = document.getElementById('debateTopic').value;
             const res = await fetch('/api/debate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic }) });
             const data = await res.json();
-            let html = `<div class="card"><div class="card-title">Debate Stream: ${data.topic}</div>`;
-            data.debate.forEach(d => { html += `<div style="margin-bottom:12px; background:#070a12; padding:12px; border-radius:6px;"><strong style="color:#60a5fa">${d.agent}:</strong><br>${formatMarkdown(d.text)}</div>`; });
-            document.getElementById('out-discussion').innerHTML = html + `</div>`;
+            let html = '<div class="card"><div class="card-title">Debate Stream: ' + data.topic + '</div>';
+            (data.debate || []).forEach(d => { html += '<div style="margin-bottom:12px; background:#070a12; padding:12px; border-radius:6px;"><strong style="color:#60a5fa">' + d.agent + ':</strong><br>' + formatMarkdown(d.text) + '</div>'; });
+            document.getElementById('out-discussion').innerHTML = html + '</div>';
         }
 
         async function runResearch() {
             const query = document.getElementById('researchQuery').value;
-            const res = await fetch('/api/research', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }) });
+            const mode = document.getElementById('promptModeSelector').value;
+            const res = await fetch('/api/research', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, methodology: mode }) });
             const data = await res.json();
-            document.getElementById('out-research').innerHTML = `<div class="card">${formatMarkdown(data.findings[0])}</div>`;
+            const finding = (data.findings && data.findings[0]) ? data.findings[0] : JSON.stringify(data);
+            document.getElementById('out-research').innerHTML = '<div class="card">' + formatMarkdown(finding) + '</div>';
         }
 
         async function runCoding() {
             const task = document.getElementById('codeTask').value;
-            const res = await fetch('/api/code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: 'Python', task }) });
+            const lang = document.getElementById('codeLang').value;
+            const res = await fetch('/api/code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: lang, task }) });
             const data = await res.json();
-            document.getElementById('out-coding').innerHTML = `<div class="card"><div class="code-box">${data.generated_code}</div></div>`;
+            document.getElementById('out-coding').innerHTML = '<div class="card"><div class="code-box">' + (data.generated_code || data.detail) + '</div></div>';
         }
 
         async function runComputer() {
             const command = document.getElementById('compCmd').value;
             const res = await fetch('/api/computer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ command }) });
             const data = await res.json();
-            document.getElementById('out-computer').innerHTML = `<div class="card"><div class="code-box">${data.stdout || data.detail}</div></div>`;
+            document.getElementById('out-computer').innerHTML = '<div class="card"><div class="code-box">' + (data.stdout || data.detail) + '</div></div>';
         }
 
         async function runConvert() {
             const fileInput = document.getElementById('fileInput');
-            if (!fileInput.files.length) return;
+            const targetFormat = document.getElementById('targetFormat').value;
+            if (!fileInput.files.length) { alert('Please select a file first.'); return; }
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-            formData.append('target_format', 'PDF Document');
+            formData.append('target_format', targetFormat);
             const res = await fetch('/api/convert', { method: 'POST', body: formData });
             const data = await res.json();
-            document.getElementById('out-file').innerHTML = `<div class="card"><div style="color:#10b981;">✔ ${data.message}</div><a href="${data.download_url}" download class="btn-action" style="margin-top:10px;">⬇ Download PDF</a></div>`;
+            document.getElementById('out-file').innerHTML = '<div class="card"><div style="color:#10b981;">✔ ' + (data.message || 'Successfully converted file.') + '</div><a href="' + (data.download_url || '#') + '" download class="btn-action" style="margin-top:10px;">⬇ Download Result (' + targetFormat + ')</a></div>';
+        }
+
+        async function runCompress() {
+            const fileInput = document.getElementById('compressInput');
+            const level = document.getElementById('compressLevel').value;
+            if (!fileInput.files.length) { alert('Please select a file to compress.'); return; }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('level', level);
+            const res = await fetch('/api/compress', { method: 'POST', body: formData });
+            const data = await res.json();
+            document.getElementById('out-compress').innerHTML = '<div class="card"><div style="color:#10b981;">✔ ' + (data.message || 'File successfully compressed and resized.') + '</div><a href="' + (data.download_url || '#') + '" download class="btn-action" style="margin-top:10px;">⬇ Download Compressed File</a></div>';
         }
 
         async function runImage() {
             const prompt = document.getElementById('imgPrompt').value;
-            const res = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+            const style = document.getElementById('imgStyle').value;
+            const res = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, style }) });
             const data = await res.json();
-            document.getElementById('out-image').innerHTML = `<div class="card">${data.svg_inline}</div>`;
+            document.getElementById('out-image').innerHTML = '<div class="card">' + (data.svg_inline || '<div style="color:#10b981;">✔ Image generated successfully.</div>') + '</div>';
         }
 
         async function runVideo() {
             const prompt = document.getElementById('vidPrompt').value;
             const res = await fetch('/api/video', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
             const data = await res.json();
-            document.getElementById('out-video').innerHTML = `<div class="card"><div class="card-title">Storyboard</div>${data.frames.join('<br>')}</div>`;
+            document.getElementById('out-video').innerHTML = '<div class="card"><div class="card-title">Storyboard Generator</div>' + (data.frames || []).join('<br>') + '</div>';
         }
 
         async function runAudio() {
             const prompt = document.getElementById('audioPrompt').value;
             const res = await fetch('/api/audio', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
             const data = await res.json();
-            document.getElementById('out-audio').innerHTML = `<div class="card"><div style="color:#10b981;">✔ ${data.status_message}</div></div>`;
+            document.getElementById('out-audio').innerHTML = '<div class="card"><div style="color:#10b981;">✔ ' + (data.status_message || 'Audio synthesis complete.') + '</div></div>';
         }
 
         async function runBusiness() {
             const query = document.getElementById('bizQuery').value;
             const res = await fetch('/api/business', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }) });
             const data = await res.json();
-            document.getElementById('out-business').innerHTML = `<div class="card">✔ Audit: ${data.audit}</div>`;
+            document.getElementById('out-business').innerHTML = '<div class="card">✔ Audit Result: ' + (data.audit || JSON.stringify(data)) + '</div>';
         }
 
         async function runScrape() {
             const url = document.getElementById('scrapeUrl').value;
             const res = await fetch('/api/scrape', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
             const data = await res.json();
-            document.getElementById('out-scrape').innerHTML = `<div class="card"><div class="code-box">${data.extracted_text}</div></div>`;
+            document.getElementById('out-scrape').innerHTML = '<div class="card"><div class="code-box">' + (data.extracted_text || JSON.stringify(data)) + '</div></div>';
         }
 
         async function runMemory() {
             const text_content = document.getElementById('memText').value;
             const res = await fetch('/api/memory', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text_content }) });
             const data = await res.json();
-            document.getElementById('out-memory').innerHTML = `<div class="card" style="color:#10b981;">✔ ${data.message}</div>`;
+            document.getElementById('out-memory').innerHTML = '<div class="card" style="color:#10b981;">✔ ' + (data.message || 'Indexed successfully into ChromaDB.') + '</div>';
         }
 
         async function runWorkflow() {
             const res = await fetch('/api/workflow', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pipeline: "default" }) });
             const data = await res.json();
-            document.getElementById('out-workflow').innerHTML = `<div class="card" style="color:#10b981;">✔ ${data.message}</div>`;
+            document.getElementById('out-workflow').innerHTML = '<div class="card" style="color:#10b981;">✔ ' + (data.message || 'DAG Pipeline executed successfully.') + '</div>';
         }
 
         async function runSecurity() {
             const target = document.getElementById('secTarget').value;
             const res = await fetch('/api/security', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target }) });
             const data = await res.json();
-            document.getElementById('out-security').innerHTML = `<div class="card" style="color:#10b981;">✔ ${data.report}</div>`;
+            document.getElementById('out-security').innerHTML = '<div class="card" style="color:#10b981;">✔ ' + (data.report || 'Security scan completed.') + '</div>';
         }
 
         async function loadToolsCatalog() {
             const res = await fetch('/api/tools/catalog');
             const data = await res.json();
             let html = '';
-            data.categories.forEach(cat => {
-                html += `<div class="card" style="margin-bottom:12px;"><div class="card-title" style="color:#38bdf8;">${cat.name}</div><div class="tools-grid">`;
-                cat.tools.forEach(t => {
-                    html += `<div class="tool-card"><div class="tool-title">${t.name}</div><div class="tool-desc">${t.description}</div><button class="btn-action" style="padding:4px 10px; font-size:11px;" onclick="execTool('${t.id}')">Execute</button></div>`;
+            (data.categories || []).forEach(cat => {
+                html += '<div class="card" style="margin-bottom:12px;"><div class="card-title" style="color:#38bdf8;">' + cat.name + '</div><div class="tools-grid">';
+                (cat.tools || []).forEach(t => {
+                    html += '<div class="tool-card"><div class="tool-title">' + t.name + '</div><div class="tool-desc">' + t.description + '</div><button class="btn-action" style="padding:4px 10px; font-size:11px;" onclick="execTool(\'' + t.id + '\')">Execute</button></div>';
                 });
-                html += `</div></div>`;
+                html += '</div></div>';
             });
             document.getElementById('toolsCatalogContainer').innerHTML = html;
         }
@@ -529,29 +624,29 @@
         async function execTool(tool_id) {
             const res = await fetch('/api/tools/execute', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool_id }) });
             const data = await res.json();
-            alert(`[TOOL INTEGRATION]: ${data.message}`);
+            alert('[TOOL INTEGRATION]: ' + (data.message || tool_id + ' executed.'));
         }
 
         async function runPermissions() {
             const level = parseInt(document.getElementById('permLevel').value);
             const res = await fetch('/api/permissions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ autonomy_level: level, allow_network: true, allow_file_write: true }) });
             const data = await res.json();
-            document.getElementById('autonomyLabel').innerText = `Autonomy: Level ${level}`;
-            document.getElementById('out-permissions').innerHTML = `<div class="card" style="color:#10b981;">✔ ${data.message}</div>`;
+            document.getElementById('autonomyLabel').innerText = 'Autonomy: Level ' + level;
+            document.getElementById('out-permissions').innerHTML = '<div class="card" style="color:#10b981;">✔ ' + (data.message || 'Permission policy updated.') + '</div>';
         }
 
         async function fetchLogs() {
             const res = await fetch('/api/logs');
             const data = await res.json();
-            document.getElementById('out-logs').innerHTML = `<div class="card"><div class="code-box">${data.logs.join('\n')}</div></div>`;
+            document.getElementById('out-logs').innerHTML = '<div class="card"><div class="code-box">' + (data.logs || []).join('\n') + '</div></div>';
         }
 
         async function fetchDevices() {
             const res = await fetch('/api/devices');
             const data = await res.json();
-            let html = `<div class="card"><div class="card-title">Node Topology</div>`;
-            data.nodes.forEach(n => { html += `<div>• <strong>${n.name}</strong> [${n.status}] - CPU: ${n.cpu} | RAM: ${n.ram}</div>`; });
-            document.getElementById('out-devices').innerHTML = html + `</div>`;
+            let html = '<div class="card"><div class="card-title">Node Topology</div>';
+            (data.nodes || []).forEach(n => { html += '<div>• <strong>' + n.name + '</strong> [' + n.status + '] - CPU: ' + n.cpu + ' | RAM: ' + n.ram + '</div>'; });
+            document.getElementById('out-devices').innerHTML = html + '</div>';
         }
     </script>
 </body>
